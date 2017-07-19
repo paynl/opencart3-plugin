@@ -1,0 +1,205 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form-pay" data-toggle="tooltip" title="{{ button_save }}"
+                        class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}"
+                   class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible"><i
+                        class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" class="form-horizontal"
+                      enctype="multipart/form-data" id="form-pay">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_status">{{ entry_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="{{ payment_method_name }}_status"
+                                    id="{{ payment_method_name }}_status" class="form-control">
+                                {% if status %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="{{ payment_method_name }}_apitoken">Apitoken</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="{{ payment_method_name }}_apitoken"
+                                   value="{{ apitoken }}"/>
+                            {% if error_apitoken %}
+                                <div class="text-danger">{{ error_apitoken }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_serviceid">ServiceId</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="{{ payment_method_name }}_serviceid"
+                                   value="{{ serviceid }}"/>
+                            {% if error_apitoken %}
+                                <div class="text-danger">{{ error_apitoken }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_label">Label</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="{{ payment_method_name }}_label"
+                                   value="{{ label }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-geo-zone">{{ entry_geo_zone }}</label>
+                        <div class="col-sm-10">
+                            <select name="{{ payment_method_name }}_geo_zone_id" id="input-geo-zone"
+                                    class="form-control">
+                                <option value="0">All Zones</option>
+                                {% for geo_zone in geo_zones %}
+                                    <option value="{{ geo_zone.geo_zone_id }}"
+                                            {% if geo_zone.geo_zone_id == geo_zone_id %}
+                                                selected="selected"
+                                            {% endif %}
+                                    >{{ geo_zone.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_confirm_on_start">
+                            <span data-toggle="tooltip" title="{{ text_confirm_start_tooltip }}">
+                                {{ text_confirm_start }}
+                            </span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_confirm_on_start">
+                                <option value="1" {{ confirm_on_start == 1 ? 'selected="selected"': '' }}>{{ text_enabled }}</option>
+                                <option value="0" {{ confirm_on_start == 0 ? 'selected="selected"': '' }}>{{ text_disabled }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_send_status_updates"><span data-toggle="tooltip"
+                                                                                         title="{{ text_send_statusupdates_tooltip }}">{{ text_send_statusupdates }}</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_send_status_updates">
+                                <option value="1" {{ send_status_updates == 1?'selected="selected"':'' }}>{{ text_enabled }}</option>
+                                <option value="0" {{ send_status_updates == 0?'selected="selected"':'' }}>{{ text_disabled }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_pending_status"><span data-toggle="tooltip"
+                                                                                    title="{{ text_status_pending_tooltip }}">{{ text_status_pending }}</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_pending_status">
+                                {% for order_status in order_statuses %}
+                                    <option value="{{ order_status.order_status_id }}"
+                                            {{ order_status.order_status_id == pending_status?'selected="selected"':'' }}>
+                                        {{ order_status.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_completed_status"><span data-toggle="tooltip"
+                                                                                      title="{{ text_status_complete_tooltip }}">{{ text_status_complete }}</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_completed_status">
+                                {% for order_status in order_statuses %}
+                                    <option value="{{ order_status.order_status_id }}"
+                                            {{ order_status.order_status_id == completed_status?'selected="selected"':'' }}>
+                                        {{ order_status.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="{{ payment_method_name }}_canceled_status"><span
+                                    data-toggle="tooltip"
+                                    title="{{ text_status_canceled_tooltip }}">{{ text_status_canceled }}</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_canceled_status">
+                                {% for order_status in order_statuses %}
+                                    <option value="{{ order_status.order_status_id }}"
+                                            {{ order_status.order_status_id == canceled_status?'selected="selected"':'' }}>
+                                        {{ order_status.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="{{ payment_method_name }}_total">{{ text_minimum_amount }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="{{ payment_method_name }}_total"
+                                   value="{{ total }}"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="{{ payment_method_name }}_totalmax">{{ text_maximum_amount }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="{{ payment_method_name }}_totalmax"
+                                   value="{{ totalmax }}"/>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_sort_order">{{ entry_sort_order }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control"
+                                   name="{{ payment_method_name }}_sort_order"
+                                   value="{{ sort_order }}"/>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_instructions">{{ text_payment_instructions }}</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="{{ payment_method_name }}_instructions"
+                                      placeholder="{{ text_payment_instructions_tooltip }}"
+                                      cols="80" rows="10">{{ instructions }}</textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}

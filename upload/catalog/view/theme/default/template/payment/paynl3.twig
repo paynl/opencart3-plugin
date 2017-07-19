@@ -1,0 +1,53 @@
+<div id="paynl_payment"></div>
+{% if instructions %}
+    <div class="well well-sm">
+        <p>{{ instructions|nl2br }}</p>
+    </div>
+{% endif %}
+{% if optionSubList %}
+    <div>
+        <select class="form-control" id="optionsub">
+            <option value=''>{{ text_choose_bank }}</option>
+            {% for optionSub in optionSubList %}
+                <option value='{{ optionSub.id }}'>{{ optionSub.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+{% endif %}
+<div class="buttons">
+    <div class="pull-right">
+        <input onclick="startTransaction();" value="{{ button_confirm }}" type="button"
+               data-loading-text="{{ button_loading }}" id="button-confirm" class="btn btn-primary"/>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function startTransaction() {
+        var data = {};
+        if (jQuery('#optionsub') != undefined) {
+            data.optionSubId = jQuery('#optionsub').val();
+        }
+        jQuery.ajax({
+            url: 'index.php?route=extension/payment/{{ paymentMethodName }}/startTransaction',
+            dataType: 'json',
+            data: data,
+            type: 'POST',
+            beforeSend: function () {
+                $('#button-confirm').button('loading');
+            },
+            complete: function () {
+            },
+            success: function (json) {
+                $('.alert').remove();
+
+                if (json['error']) {
+                    $('#paynl_payment').before('<div class="alert alert-danger">' + json['error'] + '</div>');
+                }
+
+                if (json['success']) {
+                    location = json['success']
+                }
+            }
+        });
+    }
+</script>
