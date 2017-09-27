@@ -37,12 +37,16 @@ class Pay_Controller_Admin extends Controller
 
         $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
 
-        $settings = $settings + $this->request->post;
+        $settings = array_merge($settings, $this->request->post);
         if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validate()) {
-            $settings['payment_paynl_apitoken'] = $settings['payment_' . $this->_paymentMethodName . '_apitoken'];
-            $settings['payment_paynl_serviceid'] = $settings['payment_' . $this->_paymentMethodName . '_serviceid'];
+	        $settingsGeneral = array(
+	        	'payment_paynl_general_apitoken' => $settings['payment_'.$this->_paymentMethodName.'_apitoken'],
+	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid']
 
-            $this->model_setting_setting->editSetting('payment_paynl', $settings);
+	        );
+	        $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
+
+            $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
             $this->session->data['success'] = $this->language->get('text_success');
 
             $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
@@ -55,10 +59,10 @@ class Pay_Controller_Admin extends Controller
         }
 
         if(!isset($data['apitoken']) || empty($data['apitoken'])){
-            $data['apitoken'] = $this->config->get('payment_paynl_apitoken');
+            $data['apitoken'] = $this->config->get('payment_paynl_general_apitoken');
         }
         if(!isset($data['serviceid']) || empty($data['serviceid'])){
-            $data['serviceid'] = $this->config->get('payment_paynl_serviceid');
+            $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
         }
 
 
