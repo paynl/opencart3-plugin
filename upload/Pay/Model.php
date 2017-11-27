@@ -225,7 +225,7 @@ class Pay_Model extends Model {
             'code' => $this->_paymentMethodName,
             'title' => $this->getLabel(),
             'terms' => '',
-            'sort_order' => $this->config->get($this->_paymentMethodName . '_sort_order')
+            'sort_order' => $this->config->get('payment_'.$this->_paymentMethodName . '_sort_order')
         );
         return $data;
     }
