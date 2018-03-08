@@ -281,8 +281,15 @@ class Pay_Model extends Model {
         $this->updateTransactionStatus($transactionId, $status);
 
         $message = "Pay.nl Updated order to $status.";
+
         //order updaten
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
+
+        if($order_info['payment_code'] != $this->_paymentMethodName &&
+           $status == self::STATUS_CANCELED){
+            return 'Not cancelling because the last used method is not this method';
+        }
+
         if ($order_info['order_status_id'] != $orderStatusId) {
             //alleen updaten als de status daadwerkelijk veranderd, ivm exchange, de order wordt 2 keer aangepast
             if ($settings['payment_'.$this->_paymentMethodName . '_send_status_updates'] == 1) {
