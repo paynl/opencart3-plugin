@@ -49,6 +49,7 @@ $arrPaymentMethods = array(
     'capayablegespreid',
     'cartebleue',
     'cashly',
+    'eps',
     'fashioncheque',
     'fashiongiftcard',
     'focum',
