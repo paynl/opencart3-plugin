@@ -20,6 +20,9 @@ $_['text_confirm_start'] = 'Order bevestigen bij starten transactie';
 $_['text_send_statusupdates'] = 'Statusupdates versturen';
 $_['text_send_statusupdates_tooltip'] = 'De gebruiker een email sturen als de status van de bestelling veranderd';
 
+$_['text_display_icon'] = 'Icoon weergeven';
+$_['text_display_icon_tooltip'] = 'Selecteer hier of je een icoon wilt weergeven en welke grootte.';
+
 $_['text_status_pending']='Order status wacht op betaling';
 $_['text_status_pending_tooltip']='De status van de order wanneer de betaling is gestart, maar nog niet afgerond';
 $_['text_status_complete']='Order status betaling voltooid';

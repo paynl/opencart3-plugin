@@ -23,7 +23,8 @@ class Pay_Controller_Admin extends Controller
             'entry_geo_zone', 'text_confirm_start_tooltip', 'text_confirm_start', 'text_send_statusupdates_tooltip',
             'text_send_statusupdates', 'entry_sort_order', 'text_status_pending', 'text_status_pending_tooltip',
             'text_status_complete', 'text_status_complete_tooltip', 'text_status_canceled', 'text_status_canceled_tooltip',
-            'text_minimum_amount', 'text_maximum_amount', 'text_payment_instructions', 'text_payment_instructions_tooltip'
+            'text_minimum_amount', 'text_maximum_amount', 'text_payment_instructions', 'text_payment_instructions_tooltip',
+            'text_display_icon', 'text_display_icon_tooltip'
         );
 
         foreach ($stringsToTranslate as $string) {

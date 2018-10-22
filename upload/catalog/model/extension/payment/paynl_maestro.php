@@ -1,13 +1,11 @@
 <?php
 $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-$autoload = $dir.'/Pay/Autoload.php';
+$autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
-class ModelExtensionPaymentPaynlMaestro extends Pay_Model {
+
+class ModelExtensionPaymentPaynlMaestro extends Pay_Model
+{
+    protected $_paymentOptionId = 712;
     protected $_paymentMethodName = 'paynl_maestro';
-    
-     public function getLabel(){
-        return parent::getLabel();
-    }
 }
-?>

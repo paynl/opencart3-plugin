@@ -18,6 +18,9 @@ $_['text_confirm_start'] = 'Confirm order on transaction start';
 $_['text_send_statusupdates'] = 'Send status updates';
 $_['text_send_statusupdates_tooltip'] = 'Send the customer an email everytime the status of the order changes';
 
+$_['text_display_icon'] = 'Display icon';
+$_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
+
 $_['text_status_pending']='Order status pending payment';
 $_['text_status_pending_tooltip']='The status of the order when the payment is started, but not yet completed';
 $_['text_status_complete']='Order status payment successful';

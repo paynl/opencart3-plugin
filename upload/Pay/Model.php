@@ -6,6 +6,8 @@ class Pay_Model extends Model {
     const STATUS_CANCELED = 'CANCELED';
     const STATUS_COMPLETE = 'COMPLETE';
 
+    protected $_paymentOptionId;
+
     public function createTables() {
         $this->db->query("
                 
@@ -199,31 +201,36 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
-    public function getMethod($address = false, $total = false) {
-        if (!$this->config->get('payment_'.$this->_paymentMethodName . '_status')) {
+    public function getMethod($address = false, $total = false)
+    {
+        if (!$this->config->get('payment_' . $this->_paymentMethodName . '_status')) {
             return false;
         }
 
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $this->config->get('payment_'.$this->_paymentMethodName . '_geo_zone_id') . "' AND country_id = '" . (int) $address['country_id'] . "' AND (zone_id = '" . (int) $address['zone_id'] . "' OR zone_id = '0')");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('payment_' . $this->_paymentMethodName . '_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
         if ($total) {
-            if ($this->config->get('payment_'.$this->_paymentMethodName . '_total') && $total < $this->config->get('payment_'.$this->_paymentMethodName . '_total')) {
+            if ($this->config->get('payment_' . $this->_paymentMethodName . '_total') && $total < $this->config->get('payment_' . $this->_paymentMethodName . '_total')) {
                 return false;
             }
-            if ($this->config->get('payment_'.$this->_paymentMethodName . '_totalmax') && $total > $this->config->get('payment_'.$this->_paymentMethodName . '_totalmax')) {
+            if ($this->config->get('payment_' . $this->_paymentMethodName . '_totalmax') && $total > $this->config->get('payment_' . $this->_paymentMethodName . '_totalmax')) {
                 return false;
             }
         }
-        if ($this->config->get('payment_'.$this->_paymentMethodName . '_geo_zone_id')) {
+        if ($this->config->get('payment_' . $this->_paymentMethodName . '_geo_zone_id')) {
             if ($query->num_rows == 0) {
                 return false;
             }
         }
 
-
+        $icon = "";
+        if ($this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') != '') {
+            $iconSize = $this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') ;
+            $icon = "<img class='paynl_icon' src=\"https://www.pay.nl/images/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
+        }
         $data = array(
             'code' => $this->_paymentMethodName,
-            'title' => $this->getLabel(),
+            'title' => $icon.$this->getLabel(),
             'terms' => '',
             'sort_order' => $this->config->get('payment_'.$this->_paymentMethodName . '_sort_order')
         );
