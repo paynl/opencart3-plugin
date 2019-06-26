@@ -37,6 +37,8 @@ $_['entry_geo_zone']     = 'Geo Zone';
 $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
+$_['text_extension'] = 'Pay.nl';
+
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="view/image/payment/paynl.png" alt="Pay.nl" title="Pay.nl" /></a>';
 
 $arrPaymentMethods = array(
@@ -49,6 +51,7 @@ $arrPaymentMethods = array(
     'capayablegespreid',
     'cartebleue',
     'cashly',
+    'creditclick',
     'eps',
     'fashioncheque',
     'fashiongiftcard',
@@ -67,8 +70,10 @@ $arrPaymentMethods = array(
     'phone',
     'podiumkadokaart',
     'postepay',
+    'przelewy24',
     'sofortbanking',
     'spraypay',
+    'tikkie',
     'visamastercard',
     'vvvgiftcard',
     'webshopgiftcard',
