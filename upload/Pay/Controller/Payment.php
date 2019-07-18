@@ -145,7 +145,7 @@ class Pay_Controller_Payment extends Controller
             $taxesForTotals = array();
             foreach ($results as $result) {
                 $taxesBefore = array_sum($arrTotals['taxes']);
-                if ($this->config->get($result['code'] . '_status')) {
+                if ($this->config->get('total_' . $result['code'] . '_status')) {
                     $this->load->model('extension/total/' . $result['code']);
                     $this->{'model_extension_total_' . $result['code']}->getTotal($arrTotals);
                     $taxAfter = array_sum($arrTotals['taxes']);
