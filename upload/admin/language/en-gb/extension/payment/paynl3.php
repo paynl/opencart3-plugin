@@ -45,6 +45,7 @@ $arrPaymentMethods = array(
     'afterpay',
     'afterpayem',
     'amex',
+    'applepay',
     'billink',
     'bitcoin',
     'capayable',
