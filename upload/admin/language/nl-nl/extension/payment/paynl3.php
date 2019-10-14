@@ -41,7 +41,7 @@ $_['entry_sort_order']   = 'Sort Order';
 
 $_['text_extension'] = 'Pay.nl';
 
-$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://static.pay.nl/generic/images/100x100/logo.png" alt="Pay.nl" title="Pay.nl" /></a>';
+$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://static.pay.nl/generic/images/50x50/logo.png" alt="Pay.nl" title="Pay.nl" /></a>';
 
 $arrPaymentMethods = array(
     'afterpay',
