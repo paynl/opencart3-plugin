@@ -64,6 +64,7 @@ $arrPaymentMethods = array(
     'givacard',
     'ideal',
     'incasso',
+    'klarnakp',
     'maestro',
     'mistercash',
     'mybank',
