@@ -226,7 +226,7 @@ class Pay_Model extends Model {
         $icon = "";
         if ($this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') != '') {
             $iconSize = $this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') ;
-            $icon = "<img class='paynl_icon' src=\"https://www.pay.nl/images/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
+            $icon = "<img class='paynl_icon' src=\"https://static.pay.nl/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
         }
         $data = array(
             'code' => $this->_paymentMethodName,
