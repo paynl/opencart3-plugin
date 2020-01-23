@@ -33,12 +33,11 @@ Download the latest .tgz release and upload into *Extensions* > *Installer* > *U
 
 ##### Setup
 
-1. Log into the Opencart 3 admin
-2. Go to *Extensions* > *Extensions*
-3. Choose the extensions type Payments
-4. Scroll down to one of the Pay.nl payment methods and click on the install button
-5. Click on the edit button on the previously installed payment method
-6. Enter the API token and serviceID (these can be found in the Pay.nl Admin Panel --> https://admin.pay.nl/programs/programs
-7. Save the settings
+1. Upload everything from the paynl plugin to the webroot of your server
+2. Go to your admin dashboard and navigate to "Extensions" => "Extensions" => "Payments"
+3. Install a payment method and fill out any required information
+4. Click on the edit button on the previously installed payment method
+5. Enter the API token and serviceID (these can be found in the Pay.nl Admin Panel --> https://admin.pay.nl/programs/programs
+6. Save the settings
 
 Go to the *Manage* > *Services* tab in the Pay.nl Admin Panel to enable extra payment methods
