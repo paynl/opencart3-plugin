@@ -67,7 +67,7 @@ class Pay_Controller_Admin extends Controller
         }
 
 
-        $data['text_edit'] = 'Pay.nl - ' . $this->_defaultLabel;
+        $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
 
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';

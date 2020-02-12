@@ -1,4 +1,4 @@
 <?php
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'Pay.nl - Apple Pay';
+$_['heading_title'] = 'PAY. - Apple Pay';

@@ -89,7 +89,7 @@ class Pay_Helper
     }
 
   /**
-   * Determine the tax class to send to Pay.nl
+   * Determine the tax class to send to PAY.
    *
    * @param int|float $amountInclTax
    * @param int|float $taxAmount

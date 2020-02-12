@@ -1,4 +1,4 @@
 <?php
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'Pay.nl - Bitcoin';
+$_['heading_title'] = 'PAY. - Bitcoin';

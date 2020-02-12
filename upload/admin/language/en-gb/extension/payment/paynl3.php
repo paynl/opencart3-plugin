@@ -8,7 +8,7 @@ $_['button_cancel'] = 'Cancel';
 $_['text_success'] = 'Settings saved';
 
 $_['error_not_activated'] = "This payment method is not activated for this website, go to  <a target='paynl' href='https://admin.pay.nl/programs/programs'>https://admin.pay.nl/programs/programs</a> to edit your website";
-$_['error_api_error'] = 'The Pay.nl Api replied with the following error: ';
+$_['error_api_error'] = 'The PAY. Api replied with the following error: ';
 $_['error_error_occurred'] = 'An error has occurred: ';
 $_['error_no_apitoken'] = 'You must enter an APItoken, you can find your APItokens on: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 $_['error_no_serviceid']= 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
@@ -37,9 +37,9 @@ $_['entry_geo_zone']     = 'Geo Zone';
 $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
-$_['text_extension'] = 'Pay.nl';
+$_['text_extension'] = 'PAY.';
 
-$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://static.pay.nl/generic/images/50x50/logo.png" alt="Pay.nl" title="Pay.nl" /></a>';
+$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://static.pay.nl/generic/images/50x50/logo.png" alt="PAY." title="PAY." /></a>';
 
 $arrPaymentMethods = array(
     'afterpay',
