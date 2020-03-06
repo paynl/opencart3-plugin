@@ -287,7 +287,7 @@ class Pay_Model extends Model {
         //status updaten
         $this->updateTransactionStatus($transactionId, $status);
 
-        $message = "Pay.nl Updated order to $status.";
+        $message = "PAY. Updated order to $status.";
 
         //order updaten
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);

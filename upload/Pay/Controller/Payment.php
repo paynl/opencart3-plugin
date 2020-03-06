@@ -79,6 +79,7 @@ class Pay_Controller_Payment extends Controller
             }
             $apiStart->setDescription($order_info['order_id']);
             $apiStart->setExtra1($order_info['order_id']);
+            $apiStart->setObject('opencart3 1.2.5');
 
 
             // Klantdata verzamelen en meesturen
@@ -178,7 +179,7 @@ class Pay_Controller_Payment extends Controller
                 $order_info['order_id'], $this->_paymentOptionId, $amount,
                 $postData, $optionSub);
 
-            $message = 'Pay.nl Transactie aangemaakt. TransactieId: ' . $result['transaction']['transactionId'] . ' .<br />';
+            $message = 'PAY. Transactie aangemaakt. TransactieId: ' . $result['transaction']['transactionId'] . ' .<br />';
 
             $confirm_on_start = $this->config->get($this->_paymentMethodName . '_confirm_on_start');
             if ($confirm_on_start == 1) {
@@ -187,7 +188,7 @@ class Pay_Controller_Payment extends Controller
 
             $response['success'] = $result['transaction']['paymentURL'];
         } catch (Pay_Api_Exception $e) {
-            $response['error'] = "De pay.nl api gaf de volgende fout: " . $e->getMessage();
+            $response['error'] = "De PAY. api gaf de volgende fout: " . $e->getMessage();
         } catch (Pay_Exception $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
         } catch (Exception $e) {

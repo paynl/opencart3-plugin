@@ -1,4 +1,4 @@
 <?php
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'Pay.nl - Fashion Giftcard';
+$_['heading_title'] = 'PAY. - Fashion Giftcard';

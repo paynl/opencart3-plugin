@@ -9,7 +9,7 @@ $_['text_success'] = 'Instellingen opgeslagen';
 
 //errors
 $_['error_not_activated'] = "Deze betaalmethode is niet geactiveerd voor deze dienst. Ga naar  <a target='paynl' href='https://admin.pay.nl/programs/programs'>https://admin.pay.nl/programs/programs</a> om dit aan te passen.";
-$_['error_api_error'] = 'De Pay.nl Api gaf de volgende fout: ';
+$_['error_api_error'] = 'De PAY. Api gaf de volgende fout: ';
 $_['error_error_occurred'] = 'Er is een fout opgetreden: ';
 $_['error_no_apitoken'] = 'U moet een apitokeninvoeren, u vind uw apitokens op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 $_['error_no_serviceid']= 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
@@ -39,9 +39,12 @@ $_['entry_geo_zone']     = 'Geo Zone';
 $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
-$_['text_extension'] = 'Pay.nl';
+$_['text_extension'] = 'PAY.';
 
-$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://static.pay.nl/generic/images/50x50/logo.png" alt="Pay.nl" title="Pay.nl" /></a>';
+$version = '1.2.5';
+$css = 'position: relative;top:0px;display: inline;left: 10px;';
+$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://static.pay.nl/generic/images/50x50/logo.png" alt="PAY." title="PAY." /></a>' .
+    '<div style="' . $css . '">Version: ' . $version . '</div>';;
 
 $arrPaymentMethods = array(
     'afterpay',
@@ -67,8 +70,10 @@ $arrPaymentMethods = array(
     'klarnakp',
     'maestro',
     'mistercash',
+    'multibanco',
     'mybank',
     'overboeking',
+    'payconiq',
     'paypal',
     'paysafecard',
     'phone',
