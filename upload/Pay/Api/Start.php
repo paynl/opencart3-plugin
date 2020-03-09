@@ -57,7 +57,7 @@ class Pay_Api_Start extends Pay_Api {
      * @param int $vatPercentage
      * @throws Pay_Exception
      */
-    public function addProduct($id, $description, $price, $quantity, $vatPercentage) {
+    public function addProduct($id, $description, $price, $quantity, $vatPercentage, $type = "ARTICLE") {
         if (!is_numeric($price)) {
             throw new Pay_Exception('Price moet numeriek zijn', 1);
         }
@@ -76,6 +76,7 @@ class Pay_Api_Start extends Pay_Api {
             'price' => $price,
             'quantity' => $quantity,
             'vatCode' => $vatPercentage,
+            'productType' => $type            
         );
         $this->_products[] = $arrProduct;
     }

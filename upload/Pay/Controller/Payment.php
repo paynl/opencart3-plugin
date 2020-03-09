@@ -165,8 +165,17 @@ class Pay_Controller_Payment extends Controller
                     $totalIncl = $totalIncl * $currency_value;
                     $total_row_tax = $total_row_tax * $currency_value;
 
-                    $apiStart->addProduct($total_row['code'], $total_row['title'], round($totalIncl * 100), 1, Pay_Helper::calculateTaxClass($totalIncl, $total_row_tax));
-                }
+                    switch($total_row['code']){
+                        case 'shipping': 
+                            $type = "SHIPPING";    
+                            break;
+                        default: 
+                            $type = "ARTICLE";
+                            break;
+                    }                 
+                    
+                    $apiStart->addProduct($total_row['code'], $total_row['title'], round($totalIncl * 100), 1, Pay_Helper::calculateTaxClass($totalIncl, $total_row_tax), $type);
+               }
             }
 
             $postData = $apiStart->getPostData();
