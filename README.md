@@ -32,7 +32,7 @@ Bank Transfer | Cartasi | GivaCard | SprayPay | Przelewy24 |
 #### Installing
 
 Download the latest .zip from https://github.com/paynl/opencart3-plugin/releases.<br/>
-Unzip the file and upload everything from the PAY.plugin to the webroot of your server.
+Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
 
 
 ##### Setup
@@ -49,7 +49,7 @@ Unzip the file and upload everything from the PAY.plugin to the webroot of your 
 
 Updating the plugin works the same as the installation of the plugin.<br/>
 Download the latest .zip from https://github.com/paynl/opencart3-plugin/releases.<br/>
-Unzip the file and upload everything from the PAY.plugin to the webroot of your server.
+Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
 
 # Usage
 
