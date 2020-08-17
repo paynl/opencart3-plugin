@@ -1,16 +1,20 @@
-# PAY. OpenCart 3 plugin
+<p align="center">
+  <img src="https://www.pay.nl/uploads/1/brands/main_logo.png" />
+</p>
+<h1 align="center">PAY. OpenCart 3 plugin</h1>
 
----
-- [Summary](#summary)
-- [Quickstart](#quickstart)
-- [Setup](#setup)
+# Description
 
----
-### Summary
+With the PAY. plugin you can easily add different payment methods to your OpenCart 3 webshop. You can go to https://www.pay.nl (Dutch) for an overview of all our features and services, you can also visit https://docs.pay.nl/plugins#opencart-three for more documentation of our plugin.
 
-With this plug-in by PAY. you can easily add all desired payment methods to your OpenCart 3 webshop. Please refer to https://www.pay.nl (Dutch) for an overview of all features and services. 
+- [Description](#description)
+- [Available payment methods](#available-payment-methods)
+- [Installation](#installation)
+- [Update instructions](#update-instructions)
+- [Usage](#usage)
+- [Support](#support)
 
-##### Available payment methods:
+# Available payment methods
 
 Bank Payments  | Creditcards | Gift cards & Vouchers | Pay by invoice | Others | 
 :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
@@ -24,20 +28,34 @@ Bank Transfer | Cartasi | GivaCard | SprayPay | Przelewy24 |
 | Tikkie | | YourGift | Creditclick | Apple Pay | 
 | | | Paysafecard |
 
+# Installation
+#### Installing
 
-### Quickstart
+Download the latest .zip from https://github.com/paynl/opencart3-plugin/releases.<br/>
+Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
 
-##### Installing
-
-Download the latest .tgz release and upload into *Extensions* > *Installer* > *Upload*
 
 ##### Setup
 
-1. Upload everything from the paynl plugin to the webroot of your server
-2. Go to your admin dashboard and navigate to "Extensions" => "Extensions" => "Payments"
-3. Install a payment method and fill out any required information
-4. Click on the edit button on the previously installed payment method
-5. Enter the API token and serviceID (these can be found in the PAY. Admin Panel --> https://admin.pay.nl/programs/programs
-6. Save the settings
+1. Go to your admin dashboard and navigate to "Extensions" > "Extensions" and in the dropdown menu choose for "Payments"
+2. Install a payment method and fill out any required information.
+3. Click on the edit pubbon on the previously installed payment method.
+4. Enter the API token and service ID (these can be found in the PAY. Admin Panel > https://admin.pay.nl/programs/programs).<br/>If you have filled in your information for one payment method, the other ones will automatically use the same credentials.
+5. Save the settings.
+6. Repeat step 2 to 5 with the desired payment methods.
 
-Go to the *Manage* > *Services* tab in the PAY. Admin Panel to enable extra payment methods
+
+#### Update instructions
+
+Updating the plugin works the same as the installation of the plugin.<br/>
+Download the latest .zip from https://github.com/paynl/opencart3-plugin/releases.<br/>
+Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
+
+# Usage
+
+More information on this plugin can be found on https://docs.pay.nl/plugins#opencart-three
+
+# Support
+https://www.pay.nl
+
+Contact us: support@pay.nl
