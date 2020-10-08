@@ -1,4 +1,4 @@
 <?php
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - KlarnaKP';
+$_['heading_title'] = 'PAY. - Klarna (Achteraf betalen)';
