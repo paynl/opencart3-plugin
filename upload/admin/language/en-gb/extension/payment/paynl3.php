@@ -58,6 +58,7 @@ $arrPaymentMethods = array(
     'cartebleue',
     'cashly',
     'creditclick',
+    'decadeaukaart',
     'eps',
     'fashioncheque',
     'fashiongiftcard',
