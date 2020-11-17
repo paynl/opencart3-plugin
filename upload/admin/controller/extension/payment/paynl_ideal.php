@@ -9,5 +9,5 @@ class ControllerExtensionPaymentPaynlIdeal extends Pay_Controller_Admin
     protected $_paymentOptionId = 10;
     protected $_paymentMethodName = 'paynl_ideal';
 
-    protected $_defaultLabel = 'iDeal';
+    protected $_defaultLabel = 'iDEAL';
 }
