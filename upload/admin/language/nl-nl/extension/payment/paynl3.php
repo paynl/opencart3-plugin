@@ -67,6 +67,7 @@ $arrPaymentMethods = array(
     'giropay',
     'givacard',
     'good4fun',
+    'googlepay',
     'ideal',
     'incasso',
     'klarnakp',
