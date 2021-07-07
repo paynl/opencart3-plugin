@@ -62,7 +62,6 @@ class Pay_Api {
         }
 
         if (!empty($this->_gateway)){
-            exit();
             return trim($this->_gateway);
         } else{
             return $this->_apiUrl . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
