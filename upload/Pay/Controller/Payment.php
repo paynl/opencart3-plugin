@@ -59,6 +59,10 @@ class Pay_Controller_Payment extends Controller
             $apiStart->setApiToken($this->config->get('payment_' . $this->_paymentMethodName . '_apitoken'));
             $apiStart->setServiceId($this->config->get('payment_' . $this->_paymentMethodName . '_serviceid'));
 
+            if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_gateway'))){
+                $apiStart->setApiBase($this->config->get('payment_' . $this->_paymentMethodName . '_gateway'));
+            }
+
             $returnUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/finish');
             $exchangeUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/exchange');
 

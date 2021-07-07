@@ -62,7 +62,7 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
-    public function refreshPaymentOptions($serviceId, $apiToken) {
+    public function refreshPaymentOptions($serviceId, $apiToken, $gateway) {
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
@@ -74,6 +74,11 @@ class Pay_Model extends Model {
         $api = new Pay_Api_Getservice();
         $api->setApiToken($apiToken);
         $api->setServiceId($serviceId);
+
+        if (!empty($gateway)){
+            $api->setApiBase($gateway);
+        }
+
         $result = $api->doRequest();
 
         $imgBasePath = $result['service']['basePath'];
@@ -265,6 +270,11 @@ class Pay_Model extends Model {
         $apiInfo = new Pay_Api_Info();
         $apiInfo->setApiToken($settings['payment_'.$this->_paymentMethodName . '_apitoken']);
         $apiInfo->setServiceId($settings['payment_'.$this->_paymentMethodName . '_serviceid']);
+
+        if (!empty($settings['payment_'.$this->_paymentMethodName . '_gateway'])){
+            $apiInfo->setApiBase($settings['payment_'.$this->_paymentMethodName . '_gateway']);
+        }
+
         $apiInfo->setTransactionId($transactionId);
 
         $result = $apiInfo->doRequest();
