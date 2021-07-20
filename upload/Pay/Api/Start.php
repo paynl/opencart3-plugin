@@ -24,6 +24,8 @@ class Pay_Api_Start extends Pay_Api {
     private $_object;
     private $_domainId;
     private $_transferData;
+
+    private $_testmode;
     
     private $_products = array();
 
@@ -46,6 +48,11 @@ class Pay_Api_Start extends Pay_Api {
     public function setTransferData($transferData){
         $this->_transferData = $transferData;
     }
+
+    public function setTestmode($testmode){
+        $this->_testmode = $testmode;
+    }
+
     /**
      * Add a product to an order
      * Attention! This is purely an adminstrative option, the amount of the order is not modified.
@@ -234,6 +241,10 @@ class Pay_Api_Start extends Pay_Api {
         }
         if (!empty($this->_currency)) {
             $data['transaction']['currency'] = $this->_currency;
+        }
+
+        if (!empty($this->_testmode)){
+            $data['testMode'] = $this->_testmode;
         }
 
        

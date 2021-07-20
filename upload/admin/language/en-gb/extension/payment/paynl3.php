@@ -23,6 +23,9 @@ $_['text_send_statusupdates_tooltip'] = 'Send the customer an email everytime th
 $_['text_display_icon'] = 'Display icon';
 $_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
 
+$_['text_testmode'] = 'Testmode';
+$_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between PAY. and your webshop';
+
 $_['text_status_pending']='Order status pending payment';
 $_['text_status_pending_tooltip']='The status of the order when the payment is started, but not yet completed';
 $_['text_status_complete']='Order status payment successful';
