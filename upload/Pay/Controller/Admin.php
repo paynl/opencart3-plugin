@@ -42,7 +42,8 @@ class Pay_Controller_Admin extends Controller
         if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validate()) {
 	        $settingsGeneral = array(
 	        	'payment_paynl_general_apitoken' => $settings['payment_'.$this->_paymentMethodName.'_apitoken'],
-	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid']
+	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid'],
+	        	'payment_paynl_general_testmode' => $settings['payment_'.$this->_paymentMethodName.'_testmode']
 
 	        );
 	        $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
@@ -64,6 +65,9 @@ class Pay_Controller_Admin extends Controller
         }
         if(!isset($data['serviceid']) || empty($data['serviceid'])){
             $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
+        }
+        if(!isset($data['testmode']) || empty($data['testmode'])){
+            $data['testmode'] = $this->config->get('payment_paynl_general_testmode');
         }
 
 

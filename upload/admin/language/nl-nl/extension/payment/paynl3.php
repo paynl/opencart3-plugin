@@ -23,6 +23,9 @@ $_['text_send_statusupdates_tooltip'] = 'De gebruiker een email sturen als de st
 $_['text_display_icon'] = 'Icoon weergeven';
 $_['text_display_icon_tooltip'] = 'Selecteer hier of je een icoon wilt weergeven en welke grootte.';
 
+$_['text_testmode'] = 'Testmode';
+$_['text_testmode_tooltip'] = 'Zet de testmode aan of uit om de exchanges te testen tussen PAY. en uw webshop';
+
 $_['text_status_pending']='Order status wacht op betaling';
 $_['text_status_pending_tooltip']='De status van de order wanneer de betaling is gestart, maar nog niet afgerond';
 $_['text_status_complete']='Order status betaling voltooid';
