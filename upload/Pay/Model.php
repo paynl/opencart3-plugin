@@ -271,8 +271,8 @@ class Pay_Model extends Model {
         $apiInfo->setApiToken($settings['payment_'.$this->_paymentMethodName . '_apitoken']);
         $apiInfo->setServiceId($settings['payment_'.$this->_paymentMethodName . '_serviceid']);
 
-        if (!empty($settings['payment_'.$this->_paymentMethodName . '_gateway'])){
-            $apiInfo->setApiBase($settings['payment_'.$this->_paymentMethodName . '_gateway']);
+        if (!empty(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']))){
+            $apiInfo->setApiBase(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']));
         }
 
         $apiInfo->setTransactionId($transactionId);

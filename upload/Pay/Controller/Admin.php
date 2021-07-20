@@ -67,7 +67,7 @@ class Pay_Controller_Admin extends Controller
             $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
         }
         if(!isset($data['gateway']) || empty($data['gateway'])){
-            $data['gateway'] = trim($this->config->get('payment_paynl_general_gateway'));
+            $data['gateway'] = $this->config->get('payment_paynl_general_gateway');
         }
 
 
@@ -174,7 +174,7 @@ class Pay_Controller_Admin extends Controller
                 $apiToken = $this->request->post['payment_' . $this->_paymentMethodName . '_apitoken'];
 
                 $gateway = '';
-                if (!empty($this->request->post['payment_' . $this->_paymentMethodName . '_gateway'])){
+                if (!empty(trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']))){
                     $gateway = trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']);
                 }
 
