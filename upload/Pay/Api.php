@@ -61,7 +61,7 @@ class Pay_Api {
             throw new Pay_Exception('action not set', 1);
         }
 
-        if (!empty($this->_gateway)){
+        if (!empty(trim($this->_gateway))){
             return $this->_apiUrl = trim($this->_gateway) . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
         } else{
             return $this->_apiUrl . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
