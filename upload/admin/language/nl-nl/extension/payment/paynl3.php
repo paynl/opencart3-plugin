@@ -20,6 +20,9 @@ $_['text_confirm_start'] = 'Order bevestigen bij starten transactie';
 $_['text_send_statusupdates'] = 'Statusupdates versturen';
 $_['text_send_statusupdates_tooltip'] = 'De gebruiker een email sturen als de status van de bestelling veranderd';
 
+$_['text_gateway'] = 'Failover gateway';
+$_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van PAY. een gateway aan u doorgeven om hier in te vullen';
+
 $_['text_display_icon'] = 'Icoon weergeven';
 $_['text_display_icon_tooltip'] = 'Selecteer hier of je een icoon wilt weergeven en welke grootte.';
 

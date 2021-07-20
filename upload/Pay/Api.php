@@ -11,6 +11,7 @@ class Pay_Api {
     protected $_action = '';
     protected $_serviceId = '';
     protected $_apiToken = '';
+    protected $_gateway = '';
     protected $_requestType = self::REQUEST_TYPE_POST;
     protected $_postData = array();
 
@@ -36,6 +37,10 @@ class Pay_Api {
         $this->_apiToken = $apiToken;
     }
 
+    public function setApiBase($gateway){
+        $this->_gateway = $gateway;
+    }
+
     protected function _getPostData() {
 
         return $this->_postData;
@@ -56,7 +61,11 @@ class Pay_Api {
             throw new Pay_Exception('action not set', 1);
         }
 
-        return $this->_apiUrl . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
+        if (!empty(trim($this->_gateway))){
+            return $this->_apiUrl = trim($this->_gateway) . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
+        } else{
+            return $this->_apiUrl . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
+        }
     }
 
     public function getPostData(){
