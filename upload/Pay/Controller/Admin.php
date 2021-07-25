@@ -42,7 +42,8 @@ class Pay_Controller_Admin extends Controller
         if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validate()) {
 	        $settingsGeneral = array(
 	        	'payment_paynl_general_apitoken' => $settings['payment_'.$this->_paymentMethodName.'_apitoken'],
-	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid']
+	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid'],
+	        	'payment_paynl_general_gateway' => trim($settings['payment_'.$this->_paymentMethodName.'_gateway'])
 
 	        );
 	        $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
@@ -64,6 +65,9 @@ class Pay_Controller_Admin extends Controller
         }
         if(!isset($data['serviceid']) || empty($data['serviceid'])){
             $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
+        }
+        if(!isset($data['gateway']) || empty($data['gateway'])){
+            $data['gateway'] = $this->config->get('payment_paynl_general_gateway');
         }
 
 
@@ -169,8 +173,13 @@ class Pay_Controller_Admin extends Controller
                 $serviceId = $this->request->post['payment_' . $this->_paymentMethodName . '_serviceid'];
                 $apiToken = $this->request->post['payment_' . $this->_paymentMethodName . '_apitoken'];
 
+                $gateway = '';
+                if (!empty(trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']))){
+                    $gateway = trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']);
+                }
+
                 //eerst refreshen
-                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken);
+                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $gateway);
 
                 $paymentOption = $this->model_extension_payment_paynl3->getPaymentOption($serviceId, $this->_paymentOptionId);
 
