@@ -15,6 +15,11 @@ $_['error_no_apitoken'] = 'U moet een apitokeninvoeren, u vind uw apitokens op: 
 $_['error_no_serviceid']= 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
 //texts
+$_['text_register'] = 'Nog geen account bij PAY.? Klik ';
+$_['text_link_register'] = 'hier';
+$_['link_register'] = 'https://www.pay.nl/registreren';
+$_['text_after_register'] = ' om u aan te melden.';
+
 $_['text_confirm_start_tooltip'] = 'De order bevestigen bij het starten van de transactie, dus voordat er betaald is. De bevestigingsmail wordt dan ook meteen verstuurd';
 $_['text_confirm_start'] = 'Order bevestigen bij starten transactie';
 $_['text_send_statusupdates'] = 'Statusupdates versturen';

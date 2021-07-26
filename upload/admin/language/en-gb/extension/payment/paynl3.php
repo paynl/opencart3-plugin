@@ -15,6 +15,11 @@ $_['error_no_apitoken'] = 'You must enter an APItoken, you can find your APItoke
 $_['error_no_serviceid']= 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
 //texts
+$_['text_register'] = 'Not registered at PAY.? Sign up ';
+$_['text_link_register'] = 'here';
+$_['link_register'] = 'https://www.pay.nl/en/register';
+$_['text_after_register'] = '!';
+
 $_['text_confirm_start_tooltip'] = 'Confirm the order when starting the transaction, before the transaction is paid. Confirmation email will be sent immediately';
 $_['text_confirm_start'] = 'Confirm order on transaction start';
 $_['text_send_statusupdates'] = 'Send status updates';
