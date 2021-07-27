@@ -60,8 +60,8 @@ class Pay_Controller_Payment extends Controller
             $apiStart->setServiceId($this->config->get('payment_' . $this->_paymentMethodName . '_serviceid'));
             $apiStart->setTestmode($this->config->get('payment_paynl_general_testmode'));
 
-            if (!empty(trim($this->config->get('payment_' . $this->_paymentMethodName . '_gateway')))){
-                $apiStart->setApiBase(trim($this->config->get('payment_' . $this->_paymentMethodName . '_gateway')));
+            if (!empty(trim($this->config->get('payment_paynl_general_gateway')))){
+                $apiStart->setApiBase(trim($this->config->get('payment_paynl_general_gateway')));
             }
 
             $returnUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/finish');
