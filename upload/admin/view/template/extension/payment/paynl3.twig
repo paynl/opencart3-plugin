@@ -24,7 +24,8 @@
         {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3><br/><br/>
+                <p>{{ text_register }}<a href="{{ link_register }}" target="_blank">{{ text_link_register }}</a>{{ text_after_register }} </p>
             </div>
             <div class="panel-body">
                 <form action="{{ action }}" method="post" class="form-horizontal"
