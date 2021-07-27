@@ -177,8 +177,13 @@ class Pay_Controller_Admin extends Controller
                 $serviceId = $this->request->post['payment_' . $this->_paymentMethodName . '_serviceid'];
                 $apiToken = $this->request->post['payment_' . $this->_paymentMethodName . '_apitoken'];
 
+                $gateway = '';
+                if (!empty(trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']))){
+                    $gateway = trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']);
+                }
+
                 //eerst refreshen
-                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken);
+                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $gateway);
 
                 $paymentOption = $this->model_extension_payment_paynl3->getPaymentOption($serviceId, $this->_paymentOptionId);
 
