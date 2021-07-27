@@ -20,6 +20,9 @@ $_['text_confirm_start'] = 'Confirm order on transaction start';
 $_['text_send_statusupdates'] = 'Send status updates';
 $_['text_send_statusupdates_tooltip'] = 'Send the customer an email everytime the status of the order changes';
 
+$_['text_gateway'] = 'Failover gateway';
+$_['text_gateway_tooltip'] = 'Only fill this in when we at PAY. provide you with a gateway to fill in here';
+
 $_['text_display_icon'] = 'Display icon';
 $_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
 
@@ -70,6 +73,7 @@ $arrPaymentMethods = array(
     'giropay',
     'givacard',
     'good4fun',
+    'googlepay',
     'ideal',
     'incasso',
     'klarnakp',
