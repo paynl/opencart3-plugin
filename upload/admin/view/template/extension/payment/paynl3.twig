@@ -117,6 +117,19 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_icon_style">
+                            <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">
+                                {{ text_icon_style }}
+                            </span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_icon_style">
+                                <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
+                                <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>                                
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
                                for="{{ payment_method_name }}_label">Label</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="{{ payment_method_name }}_label"

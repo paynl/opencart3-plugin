@@ -32,6 +32,7 @@ class Pay_Model extends Model {
                             `name` varchar(255) NOT NULL,
                             `img` varchar(255) NOT NULL,
                             `update_date` datetime NOT NULL,
+                            `brand_id` varchar(255) NOT NULL,
                             PRIMARY KEY (`id`)
                           ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ;
 		");
@@ -62,8 +63,12 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
-    public function refreshPaymentOptions($serviceId, $apiToken, $gateway) {
+    public function refreshPaymentOptions($serviceId, $apiToken) {
+
         $serviceId = $this->db->escape($serviceId);
+        //add brand_id to database to exsisting installations
+        $sql = "ALTER TABLE `" . DB_PREFIX . "paynl_paymentoptions` ADD COLUMN IF NOT EXISTS brand_id VARCHAR(255)";
+        $this->db->query($sql);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
                 . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id "
@@ -74,25 +79,22 @@ class Pay_Model extends Model {
         $api = new Pay_Api_Getservice();
         $api->setApiToken($apiToken);
         $api->setServiceId($serviceId);
-
-        if (!empty($gateway)){
-            $api->setApiBase($gateway);
-        }
-
-        $result = $api->doRequest();
+        $result = $api->doRequest();        
 
         $imgBasePath = $result['service']['basePath'];
         foreach ($result['paymentOptions'] as $paymentOption) {
-            $img = $imgBasePath . $paymentOption['path'] . $paymentOption['img'];
+            $img = $imgBasePath . $paymentOption['img'];
 
             //variabelen filteren
             $optionId = $this->db->escape($paymentOption['id']);
             $name = $this->db->escape($paymentOption['visibleName']);
             $img = $this->db->escape($img);
+            $brand_id = isset($paymentOption['brand']['id']) ? $paymentOption['brand']['id'] : 0;
+            $brand_id = $this->db->escape($brand_id);
 
             $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoptions` "
-                    . "(optionId, serviceId, name, img, update_date) VALUES "
-                    . "('$optionId', '$serviceId', '$name', '$img', NOW())";
+                    . "(optionId, serviceId, name, img, update_date, brand_id) VALUES "
+                    . "('$optionId', '$serviceId', '$name', '$img', NOW(), '$brand_id')";
             $this->db->query($sql);
 
             $internalOptionId = $this->db->getLastId();
@@ -105,7 +107,7 @@ class Pay_Model extends Model {
                 //variabelen filteren
                 $optionSubId = $this->db->escape($optionSubId);
                 $name = $this->db->escape($name);
-                $img = $this->db->escape($img);
+                $img = $this->db->escape($img);                
 
                 $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
                         . "(optionSubId, paymentOptionId, name, img, update_date) VALUES "
@@ -142,12 +144,14 @@ class Pay_Model extends Model {
                 );
             }
         }
+
         $arrPaymentOption = array(
             'id' => $paymentOption['optionId'],
             'name' => $paymentOption['name'],
             'optionSubs' => $arrOptionSubs,
             'img' => $paymentOption['img'],
             'update_date' => $paymentOption['update_date'],
+            'brand_id' => isset($paymentOption['brand_id']) ? $paymentOption['brand_id'] : 0,
         );
 
         return $arrPaymentOption;
@@ -208,6 +212,8 @@ class Pay_Model extends Model {
 
     public function getMethod($address = false, $total = false)
     {
+        $paymentOptions = $this->getPaymentOption($this->config->get('payment_'.$this->_paymentMethodName . '_serviceid'), $this->_paymentOptionId);
+        
         if (!$this->config->get('payment_' . $this->_paymentMethodName . '_status')) {
             return false;
         }
@@ -231,7 +237,20 @@ class Pay_Model extends Model {
         $icon = "";
         if ($this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') != '') {
             $iconSize = $this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') ;
+            $iconStyle = $this->config->get('payment_' . $this->_paymentMethodName . '_icon_style') ;
             $icon = "<img class='paynl_icon' src=\"https://static.pay.nl/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
+            
+            if($iconStyle == 'newest'){
+                $style = ' style="width:50px; height:50px;"';
+                switch($iconSize){
+                    case '20x20': $style = ' style="width:20px; height:20px;"'; break;
+                    case '25x25': $style = ' style="width:25px; height:25px;"'; break;
+                    case '50x50': $style = ' style="width:50px; height:50px;"'; break;
+                    case '75x75': $style = ' style="width:75px; height:75px;"'; break;
+                    case '100x100': $style = ' style="width:100px; height:100px;"'; break;
+                }
+                $icon = "<img " . $style . " class='paynl_icon' src=\"/image/Pay/" . $paymentOptions['brand_id'] . ".png\"> ";
+            }
         }
         $data = array(
             'code' => $this->_paymentMethodName,
@@ -270,11 +289,6 @@ class Pay_Model extends Model {
         $apiInfo = new Pay_Api_Info();
         $apiInfo->setApiToken($settings['payment_'.$this->_paymentMethodName . '_apitoken']);
         $apiInfo->setServiceId($settings['payment_'.$this->_paymentMethodName . '_serviceid']);
-
-        if (!empty(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']))){
-            $apiInfo->setApiBase(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']));
-        }
-
         $apiInfo->setTransactionId($transactionId);
 
         $result = $apiInfo->doRequest();

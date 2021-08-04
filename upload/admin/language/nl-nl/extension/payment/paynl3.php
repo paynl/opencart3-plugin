@@ -31,6 +31,11 @@ $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van PAY. een gate
 $_['text_display_icon'] = 'Icoon weergeven';
 $_['text_display_icon_tooltip'] = 'Selecteer hier of je een icoon wilt weergeven en welke grootte.';
 
+$_['text_icon_style'] = 'Icoon stijl';
+$_['text_icon_style_tooltip'] = 'Selecteer hier of u de klassieke of de nieuwste afbeeldingen wilt gebruiken.';
+$_['text_classic'] = 'Klassiek';
+$_['text_newest'] = 'Nieuwste';
+
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Zet de testmode aan of uit om de exchanges te testen tussen PAY. en uw webshop';
 

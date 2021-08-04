@@ -31,6 +31,11 @@ $_['text_gateway_tooltip'] = 'Only fill this in when we at PAY. provide you with
 $_['text_display_icon'] = 'Display icon';
 $_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
 
+$_['text_icon_style'] = 'Icon style';
+$_['text_icon_style_tooltip'] = 'Select whether you want to use the classic or newest images during checkout.';
+$_['text_classic'] = 'Classic';
+$_['text_newest'] = 'Newest';
+
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between PAY. and your webshop';
 
