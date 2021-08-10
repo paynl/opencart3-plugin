@@ -32,7 +32,6 @@ class Pay_Model extends Model {
                             `name` varchar(255) NOT NULL,
                             `img` varchar(255) NOT NULL,
                             `update_date` datetime NOT NULL,
-                            `brand_id` varchar(255) NOT NULL,
                             PRIMARY KEY (`id`)
                           ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ;
 		");
@@ -63,12 +62,7 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
-    public function refreshPaymentOptions($serviceId, $apiToken) {
-
-        $serviceId = $this->db->escape($serviceId);
-        //add brand_id to database to exsisting installations
-        $sql = "ALTER TABLE `" . DB_PREFIX . "paynl_paymentoptions` ADD COLUMN IF NOT EXISTS brand_id VARCHAR(255)";
-        $this->db->query($sql);
+    public function refreshPaymentOptions($serviceId, $apiToken) {      
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
                 . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id "
@@ -92,9 +86,12 @@ class Pay_Model extends Model {
             $brand_id = isset($paymentOption['brand']['id']) ? $paymentOption['brand']['id'] : 0;
             $brand_id = $this->db->escape($brand_id);
 
+            $imageArr = array('img' => $img, 'brand_id' => $brand_id);
+            $imageJson = json_encode($imageArr);
+
             $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoptions` "
-                    . "(optionId, serviceId, name, img, update_date, brand_id) VALUES "
-                    . "('$optionId', '$serviceId', '$name', '$img', NOW(), '$brand_id')";
+                    . "(optionId, serviceId, name, img, update_date) VALUES "
+                    . "('$optionId', '$serviceId', '$name', '$imageJson', NOW())";
             $this->db->query($sql);
 
             $internalOptionId = $this->db->getLastId();
@@ -107,8 +104,8 @@ class Pay_Model extends Model {
                 //variabelen filteren
                 $optionSubId = $this->db->escape($optionSubId);
                 $name = $this->db->escape($name);
-                $img = $this->db->escape($img);                
-
+                $img = $this->db->escape($img);                   
+                
                 $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
                         . "(optionSubId, paymentOptionId, name, img, update_date) VALUES "
                         . "('$optionSubId', $internalOptionId, '$name', '$img', NOW() )";
@@ -145,13 +142,23 @@ class Pay_Model extends Model {
             }
         }
 
+        $imgArr = json_decode($paymentOption['img']);
+        if (is_object($imgArr)) {
+            $img = $imgArr->img;
+            $brand_id = $imgArr->brand_id;
+        }
+        else{
+            $img = $paymentOption['img'];
+            $brand_id = 0;
+        }
+
         $arrPaymentOption = array(
             'id' => $paymentOption['optionId'],
             'name' => $paymentOption['name'],
             'optionSubs' => $arrOptionSubs,
-            'img' => $paymentOption['img'],
+            'img' => $img,
             'update_date' => $paymentOption['update_date'],
-            'brand_id' => isset($paymentOption['brand_id']) ? $paymentOption['brand_id'] : 0,
+            'brand_id' => $brand_id,
         );
 
         return $arrPaymentOption;
