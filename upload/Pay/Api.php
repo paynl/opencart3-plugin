@@ -33,24 +33,33 @@ class Pay_Api {
      * 
      * @param string $apiToken
      */
-    public function setApiToken($apiToken) {
+    public function setApiToken($apiToken)
+    {
         $this->_apiToken = $apiToken;
     }
 
-    public function setApiBase($gateway){
-        $this->_gateway = $gateway;
+    public function setApiBase($gateway)
+    {
+        $this->_gateway = trim($gateway);
     }
 
-    protected function _getPostData() {
+    protected function _getPostData()
+    {
 
         return $this->_postData;
     }
 
-    protected function _processResult($data) {
+    protected function _processResult($data)
+    {
         return $data;
     }
 
-    private function _getApiUrl() {
+    /**
+     * @return string
+     * @throws Pay_Exception
+     */
+    private function _getApiUrl()
+    {
         if ($this->_version == '') {
             throw new Pay_Exception('version not set', 1);
         }
@@ -61,11 +70,9 @@ class Pay_Api {
             throw new Pay_Exception('action not set', 1);
         }
 
-        if (!empty(trim($this->_gateway))){
-            return $this->_apiUrl = trim($this->_gateway) . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
-        } else{
-            return $this->_apiUrl . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
-        }
+        $host = (!empty($this->_gateway) && substr($this->_gateway, 0, 4) === 'http') ? $this->_gateway : $this->_apiUrl;
+
+        return $host . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
     }
 
     public function getPostData(){

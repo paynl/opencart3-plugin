@@ -84,7 +84,7 @@ class Pay_Controller_Payment extends Controller
             }
             $apiStart->setDescription($order_info['order_id']);
             $apiStart->setExtra1($order_info['order_id']);
-            $apiStart->setObject('opencart3 1.2.8');
+            $apiStart->setObject('opencart3 1.3.0');
 
 
             // Klantdata verzamelen en meesturen
