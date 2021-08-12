@@ -23,6 +23,12 @@ $_['text_send_statusupdates_tooltip'] = 'De gebruiker een email sturen als de st
 $_['text_gateway'] = 'Failover gateway';
 $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van PAY. een gateway aan u doorgeven om hier in te vullen';
 
+$_['text_dob'] = 'Toon geboortedatum veld';
+$_['text_dob_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun geboortedatum in te voeren voordat ze de transactie afmaken';
+$_['text_dob_disabled'] = 'Nee';
+$_['text_dob_enabled'] = 'Ja, als optioneel veld';
+$_['text_dob_required'] = 'Ja, als verplicht veld';
+
 $_['text_display_icon'] = 'Icoon weergeven';
 $_['text_display_icon_tooltip'] = 'Selecteer hier of je een icoon wilt weergeven en welke grootte.';
 

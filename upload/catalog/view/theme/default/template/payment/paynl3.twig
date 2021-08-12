@@ -14,6 +14,27 @@
         </select>
     </div>
 {% endif %}
+{% if dob %}
+    <div class="form-group">
+        {% if error_dob is not null %}
+            <div class="text-danger">{{ error_dob }}</div>
+        {% endif %}
+        <label for="dob">{{ text_dob }}</label>
+        <div class='input-group date' id='datetimepicker'>
+            <input type='text' class="form-control" id="dob"/>
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker').datetimepicker({
+                format: 'DD/MM/YYYY'
+            });
+        });
+    </script>
+{% endif %}
 <div class="buttons">
     <div class="pull-right">
         <input onclick="startTransaction();" value="{{ button_confirm }}" type="button"
@@ -26,6 +47,9 @@
         var data = {};
         if (jQuery('#optionsub') != undefined) {
             data.optionSubId = jQuery('#optionsub').val();
+        }
+        if (jQuery('#dob') != undefined) {
+            data.dob = jQuery('#dob').val();
         }
         jQuery.ajax({
             url: 'index.php?route=extension/payment/{{ paymentMethodName }}/startTransaction',

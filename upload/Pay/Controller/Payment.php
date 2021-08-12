@@ -37,6 +37,10 @@ class Pay_Controller_Payment extends Controller
             $this->data['optionSubList'] = $paymentOption['optionSubs'];
         }
 
+        if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_dob'))) {
+            $this->data['dob'] = $this->config->get('payment_' . $this->_paymentMethodName . '_dob');
+        }
+
         $this->data['terms'] = '';
 
         return $this->load->view('payment/paynl3', $this->data);
@@ -81,6 +85,25 @@ class Pay_Controller_Payment extends Controller
                 $optionSub = $_POST['optionSubId'];
                 $apiStart->setPaymentOptionSubId($optionSub);
             }
+
+            switch ($this->config->get('payment_' . $this->_paymentMethodName . '_dob')){
+                case "1":
+                    if (!empty($_POST['dob']) && isset($_POST['dob'])){
+                        $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
+                    }
+                    break;
+                case "2":
+                    if (empty($_POST['dob'])){
+                        $response['error'] = 'A date of birth is required to finish this transaction, please fill it in.';
+                        die(json_encode($response));
+                    } else{
+                        $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
+                    }
+                    break;
+                default:
+                    $dob = null;
+            }
+
             $apiStart->setDescription($order_info['order_id']);
             $apiStart->setExtra1($order_info['order_id']);
             $apiStart->setObject('opencart3 1.2.8');
@@ -121,6 +144,7 @@ class Pay_Controller_Payment extends Controller
                 'emailAddress' => $order_info['email'],
                 'address' => $arrShippingAddress,
                 'invoiceAddress' => $arrPaymentAddress,
+                'dob' => str_replace("/", "-", $dob),
             );
 
             $apiStart->setEnduser($arrEnduser);
