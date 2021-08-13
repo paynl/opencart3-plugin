@@ -9,8 +9,7 @@ class Pay_Model extends Model {
     protected $_paymentOptionId;
 
     public function createTables() {
-        $this->db->query("
-                
+        $this->db->query("                
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "paynl_transactions` (
                             `id` varchar(255) NOT NULL,
                             `orderId` int(11) NOT NULL,
@@ -62,7 +61,8 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
-    public function refreshPaymentOptions($serviceId, $apiToken) {      
+    public function refreshPaymentOptions($serviceId, $apiToken, $gateway) {      
+        $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
                 . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id "
@@ -73,6 +73,11 @@ class Pay_Model extends Model {
         $api = new Pay_Api_Getservice();
         $api->setApiToken($apiToken);
         $api->setServiceId($serviceId);
+
+        if (!empty($gateway)){
+            $api->setApiBase($gateway);
+        }
+
         $result = $api->doRequest();        
 
         $imgBasePath = $result['service']['basePath'];
@@ -297,6 +302,10 @@ class Pay_Model extends Model {
         $apiInfo->setApiToken($settings['payment_'.$this->_paymentMethodName . '_apitoken']);
         $apiInfo->setServiceId($settings['payment_'.$this->_paymentMethodName . '_serviceid']);
         $apiInfo->setTransactionId($transactionId);
+
+        if (!empty(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']))){
+            $apiInfo->setApiBase(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']));
+        }
 
         $result = $apiInfo->doRequest();
 
