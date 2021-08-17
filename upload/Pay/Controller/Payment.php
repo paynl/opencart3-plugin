@@ -86,22 +86,8 @@ class Pay_Controller_Payment extends Controller
                 $apiStart->setPaymentOptionSubId($optionSub);
             }
 
-            switch ($this->config->get('payment_' . $this->_paymentMethodName . '_dob')){
-                case "1":
-                    if (!empty($_POST['dob']) && isset($_POST['dob'])){
-                        $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
-                    }
-                    break;
-                case "2":
-                    if (empty($_POST['dob'])){
-                        $response['error'] = 'A date of birth is required to finish this transaction, please fill it in.';
-                        die(json_encode($response));
-                    } else{
-                        $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
-                    }
-                    break;
-                default:
-                    $dob = null;
+            if (!empty($_POST['dob'])){
+                $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
             }
 
             $apiStart->setDescription($order_info['order_id']);

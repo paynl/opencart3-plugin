@@ -16,9 +16,6 @@
 {% endif %}
 {% if dob %}
     <div class="form-group">
-        {% if error_dob is not null %}
-            <div class="text-danger">{{ error_dob }}</div>
-        {% endif %}
         <label for="dob">{{ text_dob }}</label>
         <div class='input-group date' id='datetimepicker'>
             <input type='text' class="form-control" id="dob"/>
@@ -48,8 +45,23 @@
         if (jQuery('#optionsub') != undefined) {
             data.optionSubId = jQuery('#optionsub').val();
         }
-        if (jQuery('#dob') != undefined) {
-            data.dob = jQuery('#dob').val();
+        switch ({{ dob }}) {
+            case 1:
+                if (jQuery('#dob') != undefined) {
+                    data.dob = jQuery('#dob').val();
+                }
+                break;
+            case 2:
+                if (jQuery('#dob').val() === '') {
+                    jQuery('#button-confirm').disabled = true;
+                    $('#paynl_payment').before('<div class="alert alert-danger">{{ error_dob }}</div>');
+                    return;
+                } else {
+                    data.dob = jQuery('#dob').val();
+                }
+                break;
+            default:
+                data.dob = null;
         }
         jQuery.ajax({
             url: 'index.php?route=extension/payment/{{ paymentMethodName }}/startTransaction',
