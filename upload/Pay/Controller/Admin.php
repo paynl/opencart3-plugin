@@ -61,9 +61,9 @@ class Pay_Controller_Admin extends Controller
             $data[$key] = $setting;
         }
 
-        //if(!isset($data['apitoken']) || empty($data['apitoken'])){
+        if(!isset($data['apitoken']) || empty($data['apitoken'])){
             $data['apitoken'] = $this->config->get('payment_paynl_general_apitoken');
-        //}
+        }
         if(!isset($data['serviceid']) || empty($data['serviceid'])){
             $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
         }
