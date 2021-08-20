@@ -15,6 +15,8 @@
     </div>
 {% endif %}
 {% if dob %}
+    <script type="text/javascript">var dob = {{ dob }};</script>
+    <div class="alert alert-danger hidden" id="dob_error">{{ error_dob }}</div>
     <div class="form-group">
         <label for="dob">{{ text_dob }}</label>
         <div class='input-group date' id='datetimepicker'>
@@ -31,6 +33,8 @@
             });
         });
     </script>
+{% else %}
+    <script type="text/javascript">var dob = null;</script>
 {% endif %}
 <div class="buttons">
     <div class="pull-right">
@@ -45,7 +49,7 @@
         if (jQuery('#optionsub') != undefined) {
             data.optionSubId = jQuery('#optionsub').val();
         }
-        switch ({{ dob }}) {
+        switch (dob) {
             case 1:
                 if (jQuery('#dob') != undefined) {
                     data.dob = jQuery('#dob').val();
@@ -54,7 +58,7 @@
             case 2:
                 if (jQuery('#dob').val() === '') {
                     jQuery('#button-confirm').disabled = true;
-                    $('#paynl_payment').before('<div class="alert alert-danger">{{ error_dob }}</div>');
+                    jQuery('#dob_error').removeClass("hidden");
                     return;
                 } else {
                     data.dob = jQuery('#dob').val();

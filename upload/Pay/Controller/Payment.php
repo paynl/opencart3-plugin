@@ -88,6 +88,8 @@ class Pay_Controller_Payment extends Controller
 
             if (!empty($_POST['dob'])){
                 $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
+            }else{
+                $dob = null;
             }
 
             $apiStart->setDescription($order_info['order_id']);
