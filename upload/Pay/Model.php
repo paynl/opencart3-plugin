@@ -247,9 +247,9 @@ class Pay_Model extends Model {
         }
 
         $icon = "";
-        if ($this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') != '') {
-            $iconSize = $this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') ;
-            $iconStyle = $this->config->get('payment_' . $this->_paymentMethodName . '_icon_style') ;
+        if ($this->config->get('payment_paynl_general_display_icon') != '') {
+            $iconSize = $this->config->get('payment_paynl_general_display_icon') ;
+            $iconStyle = $this->config->get('payment_paynl_general_icon_style') ;
             $icon = "<img class='paynl_icon' src=\"https://static.pay.nl/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
             
             if($iconStyle == 'newest'){

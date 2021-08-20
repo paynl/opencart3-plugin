@@ -20,6 +20,9 @@ $_['text_link_register'] = 'hier';
 $_['link_register'] = 'https://www.pay.nl/registreren';
 $_['text_after_register'] = ' om u aan te melden.';
 
+$_['text_general_settings'] = 'PAY. Algemene instellingen';
+$_['text_method_settings'] = 'Betaalmethode instellingen';
+
 $_['text_confirm_start_tooltip'] = 'De order bevestigen bij het starten van de transactie, dus voordat er betaald is. De bevestigingsmail wordt dan ook meteen verstuurd';
 $_['text_confirm_start'] = 'Order bevestigen bij starten transactie';
 $_['text_send_statusupdates'] = 'Statusupdates versturen';
