@@ -86,9 +86,9 @@ class Pay_Controller_Payment extends Controller
                 $apiStart->setPaymentOptionSubId($optionSub);
             }
 
-            if (!empty($_POST['dob'])){
+            if (!empty($_POST['dob'])) {
                 $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
-            }else{
+            } else {
                 $dob = null;
             }
 

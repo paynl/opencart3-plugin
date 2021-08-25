@@ -93,9 +93,9 @@ class Pay_Controller_Admin extends Controller
 
         $data['payment_method_name'] = 'payment_' . $this->_paymentMethodName;
 
-        if(!isset($this->_dob)){
+        if (!isset($this->_dob)) {
             $data['dob_settings'] = false;
-        }else{
+        } else {
             $data['dob_settings'] = true;
             if (empty($data['dob'])) $data['dob'] = "0";
         }

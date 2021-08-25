@@ -67,22 +67,23 @@
                         </div>
                     </div>
                     <div>
-                    {% if dob_settings == true %}
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"
-                                   for="{{ payment_method_name }}_dob">
+                        {% if dob_settings == true %}
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="{{ payment_method_name }}_dob">
                                 <span data-toggle="tooltip" title="{{ text_dob_tooltip }}">
                                     {{ text_dob }}
                                 </span></label>
-                            <div class="col-sm-10">
-                                <select name="{{ payment_method_name }}_dob" id="{{ payment_method_name }}_dob" class="form-control">
-                                    <option value="0" {% if dob == "0" %} selected="selected" {% endif %}>{{ text_dob_disabled }}</option>
-                                    <option value="1" {% if dob == "1" %} selected="selected" {% endif %}>{{ text_dob_enabled }}</option>
-                                    <option value="2" {% if dob == "2" %} selected="selected" {% endif %}>{{ text_dob_required }}</option>
-                                </select>
+                                <div class="col-sm-10">
+                                    <select name="{{ payment_method_name }}_dob" id="{{ payment_method_name }}_dob"
+                                            class="form-control">
+                                        <option value="0" {% if dob == "0" %} selected="selected" {% endif %}>{{ text_dob_disabled }}</option>
+                                        <option value="1" {% if dob == "1" %} selected="selected" {% endif %}>{{ text_dob_enabled }}</option>
+                                        <option value="2" {% if dob == "2" %} selected="selected" {% endif %}>{{ text_dob_required }}</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
