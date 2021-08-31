@@ -17,7 +17,7 @@ class Pay_Controller_Payment extends Controller
 
         $this->data['paymentMethodName'] = $this->_paymentMethodName;
 
-        $serviceId = $this->config->get('payment_' . $this->_paymentMethodName . '_serviceid');
+        $serviceId = $this->config->get('payment_paynl_general_serviceid');
 
         // paymentoption ophalen
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
@@ -56,8 +56,8 @@ class Pay_Controller_Payment extends Controller
         $response = array();
         try {
             $apiStart = new Pay_Api_Start();
-            $apiStart->setApiToken($this->config->get('payment_' . $this->_paymentMethodName . '_apitoken'));
-            $apiStart->setServiceId($this->config->get('payment_' . $this->_paymentMethodName . '_serviceid'));
+            $apiStart->setApiToken($this->config->get('payment_paynl_general_apitoken'));
+            $apiStart->setServiceId($this->config->get('payment_paynl_general_serviceid'));
             $apiStart->setTestmode($this->config->get('payment_paynl_general_testmode'));
 
             if (!empty(trim($this->config->get('payment_paynl_general_gateway')))){

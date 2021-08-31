@@ -61,26 +61,15 @@ class Pay_Controller_Admin extends Controller
             $data[$key] = $setting;
         }
 
-        if(!isset($data['apitoken']) || empty($data['apitoken'])){
-            $data['apitoken'] = $this->config->get('payment_paynl_general_apitoken');
-        }
-        if(!isset($data['serviceid']) || empty($data['serviceid'])){
-            $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
-        }
-        if(!isset($data['testmode']) || empty($data['testmode'])){
-            $data['testmode'] = $this->config->get('payment_paynl_general_testmode');
-        }
-        if(!isset($data['gateway']) || empty($data['gateway'])){
-            $data['gateway'] = $this->config->get('payment_paynl_general_gateway');
-        }
-
-
+        $data['apitoken'] = $this->config->get('payment_paynl_general_apitoken');
+        $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
+        $data['testmode'] = $this->config->get('payment_paynl_general_testmode');
+        $data['gateway'] = $this->config->get('payment_paynl_general_gateway');
         $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
 
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';
-
 
         if (!empty($this->error)) {
             if (!empty($this->error['warning'])) {
