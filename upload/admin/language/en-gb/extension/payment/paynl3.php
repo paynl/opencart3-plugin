@@ -28,6 +28,12 @@ $_['text_send_statusupdates_tooltip'] = 'Send the customer an email everytime th
 $_['text_gateway'] = 'Failover gateway';
 $_['text_gateway_tooltip'] = 'Only fill this in when we at PAY. provide you with a gateway to fill in here';
 
+$_['text_dob'] = 'Show date of birth field';
+$_['text_dob_tooltip'] = 'When enabled the customer can additionally enter their date of birth before finishing the transaction';
+$_['text_dob_disabled'] = 'No';
+$_['text_dob_enabled'] = 'Yes, as optional';
+$_['text_dob_required'] = 'Yes, as required';
+
 $_['text_display_icon'] = 'Display icon';
 $_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
 
