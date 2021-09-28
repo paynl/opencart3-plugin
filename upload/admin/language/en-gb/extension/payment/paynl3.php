@@ -20,6 +20,9 @@ $_['text_link_register'] = 'here';
 $_['link_register'] = 'https://www.pay.nl/en/register';
 $_['text_after_register'] = '!';
 
+$_['text_general_settings'] = 'PAY. General settings';
+$_['text_method_settings'] = 'Payment method settings';
+
 $_['text_confirm_start_tooltip'] = 'Confirm the order when starting the transaction, before the transaction is paid. Confirmation email will be sent immediately';
 $_['text_confirm_start'] = 'Confirm order on transaction start';
 $_['text_send_statusupdates'] = 'Send status updates';
@@ -36,6 +39,11 @@ $_['text_dob_required'] = 'Yes, as required';
 
 $_['text_display_icon'] = 'Display icon';
 $_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
+
+$_['text_icon_style'] = 'Icon style';
+$_['text_icon_style_tooltip'] = 'Select whether you want to use the classic or newest images during checkout.';
+$_['text_classic'] = 'Classic';
+$_['text_newest'] = 'Newest';
 
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between PAY. and your webshop';
