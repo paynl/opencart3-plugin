@@ -74,6 +74,7 @@ $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://sta
 $arrPaymentMethods = array(
     'afterpay',
     'afterpayem',
+    'afterpayint',
     'amex',
     'applepay',
     'billink',
