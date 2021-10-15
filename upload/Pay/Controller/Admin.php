@@ -41,11 +41,12 @@ class Pay_Controller_Admin extends Controller
         $settings = array_merge($settings, $this->request->post);
         if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validate()) {
 	        $settingsGeneral = array(
-	        	'payment_paynl_general_apitoken' => $settings['payment_' . $this->_paymentMethodName . '_apitoken'],
-                'payment_paynl_general_serviceid' => $settings['payment_' . $this->_paymentMethodName . '_serviceid'],
-                'payment_paynl_general_testmode' => $settings['payment_' . $this->_paymentMethodName . '_testmode'],
-                'payment_paynl_general_gateway' => trim($settings['payment_' . $this->_paymentMethodName . '_gateway'])
-
+	        	'payment_paynl_general_apitoken' => $settings['payment_'.$this->_paymentMethodName.'_apitoken'],
+	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid'],
+	        	'payment_paynl_general_testmode' => $settings['payment_'.$this->_paymentMethodName.'_testmode'],
+	        	'payment_paynl_general_gateway' => trim($settings['payment_'.$this->_paymentMethodName.'_gateway']),
+	        	'payment_paynl_general_display_icon' => $settings['payment_'.$this->_paymentMethodName.'_display_icon'],
+	        	'payment_paynl_general_icon_style' => $settings['payment_'.$this->_paymentMethodName.'_icon_style']
 	        );
 	        $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
@@ -55,16 +56,18 @@ class Pay_Controller_Admin extends Controller
             $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
         }
 
-
         foreach ($settings as $key => $setting) {
             $key = str_replace('payment_' . $this->_paymentMethodName . '_', '', $key);
             $data[$key] = $setting;
         }
-
+        
         $data['apitoken'] = $this->config->get('payment_paynl_general_apitoken');
         $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
-        $data['testmode'] = $this->config->get('payment_paynl_general_testmode');
-        $data['gateway'] = $this->config->get('payment_paynl_general_gateway');
+        $data['testmode'] = $this->config->get('payment_paynl_general_testmode');        
+        $data['gateway'] = $this->config->get('payment_paynl_general_gateway');      
+        $data['icon_style'] = $this->config->get('payment_paynl_general_icon_style');
+        $data['display_icon'] = $this->config->get('payment_paynl_general_display_icon');     
+
         $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
 
         $data['error_warning'] = '';
@@ -85,6 +88,13 @@ class Pay_Controller_Admin extends Controller
         }
 
         $data['payment_method_name'] = 'payment_' . $this->_paymentMethodName;
+
+        if (!isset($this->_dob)) {
+            $data['dob_settings'] = false;
+        } else {
+            $data['dob_settings'] = true;
+            if (empty($data['dob'])) $data['dob'] = "0";
+        }
 
         $this->load->model('localisation/geo_zone');
         $data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();

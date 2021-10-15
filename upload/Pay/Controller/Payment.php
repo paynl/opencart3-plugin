@@ -37,6 +37,10 @@ class Pay_Controller_Payment extends Controller
             $this->data['optionSubList'] = $paymentOption['optionSubs'];
         }
 
+        if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_dob'))) {
+            $this->data['dob'] = $this->config->get('payment_' . $this->_paymentMethodName . '_dob');
+        }
+
         $this->data['terms'] = '';
 
         return $this->load->view('payment/paynl3', $this->data);
@@ -82,6 +86,13 @@ class Pay_Controller_Payment extends Controller
                 $optionSub = $_POST['optionSubId'];
                 $apiStart->setPaymentOptionSubId($optionSub);
             }
+
+            if (!empty($_POST['dob'])) {
+                $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
+            } else {
+                $dob = null;
+            }
+
             $apiStart->setDescription($order_info['order_id']);
             $apiStart->setExtra1($order_info['order_id']);
             $apiStart->setObject('opencart3 1.3.0');
@@ -122,6 +133,7 @@ class Pay_Controller_Payment extends Controller
                 'emailAddress' => $order_info['email'],
                 'address' => $arrShippingAddress,
                 'invoiceAddress' => $arrPaymentAddress,
+                'dob' => str_replace("/", "-", $dob),
             );
 
             $apiStart->setEnduser($arrEnduser);

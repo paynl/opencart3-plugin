@@ -29,21 +29,10 @@
             </div>
             <div class="panel-body">
                 <form action="{{ action }}" method="post" class="form-horizontal"
-                      enctype="multipart/form-data" id="form-pay">
+                      enctype="multipart/form-data" id="form-pay">                    
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"
-                               for="{{ payment_method_name }}_status">{{ entry_status }}</label>
-                        <div class="col-sm-10">
-                            <select name="{{ payment_method_name }}_status"
-                                    id="{{ payment_method_name }}_status" class="form-control">
-                                {% if status %}
-                                    <option value="1" selected="selected">{{ text_enabled }}</option>
-                                    <option value="0">{{ text_disabled }}</option>
-                                {% else %}
-                                    <option value="1">{{ text_enabled }}</option>
-                                    <option value="0" selected="selected">{{ text_disabled }}</option>
-                                {% endif %}
-                            </select>
+                        <div class="panel-heading" style="border-top: 1px solid #dcdcdc;">
+                            <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_general_settings }}</h3>             
                         </div>
                     </div>
                     <div class="form-group required">
@@ -66,6 +55,25 @@
                                 <div class="text-danger">{{ error_apitoken }}</div>
                             {% endif %}
                         </div>
+                    </div>
+                    <div>
+                        {% if dob_settings == true %}
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="{{ payment_method_name }}_dob">
+                                <span data-toggle="tooltip" title="{{ text_dob_tooltip }}">
+                                    {{ text_dob }}
+                                </span></label>
+                                <div class="col-sm-10">
+                                    <select name="{{ payment_method_name }}_dob" id="{{ payment_method_name }}_dob"
+                                            class="form-control">
+                                        <option value="0" {% if dob == "0" %} selected="selected" {% endif %}>{{ text_dob_disabled }}</option>
+                                        <option value="1" {% if dob == "1" %} selected="selected" {% endif %}>{{ text_dob_enabled }}</option>
+                                        <option value="2" {% if dob == "2" %} selected="selected" {% endif %}>{{ text_dob_required }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
@@ -97,7 +105,6 @@
                                    value="{{ gateway }}"/>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
                                for="{{ payment_method_name }}_display_icon">
@@ -115,6 +122,40 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_icon_style">
+                            <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">
+                                {{ text_icon_style }}
+                            </span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_icon_style">
+                                <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
+                                <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>                                
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="panel-heading" style="border-top: 1px solid #dcdcdc;  margin-top: 15px;">
+                            <h3 class="panel-title"><i class="fa fa-euro"></i> {{ text_method_settings }}</h3>             
+                        </div>
+                    </div>   
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_status">{{ entry_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="{{ payment_method_name }}_status"
+                                    id="{{ payment_method_name }}_status" class="form-control">
+                                {% if status %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>                 
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
                                for="{{ payment_method_name }}_label">Label</label>

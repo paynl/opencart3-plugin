@@ -2,7 +2,7 @@
 
 class Pay_Api_Getservice extends Pay_Api {
 
-    protected $_version = 'v3';
+    protected $_version = 'v16';
     protected $_controller = 'transaction';
     protected $_action = 'getService';
 
@@ -40,10 +40,10 @@ class Pay_Api_Getservice extends Pay_Api {
                             'id' => $arrPaymentProfile['id'],
                             'name' => $arrPaymentProfile['name'],
                             'visibleName' => $arrPaymentProfile['name'],
-                            'img' => $arrPaymentProfile['img'],
-                            'path' => $arrPaymentProfile['path'],
+                            'img' => $arrPaymentProfile['image'],                            
                             'paymentOptionSubList' => array(),
                             'countries' => array(),
+                            'brand' => $arrPaymentProfile['brand'],
                         );
                     }
 
