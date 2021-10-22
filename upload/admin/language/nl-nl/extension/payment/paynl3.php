@@ -51,7 +51,7 @@ $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
 $_['text_customer_type'] = 'Toegestaan ​​klanttype';
-$_['text_customer_type_tooltip'] = 'Selecteer welk type klant u toegang wilt hebben tot de betaalmethode.';
+$_['text_customer_type_tooltip'] = 'Selecteer welk type klant de betaalmethode kan gebruiken.';
 $_['text_both'] = 'Beide';
 $_['text_private'] = 'Privé';
 $_['text_business'] = 'Zakelijk';
