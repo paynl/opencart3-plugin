@@ -299,11 +299,11 @@ class Pay_Model extends Model {
 
         $transaction = $this->getTransaction($transactionId);
         $apiInfo = new Pay_Api_Info();
-        $apiInfo->setApiToken($settings['payment_paynl_general_apitoken']);
-        $apiInfo->setServiceId($settings['payment_paynl_general_serviceid']);
+        $apiInfo->setApiToken($this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken'));
+        $apiInfo->setServiceId($this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid'));
 
-        if (!empty(trim($settings['payment_paynl_general_gateway']))){
-            $apiInfo->setApiBase(trim($settings['payment_paynl_general_gateway']));
+        if (!empty(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')))){
+            $apiInfo->setApiBase(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')));
         }
         
         $apiInfo->setTransactionId($transactionId);
