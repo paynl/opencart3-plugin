@@ -228,6 +228,14 @@ class Pay_Model extends Model {
             }
         }
 
+        $company = (isset($address['company'])) ? $address['company'] : '';
+        if ($this->config->get('payment_' . $this->_paymentMethodName . '_customer_type') == 'private' && strlen(trim($company)) > 0) {
+            return false;
+        } 
+        if ($this->config->get('payment_' . $this->_paymentMethodName . '_customer_type') == 'business' && strlen(trim($company)) == 0) {
+            return false;
+        } 
+
         $icon = "";
         if ($this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') != '') {
             $iconSize = $this->config->get('payment_' . $this->_paymentMethodName . '_display_icon') ;

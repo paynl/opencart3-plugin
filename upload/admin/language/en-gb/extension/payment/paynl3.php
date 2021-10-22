@@ -50,6 +50,12 @@ $_['entry_geo_zone']     = 'Geo Zone';
 $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
+$_['text_customer_type'] = 'Allowed customer type';
+$_['text_customer_type_tooltip'] = 'Select which customer type you want to be able to access the payment method.';
+$_['text_both'] = 'Both';
+$_['text_private'] = 'Private';
+$_['text_business'] = 'Business';
+
 $_['text_extension'] = 'PAY.';
 
 $version = '1.3.0';

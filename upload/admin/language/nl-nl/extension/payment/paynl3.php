@@ -50,6 +50,12 @@ $_['entry_geo_zone']     = 'Geo Zone';
 $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
+$_['text_customer_type'] = 'Toegestaan ​​klanttype';
+$_['text_customer_type_tooltip'] = 'Selecteer welk type klant u toegang wilt hebben tot de betaalmethode.';
+$_['text_both'] = 'Beide';
+$_['text_private'] = 'Privé';
+$_['text_business'] = 'Zakelijk';
+
 $_['text_extension'] = 'PAY.';
 
 $version = '1.3.0';
