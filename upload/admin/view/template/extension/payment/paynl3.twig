@@ -123,6 +123,38 @@
                                    value="{{ label }}"/>
                         </div>
                     </div>
+                    {% if post_payment == true %}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"
+                                    for="{{ payment_method_name }}_coc">
+                            <span data-toggle="tooltip" title="{{ text_coc_tooltip }}">
+                                {{ text_coc }}
+                            </span></label>
+                            <div class="col-sm-10">
+                                <select name="{{ payment_method_name }}_coc" id="{{ payment_method_name }}_coc"
+                                        class="form-control">
+                                    <option value="0" {% if coc == "0" %} selected="selected" {% endif %}>{{ text_coc_disabled }}</option>
+                                    <option value="1" {% if coc == "1" %} selected="selected" {% endif %}>{{ text_coc_enabled }}</option>
+                                    <option value="2" {% if coc == "2" %} selected="selected" {% endif %}>{{ text_coc_required }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"
+                                    for="{{ payment_method_name }}_vat">
+                            <span data-toggle="tooltip" title="{{ text_vat_tooltip }}">
+                                {{ text_vat }}
+                            </span></label>
+                            <div class="col-sm-10">
+                                <select name="{{ payment_method_name }}_vat" id="{{ payment_method_name }}_vat"
+                                        class="form-control">
+                                    <option value="0" {% if vat == "0" %} selected="selected" {% endif %}>{{ text_vat_disabled }}</option>
+                                    <option value="1" {% if vat == "1" %} selected="selected" {% endif %}>{{ text_vat_enabled }}</option>
+                                    <option value="2" {% if vat == "2" %} selected="selected" {% endif %}>{{ text_vat_required }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-geo-zone">{{ entry_geo_zone }}</label>
                         <div class="col-sm-10">

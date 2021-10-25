@@ -80,7 +80,11 @@ class Pay_Controller_Admin extends Controller
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';
-
+        if (!isset($this->_postPayment)) {
+            $data['post_payment'] = false;
+        } else {
+            $data['post_payment'] = true;
+        }
 
         if (!empty($this->error)) {
             if (!empty($this->error['warning'])) {
@@ -96,6 +100,12 @@ class Pay_Controller_Admin extends Controller
         }
 
         $data['payment_method_name'] = 'payment_' . $this->_paymentMethodName;
+
+        if (!isset($this->_postPayment)) {
+            $data['post_payment'] = false;
+        } else {
+            $data['post_payment'] = true;
+        }
 
         $this->load->model('localisation/geo_zone');
         $data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
