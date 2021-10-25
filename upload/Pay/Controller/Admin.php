@@ -80,12 +80,7 @@ class Pay_Controller_Admin extends Controller
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';
-        if (!isset($this->_postPayment)) {
-            $data['post_payment'] = false;
-        } else {
-            $data['post_payment'] = true;
-        }
-
+       
         if (!empty($this->error)) {
             if (!empty($this->error['warning'])) {
                 $data['error_warning'] = $this->error['warning'];
