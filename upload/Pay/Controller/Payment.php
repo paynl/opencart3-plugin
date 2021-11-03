@@ -45,6 +45,10 @@ class Pay_Controller_Payment extends Controller
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_vat')) && strlen($company) > 0) {
             $this->data['vat'] = $this->config->get('payment_' . $this->_paymentMethodName . '_vat');
         }
+        
+        if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_dob'))) {
+            $this->data['dob'] = $this->config->get('payment_' . $this->_paymentMethodName . '_dob');
+        }
 
         $this->data['terms'] = '';
 
@@ -91,6 +95,13 @@ class Pay_Controller_Payment extends Controller
                 $optionSub = $_POST['optionSubId'];
                 $apiStart->setPaymentOptionSubId($optionSub);
             }
+
+            if (!empty($_POST['dob'])) {
+                $dob = preg_replace("([^0-9/])", "", htmlentities($_POST['dob']));
+            } else {
+                $dob = null;
+            }
+
             $apiStart->setDescription($order_info['order_id']);
             $apiStart->setExtra1($order_info['order_id']);
             $apiStart->setObject('opencart3 1.3.0');
@@ -136,6 +147,7 @@ class Pay_Controller_Payment extends Controller
                     'cocNumber' => (!empty($_POST['coc'])) ? $_POST['coc'] : null,
                     'vatNumber' => (!empty($_POST['vat'])) ? $_POST['vat'] : null
                 ),
+                'dob' => str_replace("/", "-", $dob),
             );
 
             $apiStart->setEnduser($arrEnduser);

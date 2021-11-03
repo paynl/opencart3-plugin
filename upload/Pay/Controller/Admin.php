@@ -44,8 +44,9 @@ class Pay_Controller_Admin extends Controller
 	        	'payment_paynl_general_apitoken' => $settings['payment_'.$this->_paymentMethodName.'_apitoken'],
 	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid'],
 	        	'payment_paynl_general_testmode' => $settings['payment_'.$this->_paymentMethodName.'_testmode'],
-	        	'payment_paynl_general_gateway' => trim($settings['payment_'.$this->_paymentMethodName.'_gateway'])
-
+	        	'payment_paynl_general_gateway' => trim($settings['payment_'.$this->_paymentMethodName.'_gateway']),
+	        	'payment_paynl_general_display_icon' => $settings['payment_'.$this->_paymentMethodName.'_display_icon'],
+	        	'payment_paynl_general_icon_style' => $settings['payment_'.$this->_paymentMethodName.'_icon_style']
 	        );
 	        $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
@@ -54,7 +55,6 @@ class Pay_Controller_Admin extends Controller
 
             $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
         }
-
 
         foreach ($settings as $key => $setting) {
             $key = str_replace('payment_' . $this->_paymentMethodName . '_', '', $key);
@@ -74,6 +74,8 @@ class Pay_Controller_Admin extends Controller
             $data['gateway'] = $this->config->get('payment_paynl_general_gateway');
         }
 
+        $data['icon_style'] = $this->config->get('payment_paynl_general_icon_style');
+        $data['display_icon'] = $this->config->get('payment_paynl_general_display_icon');     
 
         $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
 
