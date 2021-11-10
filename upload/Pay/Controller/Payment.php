@@ -241,6 +241,15 @@ class Pay_Controller_Payment extends Controller
             header("Location: " . $this->url->link('checkout/success'));
             die();
         } else {
+            $this->load->language('extension/payment/paynl3');
+
+            $action = $_GET['orderStatusId'];
+            if ($action == -90){
+                $this->session->data['error'] = $this->language->get('text_cancel');
+            } else if ($action == -63){
+                $this->session->data['error'] = $this->language->get('text_denied');
+            }
+
             header("Location: " . $this->url->link('checkout/checkout'));
             die();
         }
