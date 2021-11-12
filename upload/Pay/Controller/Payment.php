@@ -239,7 +239,6 @@ class Pay_Controller_Payment extends Controller
 
         if (isset($status) && ($status == Pay_Model::STATUS_COMPLETE || $status == Pay_Model::STATUS_PENDING)) {
             header("Location: " . $this->url->link('checkout/success'));
-            die();
         } else {
             $this->load->language('extension/payment/paynl3');
 
@@ -251,8 +250,8 @@ class Pay_Controller_Payment extends Controller
             }
 
             header("Location: " . $this->url->link('checkout/checkout'));
-            die();
         }
+        die();
     }
 
     public function exchange()
