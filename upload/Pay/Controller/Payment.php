@@ -183,14 +183,14 @@ class Pay_Controller_Payment extends Controller
                     $total_row_tax = $total_row_tax * $currency_value;
 
                     switch($total_row['code']){
-                        case 'shipping': 
-                            $type = "SHIPPING";    
+                        case 'shipping':
+                            $type = "SHIPPING";
                             break;
-                        default: 
+                        default:
                             $type = "ARTICLE";
                             break;
-                    }                 
-                    
+                    }
+
                     $apiStart->addProduct($total_row['code'], $total_row['title'], round($totalIncl * 100), 1, Pay_Helper::calculateTaxClass($totalIncl, $total_row_tax), $type);
                }
             }
@@ -228,7 +228,7 @@ class Pay_Controller_Payment extends Controller
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
 
-        $transactionId = $_GET['orderId'];
+        $transactionId = $this->request->get['orderId'];
 
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
         try {
@@ -239,11 +239,19 @@ class Pay_Controller_Payment extends Controller
 
         if (isset($status) && ($status == Pay_Model::STATUS_COMPLETE || $status == Pay_Model::STATUS_PENDING)) {
             header("Location: " . $this->url->link('checkout/success'));
-            die();
         } else {
+            $this->load->language('extension/payment/paynl3');
+
+            $action = $this->request->get['orderStatusId'];
+            if ($action == -90) {
+                $this->session->data['error'] = $this->language->get('text_cancel');
+            } else if ($action == -63) {
+                $this->session->data['error'] = $this->language->get('text_denied');
+            }
+
             header("Location: " . $this->url->link('checkout/checkout'));
-            die();
         }
+        die();
     }
 
     public function exchange()
