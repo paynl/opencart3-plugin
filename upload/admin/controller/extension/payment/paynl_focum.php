@@ -8,8 +8,6 @@ class ControllerExtensionPaymentPaynlFocum extends Pay_Controller_Admin
 {
     protected $_paymentOptionId = 1702;
     protected $_paymentMethodName = 'paynl_focum';
-
-    protected $_dob = true;
-
+    protected $_postPayment = true;
     protected $_defaultLabel = 'Achteraf betalen';
 }

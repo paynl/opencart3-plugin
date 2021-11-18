@@ -31,6 +31,18 @@ $_['text_send_statusupdates_tooltip'] = 'De gebruiker een email sturen als de st
 $_['text_gateway'] = 'Failover gateway';
 $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van PAY. een gateway aan u doorgeven om hier in te vullen';
 
+$_['text_coc'] = 'Toon KVK nummer veld';
+$_['text_coc_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun KVK nummer in te voeren voordat ze de transactie afmaken';
+$_['text_coc_disabled'] = 'nee';
+$_['text_coc_enabled'] = 'Ja, als optioneel veld';
+$_['text_coc_required'] = 'Ja, als verplicht veld';
+
+$_['text_vat'] = 'Toon BTW nummer veld voor zakelijke klanten';
+$_['text_vat_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun BTW nummer in te voeren voordat ze de transactie afmaken';
+$_['text_vat_disabled'] = 'Uit';
+$_['text_vat_enabled'] = 'Optioneel voor zakelijke klanten';
+$_['text_vat_required'] = 'Verplicht voor zakelijke klanten';
+
 $_['text_dob'] = 'Toon geboortedatum veld';
 $_['text_dob_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun geboortedatum in te voeren voordat ze de transactie afmaken';
 $_['text_dob_disabled'] = 'Nee';

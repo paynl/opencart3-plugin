@@ -82,8 +82,7 @@ class Pay_Controller_Admin extends Controller
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';
-
-
+       
         if (!empty($this->error)) {
             if (!empty($this->error['warning'])) {
                 $data['error_warning'] = $this->error['warning'];
@@ -99,11 +98,10 @@ class Pay_Controller_Admin extends Controller
 
         $data['payment_method_name'] = 'payment_' . $this->_paymentMethodName;
 
-        if (!isset($this->_dob)) {
-            $data['dob_settings'] = false;
+        if (!isset($this->_postPayment)) {
+            $data['post_payment'] = false;
         } else {
-            $data['dob_settings'] = true;
-            if (empty($data['dob'])) $data['dob'] = "0";
+            $data['post_payment'] = true;
         }
 
         $this->load->model('localisation/geo_zone');

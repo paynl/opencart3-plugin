@@ -31,6 +31,18 @@ $_['text_send_statusupdates_tooltip'] = 'Send the customer an email everytime th
 $_['text_gateway'] = 'Failover gateway';
 $_['text_gateway_tooltip'] = 'Only fill this in when we at PAY. provide you with a gateway to fill in here';
 
+$_['text_coc'] = 'Show COC number field';
+$_['text_coc_tooltip'] = 'When enabled the customer can additionally enter their COC number before finishing the transaction';
+$_['text_coc_disabled'] = 'No';
+$_['text_coc_enabled'] = 'Yes, as optional';
+$_['text_coc_required'] = 'Yes, as required';
+
+$_['text_vat'] = 'Show VAT-id field for non-private customers';
+$_['text_vat_tooltip'] = 'When enabled the customer can additionally enter their VAT-id before finishing the transaction';
+$_['text_vat_disabled'] = 'Off';
+$_['text_vat_enabled'] = 'Optional for business customers';
+$_['text_vat_required'] = 'Required for business-customers ';
+
 $_['text_dob'] = 'Show date of birth field';
 $_['text_dob_tooltip'] = 'When enabled the customer can additionally enter their date of birth before finishing the transaction';
 $_['text_dob_disabled'] = 'No';

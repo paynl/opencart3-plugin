@@ -37,6 +37,15 @@ class Pay_Controller_Payment extends Controller
             $this->data['optionSubList'] = $paymentOption['optionSubs'];
         }
 
+        if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_coc'))) {
+            $this->data['coc'] = $this->config->get('payment_' . $this->_paymentMethodName . '_coc');
+        }
+
+        $company = (isset($this->session->data['payment_address']['company'])) ? trim($this->session->data['payment_address']['company']) : '';
+        if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_vat')) && strlen($company) > 0) {
+            $this->data['vat'] = $this->config->get('payment_' . $this->_paymentMethodName . '_vat');
+        }
+        
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_dob'))) {
             $this->data['dob'] = $this->config->get('payment_' . $this->_paymentMethodName . '_dob');
         }
@@ -133,6 +142,11 @@ class Pay_Controller_Payment extends Controller
                 'emailAddress' => $order_info['email'],
                 'address' => $arrShippingAddress,
                 'invoiceAddress' => $arrPaymentAddress,
+                'company' => array(
+                    'name' => $order_info['payment_company'],
+                    'cocNumber' => (!empty($_POST['coc'])) ? $_POST['coc'] : null,
+                    'vatNumber' => (!empty($_POST['vat'])) ? $_POST['vat'] : null
+                ),
                 'dob' => str_replace("/", "-", $dob),
             );
 
