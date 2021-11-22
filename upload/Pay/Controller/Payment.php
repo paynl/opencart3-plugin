@@ -93,9 +93,9 @@ class Pay_Controller_Payment extends Controller
                 $dob = null;
             }
 
-            if (!empty($this->config->get('payment_paynl_general_prefix'))){
+            if (!empty($this->config->get('payment_paynl_general_prefix'))) {
                 $description = $this->config->get('payment_paynl_general_prefix') . $order_info['order_id'];
-            }else{
+            } else {
                 $description = $order_info['order_id'];
             }
 

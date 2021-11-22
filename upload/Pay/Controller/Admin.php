@@ -229,7 +229,7 @@ class Pay_Controller_Admin extends Controller
 
         $this->model_extension_payment_paynl3->createTables();
 
-        if (empty($this->config->get('payment_paynl_general_prefix'))){
+        if (empty($this->config->get('payment_paynl_general_prefix'))) {
             $this->load->model('setting/setting');
 
             $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
