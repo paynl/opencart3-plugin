@@ -228,6 +228,17 @@ class Pay_Controller_Admin extends Controller
         $this->load->model('extension/payment/paynl3');
 
         $this->model_extension_payment_paynl3->createTables();
+
+        if (empty($this->config->get('payment_paynl_general_prefix'))){
+            $this->load->model('setting/setting');
+
+            $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
+            $settingsGeneral = array(
+                'payment_paynl_general_prefix' => 'Oder '
+            );
+            $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
+            $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
+        }
     }
 
 }
