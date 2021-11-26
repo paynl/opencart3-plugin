@@ -95,6 +95,7 @@ $arrPaymentMethods = array(
     'afterpayint',
     'amex',
     'applepay',
+    'biercheque',
     'billink',
     'bitcoin',
     'capayable',
