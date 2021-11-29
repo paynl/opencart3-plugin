@@ -45,7 +45,7 @@ class Pay_Controller_Admin extends Controller
 	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid'],
 	        	'payment_paynl_general_testmode' => $settings['payment_'.$this->_paymentMethodName.'_testmode'],
 	        	'payment_paynl_general_gateway' => trim($settings['payment_'.$this->_paymentMethodName.'_gateway']),
-	        	'payment_paynl_general_prefix' => $settings['payment_'.$this->_paymentMethodName.'_prefix'],
+                'payment_paynl_general_prefix' => $settings['payment_' . $this->_paymentMethodName . '_prefix'],
 	        	'payment_paynl_general_display_icon' => $settings['payment_'.$this->_paymentMethodName.'_display_icon'],
 	        	'payment_paynl_general_icon_style' => $settings['payment_'.$this->_paymentMethodName.'_icon_style']
 	        );
@@ -234,7 +234,7 @@ class Pay_Controller_Admin extends Controller
 
             $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
             $settingsGeneral = array(
-                'payment_paynl_general_prefix' => 'Oder '
+                'payment_paynl_general_prefix' => 'Order '
             );
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
