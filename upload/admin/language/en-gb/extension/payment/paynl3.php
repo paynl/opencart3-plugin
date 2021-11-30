@@ -34,6 +34,18 @@ $_['text_gateway_tooltip'] = 'Only fill this in when we at PAY. provide you with
 $_['text_prefix'] = 'Order description prefix';
 $_['text_prefix_tooltip'] = 'Change the order description prefix here. If left empty the order description will just be the order number.';
 
+$_['text_coc'] = 'Show COC number field';
+$_['text_coc_tooltip'] = 'When enabled the customer can additionally enter their COC number before finishing the transaction';
+$_['text_coc_disabled'] = 'No';
+$_['text_coc_enabled'] = 'Yes, as optional';
+$_['text_coc_required'] = 'Yes, as required';
+
+$_['text_vat'] = 'Show VAT-id field for non-private customers';
+$_['text_vat_tooltip'] = 'When enabled the customer can additionally enter their VAT-id before finishing the transaction';
+$_['text_vat_disabled'] = 'Off';
+$_['text_vat_enabled'] = 'Optional for business customers';
+$_['text_vat_required'] = 'Required for business-customers ';
+
 $_['text_dob'] = 'Show date of birth field';
 $_['text_dob_tooltip'] = 'When enabled the customer can additionally enter their date of birth before finishing the transaction';
 $_['text_dob_disabled'] = 'No';
@@ -67,6 +79,12 @@ $_['entry_geo_zone']     = 'Geo Zone';
 $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
+$_['text_customer_type'] = 'Allowed customer type';
+$_['text_customer_type_tooltip'] = 'Select which customer type you want to be able to access the payment method.';
+$_['text_both'] = 'Both';
+$_['text_private'] = 'Private';
+$_['text_business'] = 'Business';
+
 $_['text_extension'] = 'PAY.';
 
 $version = '1.3.0';
@@ -80,6 +98,7 @@ $arrPaymentMethods = array(
     'afterpayint',
     'amex',
     'applepay',
+    'biercheque',
     'billink',
     'bitcoin',
     'capayable',

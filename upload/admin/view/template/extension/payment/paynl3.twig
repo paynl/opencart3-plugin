@@ -56,25 +56,6 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div>
-                        {% if dob_settings == true %}
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"
-                                       for="{{ payment_method_name }}_dob">
-                                <span data-toggle="tooltip" title="{{ text_dob_tooltip }}">
-                                    {{ text_dob }}
-                                </span></label>
-                                <div class="col-sm-10">
-                                    <select name="{{ payment_method_name }}_dob" id="{{ payment_method_name }}_dob"
-                                            class="form-control">
-                                        <option value="0" {% if dob == "0" %} selected="selected" {% endif %}>{{ text_dob_disabled }}</option>
-                                        <option value="1" {% if dob == "1" %} selected="selected" {% endif %}>{{ text_dob_enabled }}</option>
-                                        <option value="2" {% if dob == "2" %} selected="selected" {% endif %}>{{ text_dob_required }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
                                for="{{ payment_method_name }}_testmode">
@@ -175,6 +156,53 @@
                                    value="{{ label }}"/>
                         </div>
                     </div>
+                    {% if post_payment == true %}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"
+                                    for="{{ payment_method_name }}_dob">
+                            <span data-toggle="tooltip" title="{{ text_dob_tooltip }}">
+                                {{ text_dob }}
+                            </span></label>
+                            <div class="col-sm-10">
+                                <select name="{{ payment_method_name }}_dob" id="{{ payment_method_name }}_dob"
+                                        class="form-control">
+                                    <option value="0" {% if dob == "0" %} selected="selected" {% endif %}>{{ text_dob_disabled }}</option>
+                                    <option value="1" {% if dob == "1" %} selected="selected" {% endif %}>{{ text_dob_enabled }}</option>
+                                    <option value="2" {% if dob == "2" %} selected="selected" {% endif %}>{{ text_dob_required }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"
+                                    for="{{ payment_method_name }}_coc">
+                            <span data-toggle="tooltip" title="{{ text_coc_tooltip }}">
+                                {{ text_coc }}
+                            </span></label>
+                            <div class="col-sm-10">
+                                <select name="{{ payment_method_name }}_coc" id="{{ payment_method_name }}_coc"
+                                        class="form-control">
+                                    <option value="0" {% if coc == "0" %} selected="selected" {% endif %}>{{ text_coc_disabled }}</option>
+                                    <option value="1" {% if coc == "1" %} selected="selected" {% endif %}>{{ text_coc_enabled }}</option>
+                                    <option value="2" {% if coc == "2" %} selected="selected" {% endif %}>{{ text_coc_required }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"
+                                    for="{{ payment_method_name }}_vat">
+                            <span data-toggle="tooltip" title="{{ text_vat_tooltip }}">
+                                {{ text_vat }}
+                            </span></label>
+                            <div class="col-sm-10">
+                                <select name="{{ payment_method_name }}_vat" id="{{ payment_method_name }}_vat"
+                                        class="form-control">
+                                    <option value="0" {% if vat == "0" %} selected="selected" {% endif %}>{{ text_vat_disabled }}</option>
+                                    <option value="1" {% if vat == "1" %} selected="selected" {% endif %}>{{ text_vat_enabled }}</option>
+                                    <option value="2" {% if vat == "2" %} selected="selected" {% endif %}>{{ text_vat_required }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-geo-zone">{{ entry_geo_zone }}</label>
                         <div class="col-sm-10">
@@ -188,6 +216,20 @@
                                             {% endif %}
                                     >{{ geo_zone.name }}</option>
                                 {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="{{ payment_method_name }}_customer_type">
+                            <span data-toggle="tooltip" title="{{ text_customer_type_tooltip }}">
+                                {{ text_customer_type }}
+                            </span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_customer_type">
+                                <option value="both" {{ customer_type == 'both' ? 'selected="selected"': '' }}>{{ text_both }}</option>
+                                <option value="private" {{ customer_type == 'private' ? 'selected="selected"': '' }}>{{ text_private }}</option>
+                                <option value="business" {{ customer_type == 'business' ? 'selected="selected"': '' }}>{{ text_business }}</option>                                
                             </select>
                         </div>
                     </div>

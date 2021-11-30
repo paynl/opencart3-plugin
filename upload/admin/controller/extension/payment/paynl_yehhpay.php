@@ -8,8 +8,6 @@ class ControllerExtensionPaymentPaynlYehhpay extends Pay_Controller_Admin
 {
     protected $_paymentOptionId = 1877;
     protected $_paymentMethodName = 'paynl_yehhpay';
-
-    protected $_dob = true;
-
+    protected $_postPayment = true;
     protected $_defaultLabel = 'Yehhpay';
 }

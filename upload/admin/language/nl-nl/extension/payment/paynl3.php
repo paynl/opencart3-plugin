@@ -34,6 +34,18 @@ $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van PAY. een gate
 $_['text_prefix'] = 'Order omschrijving prefix';
 $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit leeg is, zal de omschrijving het ordernummer zijn.';
 
+$_['text_coc'] = 'Toon KVK nummer veld';
+$_['text_coc_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun KVK nummer in te voeren voordat ze de transactie afmaken';
+$_['text_coc_disabled'] = 'nee';
+$_['text_coc_enabled'] = 'Ja, als optioneel veld';
+$_['text_coc_required'] = 'Ja, als verplicht veld';
+
+$_['text_vat'] = 'Toon BTW nummer veld voor zakelijke klanten';
+$_['text_vat_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun BTW nummer in te voeren voordat ze de transactie afmaken';
+$_['text_vat_disabled'] = 'Uit';
+$_['text_vat_enabled'] = 'Optioneel voor zakelijke klanten';
+$_['text_vat_required'] = 'Verplicht voor zakelijke klanten';
+
 $_['text_dob'] = 'Toon geboortedatum veld';
 $_['text_dob_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun geboortedatum in te voeren voordat ze de transactie afmaken';
 $_['text_dob_disabled'] = 'Nee';
@@ -67,6 +79,12 @@ $_['entry_geo_zone']     = 'Geo Zone';
 $_['entry_status']       = 'Status';
 $_['entry_sort_order']   = 'Sort Order';
 
+$_['text_customer_type'] = 'Toegestaan ​​klanttype';
+$_['text_customer_type_tooltip'] = 'Selecteer welk type klant de betaalmethode kan gebruiken.';
+$_['text_both'] = 'Beide';
+$_['text_private'] = 'Privé';
+$_['text_business'] = 'Zakelijk';
+
 $_['text_extension'] = 'PAY.';
 
 $version = '1.3.0';
@@ -80,6 +98,7 @@ $arrPaymentMethods = array(
     'afterpayint',
     'amex',
     'applepay',
+    'biercheque',
     'billink',
     'bitcoin',
     'capayable',
