@@ -31,6 +31,9 @@ $_['text_send_statusupdates_tooltip'] = 'Send the customer an email everytime th
 $_['text_gateway'] = 'Failover gateway';
 $_['text_gateway_tooltip'] = 'Only fill this in when we at PAY. provide you with a gateway to fill in here';
 
+$_['text_prefix'] = 'Order description prefix';
+$_['text_prefix_tooltip'] = 'Change the order description prefix here. If left empty the order description will just be the order number.';
+
 $_['text_coc'] = 'Show COC number field';
 $_['text_coc_tooltip'] = 'When enabled the customer can additionally enter their COC number before finishing the transaction';
 $_['text_coc_disabled'] = 'No';

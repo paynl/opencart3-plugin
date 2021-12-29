@@ -31,6 +31,9 @@ $_['text_send_statusupdates_tooltip'] = 'De gebruiker een email sturen als de st
 $_['text_gateway'] = 'Failover gateway';
 $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van PAY. een gateway aan u doorgeven om hier in te vullen';
 
+$_['text_prefix'] = 'Order omschrijving prefix';
+$_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit leeg is, zal de omschrijving het ordernummer zijn.';
+
 $_['text_coc'] = 'Toon KVK nummer veld';
 $_['text_coc_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun KVK nummer in te voeren voordat ze de transactie afmaken';
 $_['text_coc_disabled'] = 'nee';

@@ -102,7 +102,13 @@ class Pay_Controller_Payment extends Controller
                 $dob = null;
             }
 
-            $apiStart->setDescription($order_info['order_id']);
+            if (!empty($this->config->get('payment_paynl_general_prefix'))) {
+                $description = $this->config->get('payment_paynl_general_prefix') . $order_info['order_id'];
+            } else {
+                $description = $order_info['order_id'];
+            }
+
+            $apiStart->setDescription($description);
             $apiStart->setExtra1($order_info['order_id']);
             $apiStart->setObject('opencart3 1.3.0');
 
