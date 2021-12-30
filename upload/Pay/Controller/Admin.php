@@ -216,14 +216,18 @@ class Pay_Controller_Admin extends Controller
         $this->load->model('extension/payment/paynl3');
 
         $this->model_extension_payment_paynl3->createTables();
-
-        if (empty($this->config->get('payment_paynl_general_prefix'))) {
+        if ($this->config->get('payment_paynl_general_prefix') == null) {
             $this->load->model('setting/setting');
-
-            $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
+            $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);       
             $settingsGeneral = array(
-                'payment_paynl_general_prefix' => 'Order '
-            );
+	        	'payment_paynl_general_apitoken' => $this->config->get('payment_paynl_general_apitoken'),
+	        	'payment_paynl_general_serviceid' => $this->config->get('payment_paynl_general_serviceid'),
+	        	'payment_paynl_general_testmode' => $this->config->get('payment_paynl_general_testmode'),
+	        	'payment_paynl_general_gateway' => $this->config->get('payment_paynl_general_gateway'),
+                'payment_paynl_general_prefix' => 'Order ',
+	        	'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
+	        	'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style')
+	        );
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
         }
