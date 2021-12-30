@@ -78,11 +78,10 @@ class Pay_Model extends Model {
             $api->setApiBase($gateway);
         }
 
-        $result = $api->doRequest();        
-
-        $imgBasePath = $result['service']['basePath'];
+        $result = $api->doRequest();       
+   
         foreach ($result['paymentOptions'] as $paymentOption) {
-            $img = $imgBasePath . $paymentOption['img'];
+            $img = $paymentOption['img'];
 
             //variabelen filteren
             $optionId = $this->db->escape($paymentOption['id']);
@@ -104,7 +103,7 @@ class Pay_Model extends Model {
 
                 $optionSubId = $optionSub['id'];
                 $name = $optionSub['visibleName'];
-                $img = $imgBasePath . $optionSub['path'] . $optionSub['img'];
+                $img = $optionSub['image'];
 
                 //variabelen filteren
                 $optionSubId = $this->db->escape($optionSubId);
@@ -222,28 +221,47 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
-    public function getMethod($address = false, $total = false)
+    private function getConfig($key, $pm)
     {
-        $paymentOptions = $this->getPaymentOption($this->config->get('payment_'.$this->_paymentMethodName . '_serviceid'), $this->_paymentOptionId);
-        
-        if (!$this->config->get('payment_' . $this->_paymentMethodName . '_status')) {
+        return $this->config->get('payment_' . $pm . '_' . $key);
+    }
+
+    public function getMethod($address = false, $orderTotal = false)
+    {
+        $pm = empty($this->_paymentMethodName) ? null : $this->_paymentMethodName;
+        $config_status = $this->getConfig('status', $pm);
+        $pmEnabled = !empty($config_status);
+        if (!$pmEnabled) {
             return false;
         }
 
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('payment_' . $this->_paymentMethodName . '_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+        $serviceId = $this->getConfig('serviceid', $pm);
+        $paymentOptions = $this->getPaymentOption($serviceId, $this->_paymentOptionId);
+        $minOrderAmount = $this->getConfig('total', $pm);
+        $maxOrderAmount = $this->getConfig('total', $pm);
+        $geozone = (int)$this->getConfig('geo_zone_id', $pm);
+        $customerType = $this->getConfig('customer_type', $pm);
 
-        if ($total >= 0) {
-            if ($this->config->get('payment_' . $this->_paymentMethodName . '_total') && $total < $this->config->get('payment_' . $this->_paymentMethodName . '_total')) {
-                return false;
-            }
-            if ($this->config->get('payment_' . $this->_paymentMethodName . '_totalmax') && $total > $this->config->get('payment_' . $this->_paymentMethodName . '_totalmax')) {
+        if ($orderTotal >= 0) {
+            if ( (!empty($minOrderAmount) && $orderTotal < $minOrderAmount) ||
+              (!empty($maxOrderAmount) && $orderTotal > $maxOrderAmount) ) {
                 return false;
             }
         }
-        if ($this->config->get('payment_' . $this->_paymentMethodName . '_geo_zone_id')) {
-            if ($query->num_rows == 0) {
-                return false;
-            }
+
+        $strQuery = "SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . $geozone. "' AND country_id = '" . (int) $address['country_id'] . "' ".
+          " AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')";
+        $query = $this->db->query($strQuery);
+
+        if (!empty($geozone) && $query->num_rows == 0) {
+            return false;
+        }
+
+        $company = (isset($address['company'])) ? trim($address['company']) : '';
+
+        if ( ($customerType == 'private' && !empty($company)) ||
+             ($customerType == 'business' && empty($company)) ) {
+            return false;
         }
 
         $icon = "";
@@ -251,10 +269,10 @@ class Pay_Model extends Model {
             $iconSize = $this->config->get('payment_paynl_general_display_icon') ;
             $iconStyle = $this->config->get('payment_paynl_general_icon_style') ;
             $icon = "<img class='paynl_icon' src=\"https://static.pay.nl/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
-            
-            if($iconStyle == 'newest'){
+
+            if($iconStyle == 'newest' && !empty($paymentOptions['brand_id'])) {
                 $style = ' style="width:50px; height:50px;"';
-                switch($iconSize){
+                switch($iconSize) {
                     case '20x20': $style = ' style="width:20px; height:20px;"'; break;
                     case '25x25': $style = ' style="width:25px; height:25px;"'; break;
                     case '50x50': $style = ' style="width:50px; height:50px;"'; break;
@@ -264,13 +282,12 @@ class Pay_Model extends Model {
                 $icon = "<img " . $style . " class='paynl_icon' src=\"/image/Pay/" . $paymentOptions['brand_id'] . ".png\"> ";
             }
         }
-        $data = array(
-            'code' => $this->_paymentMethodName,
-            'title' => $icon.$this->getLabel(),
-            'terms' => '',
-            'sort_order' => $this->config->get('payment_'.$this->_paymentMethodName . '_sort_order')
-        );
-        return $data;
+
+        return array(
+          'code' => $pm,
+          'title' => $icon . $this->getLabel(),
+          'terms' => '',
+          'sort_order' =>  $this->getConfig('sort_order', $pm));
     }
 
     public function getLabel() {

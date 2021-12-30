@@ -8,8 +8,6 @@ class ControllerExtensionPaymentPaynlAfterpay extends Pay_Controller_Admin
 {
     protected $_paymentOptionId = 739;
     protected $_paymentMethodName = 'paynl_afterpay';
-
-    protected $_dob = true;
-
+    protected $_postPayment = true;
     protected $_defaultLabel = 'Afterpay';
 }

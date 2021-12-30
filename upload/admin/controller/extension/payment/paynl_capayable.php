@@ -8,8 +8,6 @@ class ControllerExtensionPaymentPaynlCapayable extends Pay_Controller_Admin
 {
     protected $_paymentOptionId = 1744;
     protected $_paymentMethodName = 'paynl_capayable';
-
-    protected $_dob = true;
-
+    protected $_postPayment = true;
     protected $_defaultLabel = 'Capayable Achteraf Betalen';
 }
