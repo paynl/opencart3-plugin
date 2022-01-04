@@ -31,29 +31,29 @@ class Pay_Controller_Admin extends Controller
             $data[$string] = $this->language->get($string);
         }
 
-
         $this->load->model('setting/setting');
         $this->document->setTitle($this->language->get('heading_title'));
 
-
         $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
-
         $settings = array_merge($settings, $this->request->post);
-        if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validate()) {
-	        $settingsGeneral = array(
-	        	'payment_paynl_general_apitoken' => $settings['payment_'.$this->_paymentMethodName.'_apitoken'],
-	        	'payment_paynl_general_serviceid' => $settings['payment_'.$this->_paymentMethodName.'_serviceid'],
-	        	'payment_paynl_general_testmode' => $settings['payment_'.$this->_paymentMethodName.'_testmode'],
-	        	'payment_paynl_general_gateway' => trim($settings['payment_'.$this->_paymentMethodName.'_gateway']),
-                'payment_paynl_general_prefix' => $settings['payment_' . $this->_paymentMethodName . '_prefix'],
-	        	'payment_paynl_general_display_icon' => $settings['payment_'.$this->_paymentMethodName.'_display_icon'],
-	        	'payment_paynl_general_icon_style' => $settings['payment_'.$this->_paymentMethodName.'_icon_style']
-	        );
-	        $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
+        if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validateGeneral()) {
+            $settingsGeneral = array(
+                'payment_paynl_general_apitoken' => $settings['payment_paynl_general_apitoken'],
+                'payment_paynl_general_serviceid' => $settings['payment_paynl_general_serviceid'],
+                'payment_paynl_general_testmode' => $settings['payment_paynl_general_testmode'],
+                'payment_paynl_general_gateway' => trim($settings['payment_paynl_general_gateway']),
+                'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
+                'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
+                'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style']
+            );
+            $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
+        }
+        if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validatePaymentMethod()) {
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
+        }
+        if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validateGeneral() && $this->validatePaymentMethod()) {
             $this->session->data['success'] = $this->language->get('text_success');
-
             $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
         }
 
@@ -62,20 +62,21 @@ class Pay_Controller_Admin extends Controller
             $data[$key] = $setting;
         }
         
-        $data['apitoken'] = $this->config->get('payment_paynl_general_apitoken');
-        $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid');
-        $data['testmode'] = $this->config->get('payment_paynl_general_testmode');        
-        $data['gateway'] = $this->config->get('payment_paynl_general_gateway');      
-        $data['prefix'] = $this->config->get('payment_paynl_general_prefix');
-        $data['icon_style'] = $this->config->get('payment_paynl_general_icon_style');
-        $data['display_icon'] = $this->config->get('payment_paynl_general_display_icon');
+        $data['apitoken'] = $this->config->get('payment_paynl_general_apitoken') ?? $this->config->get('payment_' . $this->_paymentMethodName . '_apitoken');
+        $data['serviceid'] = $this->config->get('payment_paynl_general_serviceid') ?? $this->config->get('payment_' . $this->_paymentMethodName . '_serviceid');
+        $data['testmode'] = $this->config->get('payment_paynl_general_testmode') ?? $this->config->get('payment_' . $this->_paymentMethodName . '_testmode');        
+        $data['gateway'] = $this->config->get('payment_paynl_general_gateway') ?? $this->config->get('payment_' . $this->_paymentMethodName . '_gateway');      
+        $data['prefix'] = $this->config->get('payment_paynl_general_prefix') ?? $this->config->get('payment_' . $this->_paymentMethodName . '_prefix');
+        $data['icon_style'] = $this->config->get('payment_paynl_general_icon_style') ?? $this->config->get('payment_' . $this->_paymentMethodName . '_icon_style');
+        $data['display_icon'] = $this->config->get('payment_paynl_general_display_icon') ?? $this->config->get('payment_' . $this->_paymentMethodName . '_display_icon');
 
         $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
 
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';
-       
+        $data['error_status'] = '';
+
         if (!empty($this->error)) {
             if (!empty($this->error['warning'])) {
                 $data['error_warning'] = $this->error['warning'];
@@ -83,13 +84,16 @@ class Pay_Controller_Admin extends Controller
             if (!empty($this->error['apitoken'])) {
                 $data['error_apitoken'] = $this->error['apitoken'];
             }
-
             if (!empty($this->error['serviceid'])) {
                 $data['error_serviceid'] = $this->error['serviceid'];
+            }
+            if (!empty($this->error['status'])) {
+                $data['error_status'] = $this->error['status'];
             }
         }
 
         $data['payment_method_name'] = 'payment_' . $this->_paymentMethodName;
+        $data['payment_general_name'] = 'payment_paynl_general';
 
         if (!isset($this->_postPayment)) {
             $data['post_payment'] = false;
@@ -156,40 +160,25 @@ class Pay_Controller_Admin extends Controller
         $this->response->setOutput($this->load->view('extension/payment/paynl3', $data));
     }
 
-    public function validate()
+    public function validateGeneral()
     {
         if (!$this->user->hasPermission('modify', "extension/payment/$this->_paymentMethodName")) {
             $this->error['warning'] = $this->language->get('error_permission');
         }
-        // als de betaalmethode disabled is maken de instellingen niet uit
-        if ($this->request->post['payment_' . $this->_paymentMethodName . '_status'] == 0) {
-            return true;
-        }
-
-        if (!@$this->request->post['payment_' . $this->_paymentMethodName . '_apitoken']) {
+        if (!@$this->request->post['payment_paynl_general_apitoken']) {
             $this->error['apitoken'] = $this->language->get('error_no_apitoken');
         } else {
 
             try {
                 $this->load->model('extension/payment/paynl3');
-
-
-                $serviceId = $this->request->post['payment_' . $this->_paymentMethodName . '_serviceid'];
-                $apiToken = $this->request->post['payment_' . $this->_paymentMethodName . '_apitoken'];
-
+                $serviceId = $this->request->post['payment_paynl_general_serviceid'];
+                $apiToken = $this->request->post['payment_paynl_general_apitoken'];
                 $gateway = '';
-                if (!empty(trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']))){
-                    $gateway = trim($this->request->post['payment_' . $this->_paymentMethodName . '_gateway']);
+                if (!empty(trim($this->request->post['payment_paynl_general_gateway']))) {
+                    $gateway = trim($this->request->post['payment_paynl_general_gateway']);
                 }
-
                 //eerst refreshen
                 $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $gateway);
-
-                $paymentOption = $this->model_extension_payment_paynl3->getPaymentOption($serviceId, $this->_paymentOptionId);
-
-                if (!$paymentOption) {
-                    $this->error['apitoken'] = $this->language->get('error_not_activated');
-                }
             } catch (Pay_Api_Exception $e) {
                 $this->error['apitoken'] = $this->language->get('error_api_error') . $e->getMessage();
             } catch (Pay_Exception $e) {
@@ -198,12 +187,28 @@ class Pay_Controller_Admin extends Controller
                 $this->error['apitoken'] = $e->getMessage();
             }
         }
-
-        if (!@$this->request->post['payment_' . $this->_paymentMethodName . '_serviceid']) {
+        if (!@$this->request->post['payment_paynl_general_serviceid']) {
             $this->error['serviceid'] = $this->language->get('error_no_serviceid');
         }
+        if (empty($this->error)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-
+    public function validatePaymentMethod()
+    {        
+        try {
+            $serviceId = $this->request->post['payment_paynl_general_serviceid'];
+            $paymentOption = $this->model_extension_payment_paynl3->getPaymentOption($serviceId, $this->_paymentOptionId);
+            $status = $this->request->post['payment_' . $this->_paymentMethodName . '_status'];
+            if (!$paymentOption && $status == 1) {
+                $this->error['status'] = $this->language->get('error_not_activated');
+            }
+        } catch (Exception $e) {
+            $this->error['apitoken'] = $e->getMessage();
+        }
         if (empty($this->error)) {
             return true;
         } else {
