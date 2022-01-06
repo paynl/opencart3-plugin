@@ -36,9 +36,9 @@
                         </div>
                     </div>
                     <div class="form-group required">
-                        <label class="col-sm-2 control-label" for="{{ payment_general_name }}_apitoken">Apitoken</label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_apitoken">Apitoken</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="{{ payment_general_name }}_apitoken"
+                            <input type="text" class="form-control" name="payment_paynl_general_apitoken"
                                    value="{{ apitoken }}"/>
                             {% if error_apitoken %}
                                 <div class="text-danger">{{ error_apitoken }}</div>
@@ -47,9 +47,9 @@
                     </div>
                     <div class="form-group required">
                         <label class="col-sm-2 control-label"
-                               for="{{ payment_general_name }}_serviceid">ServiceId</label>
+                               for="payment_paynl_general_serviceid">ServiceId</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="{{ payment_general_name }}_serviceid"
+                            <input type="text" class="form-control" name="payment_paynl_general_serviceid"
                                    value="{{ serviceid }}"/>
                             {% if error_apitoken %}
                                 <div class="text-danger">{{ error_apitoken }}</div>
@@ -58,13 +58,13 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
-                               for="{{ payment_general_name }}_testmode">
+                               for="payment_paynl_general_testmode">
                             <span data-toggle="tooltip" title="{{ text_testmode_tooltip }}">
                                 {{ text_testmode }}
                             </span></label>
                         <div class="col-sm-10">
-                            <select name="{{ payment_general_name }}_testmode"
-                                    id="{{ payment_general_name }}_testmode" class="form-control">
+                            <select name="payment_paynl_general_testmode"
+                                    id="payment_paynl_general_testmode" class="form-control">
                                 {% if testmode %}
                                     <option value="1" selected="selected">{{ text_enabled }}</option>
                                     <option value="0">{{ text_disabled }}</option>
@@ -77,34 +77,34 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
-                               for="{{ payment_general_name }}_gateway">
+                               for="payment_paynl_general_gateway">
                             <span data-toggle="tooltip" title="{{ text_gateway_tooltip }}">
                                 {{ text_gateway }}
                             </span></label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="{{ payment_general_name }}_gateway"
+                            <input type="text" class="form-control" name="payment_paynl_general_gateway"
                                    value="{{ gateway }}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
-                               for="{{ payment_general_name }}_prefix">
+                               for="payment_paynl_general_prefix">
                             <span data-toggle="tooltip" title="{{ text_prefix_tooltip }}">
                                 {{ text_prefix }}
                             </span></label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="{{ payment_general_name }}_prefix"
+                            <input type="text" class="form-control" name="payment_paynl_general_prefix"
                                    value="{{ prefix }}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
-                               for="{{ payment_general_name }}_display_icon">
+                               for="payment_paynl_general_display_icon">
                             <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">
                                 {{ text_display_icon }}
                             </span></label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="{{ payment_general_name }}_display_icon">
+                            <select class="form-control" name="payment_paynl_general_display_icon">
                                 <option value="" {{ display_icon == '' ? 'selected="selected"': '' }}>{{ text_disabled }}</option>
                                 <option value="20x20" {{ display_icon == '20x20' ? 'selected="selected"': '' }}>20 x 20</option>
                                 <option value="25x25" {{ display_icon == '25x25' ? 'selected="selected"': '' }}>25 x 25</option>
@@ -116,12 +116,12 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
-                               for="{{ payment_general_name }}_icon_style">
+                               for="payment_paynl_general_icon_style">
                             <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">
                                 {{ text_icon_style }}
                             </span></label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="{{ payment_general_name }}_icon_style">
+                            <select class="form-control" name="payment_paynl_general_icon_style">
                                 <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
                                 <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>                                
                             </select>

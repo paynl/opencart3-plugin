@@ -93,7 +93,6 @@ class Pay_Controller_Admin extends Controller
         }
 
         $data['payment_method_name'] = 'payment_' . $this->_paymentMethodName;
-        $data['payment_general_name'] = 'payment_paynl_general';
 
         if (!isset($this->_postPayment)) {
             $data['post_payment'] = false;
