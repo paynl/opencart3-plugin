@@ -1,4 +1,5 @@
 {{ header }}{{ column_left }}
+
 <div id="content">
     <div class="page-header">
         <div class="container-fluid">
@@ -17,11 +18,18 @@
     </div>
     <div class="container-fluid">
         {% if error_warning %}
-            <div class="alert alert-danger alert-dismissible"><i
-                        class="fa fa-exclamation-circle"></i> {{ error_warning }}
+            <div class="alert alert-danger alert-dismissible">
+                <i class="fa fa-exclamation-circle"></i> {{ error_warning }}
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         {% endif %}
+        {% if success_message %}
+            <div class="alert alert-success alert-dismissible">
+                <i class="fa fa-exclamation-circle"></i> {{ success_message }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3><br/><br/>
@@ -29,10 +37,10 @@
             </div>
             <div class="panel-body">
                 <form action="{{ action }}" method="post" class="form-horizontal"
-                      enctype="multipart/form-data" id="form-pay">                    
+                      enctype="multipart/form-data" id="form-pay">
                     <div class="form-group">
                         <div class="panel-heading" style="border-top: 1px solid #dcdcdc;">
-                            <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_general_settings }}</h3>             
+                            <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_general_settings }}</h3>
                         </div>
                     </div>
                     <div class="form-group required">
@@ -123,15 +131,15 @@
                         <div class="col-sm-10">
                             <select class="form-control" name="payment_paynl_general_icon_style">
                                 <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
-                                <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>                                
+                                <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="panel-heading" style="border-top: 1px solid #dcdcdc;  margin-top: 15px;">
-                            <h3 class="panel-title"><i class="fa fa-euro"></i> {{ text_method_settings }}</h3>             
+                            <h3 class="panel-title"><i class="fa fa-euro"></i> {{ text_method_settings }}</h3>
                         </div>
-                    </div>   
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
                                for="{{ payment_method_name }}_status">{{ entry_status }}</label>
@@ -150,7 +158,7 @@
                                 <div class="text-danger">{{ error_status }}</div>
                             {% endif %}
                         </div>
-                    </div>                 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
                                for="{{ payment_method_name }}_label">Label</label>
@@ -162,7 +170,7 @@
                     {% if post_payment == true %}
                         <div class="form-group">
                             <label class="col-sm-2 control-label"
-                                    for="{{ payment_method_name }}_dob">
+                                   for="{{ payment_method_name }}_dob">
                             <span data-toggle="tooltip" title="{{ text_dob_tooltip }}">
                                 {{ text_dob }}
                             </span></label>
@@ -177,7 +185,7 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label"
-                                    for="{{ payment_method_name }}_coc">
+                                   for="{{ payment_method_name }}_coc">
                             <span data-toggle="tooltip" title="{{ text_coc_tooltip }}">
                                 {{ text_coc }}
                             </span></label>
@@ -192,7 +200,7 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label"
-                                    for="{{ payment_method_name }}_vat">
+                                   for="{{ payment_method_name }}_vat">
                             <span data-toggle="tooltip" title="{{ text_vat_tooltip }}">
                                 {{ text_vat }}
                             </span></label>
@@ -232,7 +240,7 @@
                             <select class="form-control" name="{{ payment_method_name }}_customer_type">
                                 <option value="both" {{ customer_type == 'both' ? 'selected="selected"': '' }}>{{ text_both }}</option>
                                 <option value="private" {{ customer_type == 'private' ? 'selected="selected"': '' }}>{{ text_private }}</option>
-                                <option value="business" {{ customer_type == 'business' ? 'selected="selected"': '' }}>{{ text_business }}</option>                                
+                                <option value="business" {{ customer_type == 'business' ? 'selected="selected"': '' }}>{{ text_business }}</option>
                             </select>
                         </div>
                     </div>
