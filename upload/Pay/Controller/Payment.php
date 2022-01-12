@@ -15,15 +15,12 @@ class Pay_Controller_Payment extends Controller
         $this->data['button_confirm'] = $this->language->get('button_confirm');
         $this->data['button_loading'] = $this->language->get('text_loading');
 
-        $this->data['paymentMethodName'] = $this->_paymentMethodName;
-
-        $serviceId = $this->config->get('payment_paynl_general_serviceid');
+        $this->data['paymentMethodName'] = $this->_paymentMethodName;        
 
         // paymentoption ophalen
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-        $paymentOption = $this->$modelName->getPaymentOption($serviceId,
-            $this->_paymentOptionId);
+        $paymentOption = $this->$modelName->getPaymentOption($this->_paymentOptionId);
 
         if (!$paymentOption) {
             die('Payment method not available');

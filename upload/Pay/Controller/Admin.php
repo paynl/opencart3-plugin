@@ -19,7 +19,7 @@ class Pay_Controller_Admin extends Controller
         $configValue = $config->get('payment_paynl_general_' . $field);
 
         if (is_null($configValue)) {
-            return $config->get('payment_' . $this->_paymentMethodName . '_apitoken');
+            return $config->get('payment_' . $this->_paymentMethodName . '_' . $field);
         }
 
         return $configValue;
@@ -200,10 +200,9 @@ class Pay_Controller_Admin extends Controller
 
     public function validatePaymentMethod()
     {
-        try {
-            $serviceId = $this->request->post['payment_paynl_general_serviceid'];
+        try {            
             $this->load->model('extension/payment/paynl3');
-            $paymentOption = $this->model_extension_payment_paynl3->getPaymentOption($serviceId, $this->_paymentOptionId);
+            $paymentOption = $this->model_extension_payment_paynl3->getPaymentOption($this->_paymentOptionId);
             $status = $this->request->post['payment_' . $this->_paymentMethodName . '_status'];
             if (!$paymentOption && $status == 1) {
                 $this->error['status'] = $this->language->get('error_not_activated');
