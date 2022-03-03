@@ -65,8 +65,7 @@ class Pay_Model extends Model {
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
-                . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id "
-                . "WHERE options.serviceId = '$serviceId'";
+                . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id ";
         $this->db->query($sql);
 
         //nieuwe ophalen
@@ -78,11 +77,10 @@ class Pay_Model extends Model {
             $api->setApiBase($gateway);
         }
 
-        $result = $api->doRequest();        
-
-        $imgBasePath = $result['service']['basePath'];
+        $result = $api->doRequest();       
+   
         foreach ($result['paymentOptions'] as $paymentOption) {
-            $img = $imgBasePath . $paymentOption['img'];
+            $img = $paymentOption['img'];
 
             //variabelen filteren
             $optionId = $this->db->escape($paymentOption['id']);
@@ -104,7 +102,7 @@ class Pay_Model extends Model {
 
                 $optionSubId = $optionSub['id'];
                 $name = $optionSub['visibleName'];
-                $img = $imgBasePath . $optionSub['path'] . $optionSub['img'];
+                $img = $optionSub['image'];
 
                 //variabelen filteren
                 $optionSubId = $this->db->escape($optionSubId);
@@ -119,11 +117,10 @@ class Pay_Model extends Model {
         }
     }
 
-    public function getPaymentOption($serviceId, $paymentOptionId) {
-        $serviceId = $this->db->escape($serviceId);
-        $paymentOptionId = $this->db->escape($paymentOptionId);
+    public function getPaymentOption($paymentOptionId) {       
 
-        $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_paymentoptions` WHERE serviceId = '$serviceId' AND optionId = '$paymentOptionId' LIMIT 1;";
+        $paymentOptionId = $this->db->escape($paymentOptionId);
+        $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_paymentoptions` WHERE optionId = '$paymentOptionId' LIMIT 1;";
         $result = $this->db->query($sql);
 
         $paymentOption = $result->row;
@@ -235,9 +232,8 @@ class Pay_Model extends Model {
         if (!$pmEnabled) {
             return false;
         }
-
-        $serviceId = $this->getConfig('serviceid', $pm);
-        $paymentOptions = $this->getPaymentOption($serviceId, $this->_paymentOptionId);
+        
+        $paymentOptions = $this->getPaymentOption($this->_paymentOptionId);
         $minOrderAmount = $this->getConfig('total', $pm);
         $maxOrderAmount = $this->getConfig('total', $pm);
         $geozone = (int)$this->getConfig('geo_zone_id', $pm);
@@ -317,11 +313,11 @@ class Pay_Model extends Model {
 
         $transaction = $this->getTransaction($transactionId);
         $apiInfo = new Pay_Api_Info();
-        $apiInfo->setApiToken($settings['payment_'.$this->_paymentMethodName . '_apitoken']);
-        $apiInfo->setServiceId($settings['payment_'.$this->_paymentMethodName . '_serviceid']);
-        
-        if (!empty(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']))){
-            $apiInfo->setApiBase(trim($settings['payment_'.$this->_paymentMethodName . '_gateway']));
+        $apiInfo->setApiToken($this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken'));
+        $apiInfo->setServiceId($this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid'));
+
+        if (!empty(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')))){
+            $apiInfo->setApiBase(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')));
         }
         
         $apiInfo->setTransactionId($transactionId);

@@ -15,15 +15,12 @@ class Pay_Controller_Payment extends Controller
         $this->data['button_confirm'] = $this->language->get('button_confirm');
         $this->data['button_loading'] = $this->language->get('text_loading');
 
-        $this->data['paymentMethodName'] = $this->_paymentMethodName;
-
-        $serviceId = $this->config->get('payment_' . $this->_paymentMethodName . '_serviceid');
+        $this->data['paymentMethodName'] = $this->_paymentMethodName;        
 
         // paymentoption ophalen
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-        $paymentOption = $this->$modelName->getPaymentOption($serviceId,
-            $this->_paymentOptionId);
+        $paymentOption = $this->$modelName->getPaymentOption($this->_paymentOptionId);
 
         if (!$paymentOption) {
             die('Payment method not available');
@@ -69,11 +66,11 @@ class Pay_Controller_Payment extends Controller
         $response = array();
         try {
             $apiStart = new Pay_Api_Start();
-            $apiStart->setApiToken($this->config->get('payment_' . $this->_paymentMethodName . '_apitoken'));
-            $apiStart->setServiceId($this->config->get('payment_' . $this->_paymentMethodName . '_serviceid'));
+            $apiStart->setApiToken($this->config->get('payment_paynl_general_apitoken'));
+            $apiStart->setServiceId($this->config->get('payment_paynl_general_serviceid'));
             $apiStart->setTestmode($this->config->get('payment_paynl_general_testmode'));
 
-            if (!empty(trim($this->config->get('payment_paynl_general_gateway')))){
+            if (!empty(trim($this->config->get('payment_paynl_general_gateway')))) {
                 $apiStart->setApiBase(trim($this->config->get('payment_paynl_general_gateway')));
             }
 
