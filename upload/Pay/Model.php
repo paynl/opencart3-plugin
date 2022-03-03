@@ -224,7 +224,7 @@ class Pay_Model extends Model {
         return $this->config->get('payment_' . $pm . '_' . $key);
     }
 
-    public function getMethod($address = false, $orderTotal = false)
+    public function getMethod($address = false, $orderAmount = false)
     {
         $pm = empty($this->_paymentMethodName) ? null : $this->_paymentMethodName;
         $config_status = $this->getConfig('status', $pm);
@@ -232,16 +232,18 @@ class Pay_Model extends Model {
         if (!$pmEnabled) {
             return false;
         }
-        
+
         $paymentOptions = $this->getPaymentOption($this->_paymentOptionId);
         $minOrderAmount = $this->getConfig('total', $pm);
-        $maxOrderAmount = $this->getConfig('total', $pm);
+        $maxOrderAmount = $this->getConfig('totalmax', $pm);
         $geozone = (int)$this->getConfig('geo_zone_id', $pm);
         $customerType = $this->getConfig('customer_type', $pm);
 
-        if ($orderTotal >= 0) {
-            if ( (!empty($minOrderAmount) && $orderTotal < $minOrderAmount) ||
-              (!empty($maxOrderAmount) && $orderTotal > $maxOrderAmount) ) {
+        if ($orderAmount >= 0) {
+            if (!empty($minOrderAmount) && $orderAmount < $minOrderAmount) {
+                return false;
+            }
+            if (!empty($maxOrderAmount) && $orderAmount > $maxOrderAmount) {
                 return false;
             }
         }
