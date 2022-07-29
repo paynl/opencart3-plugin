@@ -123,6 +123,7 @@ $arrPaymentMethods = array(
     'mistercash',
     'multibanco',
     'mybank',
+    'nexi',
     'overboeking',
     'payconiq',
     'paypal',
