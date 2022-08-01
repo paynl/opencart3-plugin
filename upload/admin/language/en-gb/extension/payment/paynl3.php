@@ -89,7 +89,7 @@ $_['text_extension'] = 'PAY.';
 
 $version = '1.4.0';
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
-$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img src="https://static.pay.nl/generic/images/50x50/logo.png" alt="PAY." title="PAY." /></a>' .
+$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" src="view/image/payment/main_pay_logo.png" alt="PAY." title="PAY." /></a>' .
     '<div style="' . $css . '">Version: ' . $version . '</div>';;
 
 $arrPaymentMethods = array(
