@@ -5,7 +5,6 @@ class Pay_Controller_Payment extends Controller
     protected $_paymentOptionId;
     protected $_paymentMethodName;
     protected $data = array();
-    protected $test;
 
     public function index()
     {
