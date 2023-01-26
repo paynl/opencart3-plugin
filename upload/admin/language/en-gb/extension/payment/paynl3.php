@@ -94,14 +94,11 @@ $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30
 
 $arrPaymentMethods = array(
     'afterpay',
-    'afterpayem',
     'afterpayint',
     'amex',
     'applepay',
     'biercheque',
     'billink',
-    'bitcoin',
-    'capayable',
     'capayablegespreid',
     'cartebleue',
     'cashly',
@@ -122,7 +119,6 @@ $arrPaymentMethods = array(
     'maestro',
     'mistercash',
     'multibanco',
-    'mybank',
     'nexi',
     'overboeking',
     'payconiq',
@@ -134,14 +130,12 @@ $arrPaymentMethods = array(
     'przelewy24',
     'sofortbanking',
     'spraypay',
-    'tikkie',
     'trustly',
     'visamastercard',
     'vvvgiftcard',
     'webshopgiftcard',
     'wechatpay',
     'wijncadeau',
-    'yehhpay',
     'yourgift'
 );
 
