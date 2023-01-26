@@ -1,4 +1,4 @@
 <?php
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Mistercash/Bancontact';
+$_['heading_title'] = 'PAY. - Bancontact';
