@@ -24,8 +24,8 @@ Giropay |American Express | FashionCheque | Biller | AmazonPay |
 SOFORT | Carte Bancaire | Podium Cadeaukaart | in3 keer betalen, 0% rente | Cashly | Alipay |
 Maestro | PostePay | Gezondheidsbon | Klarna | Pay Fixed Price (phone) |
 Bank Transfer | Dankort | Fashion Giftcard | SprayPay | Instore Payments (POS) |
-|  | GivaCard | Creditclick | Przelewy24 | Apple Pay |
-|  |  | YourGift |  |  | 
+|  |  | GivaCard | Creditclick | Przelewy24 |
+|  |  | YourGift |  | Apple Pay |
 | | | Paysafecard |
 | | | De Cadeaukaart |
 
