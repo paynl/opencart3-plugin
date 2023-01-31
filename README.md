@@ -18,14 +18,14 @@ With the PAY. plugin you can easily add different payment methods to your OpenCa
 
 Bank Payments  | Creditcards | Gift cards & Vouchers | Pay by invoice | Others | 
 :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
-iDEAL + QR |Visa | VVV Cadeaukaart | AfterPay | PayPal |
+iDEAL + QR |Visa | VVV Cadeaukaart | Riverty | PayPal |
 Bancontact + QR |  Mastercard | Webshop Giftcard | Achteraf betalen via Billink | WeChatPay | 
-Giropay |American Express | FashionCheque |Focum AchterafBetalen.nl | AmazonPay |
-MyBank | Carte Bancaire | Podium Cadeaukaart | Capayable Achteraf Betalen | Cashly | 
-SOFORT | PostePay | Gezondheidsbon | in3 keer betalen, 0% rente | Pay Fixed Price (phone) |
-Maestro | Dankort | Fashion Giftcard | Klarna | Instore Payments (POS) |
-Bank Transfer | Cartasi | GivaCard | SprayPay | Przelewy24 | 
-| Tikkie |  | YourGift | Creditclick | Apple Pay | 
+Giropay |American Express | FashionCheque | Biller | AmazonPay |
+SOFORT | Carte Bancaire | Podium Cadeaukaart | in3 keer betalen, 0% rente | Cashly | Alipay |
+Maestro | PostePay | Gezondheidsbon | Klarna | Pay Fixed Price (phone) |
+Bank Transfer | Dankort | Fashion Giftcard | SprayPay | Instore Payments (POS) |
+|  | GivaCard | Creditclick | Przelewy24 | Apple Pay |
+|  |  | YourGift |  |  | 
 | | | Paysafecard |
 | | | De Cadeaukaart |
 
