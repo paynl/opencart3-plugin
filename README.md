@@ -16,7 +16,7 @@ With the PAY. plugin you can easily add different payment methods to your OpenCa
 
 # Available payment methods
 
-Bank Payments  | Creditcards | Gift cards & Vouchers | Pay by invoice | Others | 
+Bank Payments | Creditcards | Gift cards & Vouchers | Pay by invoice | Others |
 :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
 iDEAL + QR |Visa | VVV Cadeaukaart | Riverty | PayPal |
 Bancontact + QR |  Mastercard | Webshop Giftcard | Achteraf betalen via Billink | WeChatPay | 
@@ -24,10 +24,24 @@ Giropay |American Express | FashionCheque | Biller | AmazonPay |
 SOFORT | Carte Bancaire | Podium Cadeaukaart | in3 keer betalen, 0% rente | Cashly | Alipay |
 Maestro | PostePay | Gezondheidsbon | Klarna | Pay Fixed Price (phone) |
 Bank Transfer | Dankort | Fashion Giftcard | SprayPay | Instore Payments (POS) |
-|  |  | GivaCard | Creditclick | Przelewy24 |
-|  |  | YourGift |  | Apple Pay |
-| | | Paysafecard |
-| | | De Cadeaukaart |
+EPS | Nexi | GivaCard | Creditclick | Przelewy24 |
+Multibanco |  | YourGift | Biller | Apple Pay |
+Trustly |  | Paysafecard |  | Blik |
+|  |  | De Cadeaukaart |  | Google Pay |
+|  |  | Biercheque |  | Payconiq |
+|  |  | Bioscoopbon |  |  |
+|  |  | Bloemen Cadeaukaart |  |  |
+|  |  | Boekenbon |  |  |
+|  |  | Dinerbon |  |  |
+|  |  | Festival Cadeaukaart |  |  |
+|  |  | Good4fun |  |  |
+|  |  | Huis & Tuin Cadeaukaart |  |  |
+|  |  | Monizze |  |  |
+|  |  | Parfum cadeaukaart |  |  |
+|  |  | Shoes and Sneakers |  |  |
+|  |  | Sodexo |  |  |
+|  |  | WinkelCheque |  |  |
+|  |  | Your Green Gift Cadeaukaart |  |  |
 
 # Installation
 #### Installing
