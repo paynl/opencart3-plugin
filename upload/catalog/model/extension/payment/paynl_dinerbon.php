@@ -5,10 +5,8 @@ $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
 
-class ControllerExtensionPaymentPaynlDinerbon extends Pay_Controller_Admin
+class ModelExtensionPaymentPaynlDinerbon extends Pay_Model
 {
-    protected $_paymentOptionId = 2670;
+    protected $_paymentOptionId = 2671;
     protected $_paymentMethodName = 'paynl_dinerbon';
-
-    protected $_defaultLabel = 'Dinerbon';
 }

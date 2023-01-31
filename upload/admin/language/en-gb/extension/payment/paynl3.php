@@ -1,4 +1,5 @@
 <?php
+
 // Text
 $_['text_payment'] = 'Payment';
 
@@ -12,7 +13,7 @@ $_['error_not_activated'] = "This payment method is not activated for this websi
 $_['error_api_error'] = 'The PAY. Api replied with the following error: ';
 $_['error_error_occurred'] = 'An error has occurred: ';
 $_['error_no_apitoken'] = 'You must enter an APItoken, you can find your APItokens on: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
-$_['error_no_serviceid']= 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
+$_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
 //texts
 $_['text_register'] = 'Not registered at PAY.? Sign up ';
@@ -63,14 +64,14 @@ $_['text_newest'] = 'Newest';
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between PAY. and your webshop';
 
-$_['text_status_pending']='Order status pending payment';
-$_['text_status_pending_tooltip']='The status of the order when the payment is started, but not yet completed';
-$_['text_status_complete']='Order status payment successful';
-$_['text_status_complete_tooltip']='The status of the order when the payment is successful';
-$_['text_status_canceled']='Order status canceled';
-$_['text_status_canceled_tooltip']='The status of the order when the payment is canceled';
-$_['text_minimum_amount']='Minimum order amount';
-$_['text_maximum_amount']='Maximum order amount';
+$_['text_status_pending'] ='Order status pending payment';
+$_['text_status_pending_tooltip'] ='The status of the order when the payment is started, but not yet completed';
+$_['text_status_complete'] ='Order status payment successful';
+$_['text_status_complete_tooltip'] ='The status of the order when the payment is successful';
+$_['text_status_canceled'] ='Order status canceled';
+$_['text_status_canceled_tooltip'] ='The status of the order when the payment is canceled';
+$_['text_minimum_amount'] ='Minimum order amount';
+$_['text_maximum_amount'] ='Maximum order amount';
 $_['text_payment_instructions'] = 'Instructions';
 $_['text_payment_instructions_tooltip'] = 'If you want to give the customer instructions, you can give them here';
 
@@ -89,8 +90,7 @@ $_['text_extension'] = 'PAY.';
 
 $version = '1.5.1';
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
-$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" src="view/image/payment/main_pay_logo.png" alt="PAY." title="PAY." /></a>' .
-    '<div style="' . $css . '">Version: ' . $version . '</div>';;
+$paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" src="view/image/payment/main_pay_logo.png" alt="PAY." title="PAY." /></a>' . '<div style="' . $css . '">Version: ' . $version . '</div>';
 
 $arrPaymentMethods = array(
     'afterpay',
@@ -159,6 +159,6 @@ $arrPaymentMethods = array(
     'yourgreengift',
 );
 
-foreach($arrPaymentMethods as $paymentMethod){
-    $_['text_paynl_'.$paymentMethod] = $paynl_logo;
+foreach($arrPaymentMethods as $paymentMethod) {
+    $_['text_paynl_' . $paymentMethod] = $paynl_logo;
 }
