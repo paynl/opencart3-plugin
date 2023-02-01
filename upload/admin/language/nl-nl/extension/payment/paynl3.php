@@ -15,7 +15,8 @@ $_['error_api_error'] = 'De PAY. Api gaf de volgende fout: ';
 $_['error_error_occurred'] = 'Er is een fout opgetreden: ';
 $_['error_no_apitoken'] = 'U moet een apitokeninvoeren, u vind uw apitokens op: 
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
-$_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
+$_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: 
+    <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
 //texts
 $_['text_register'] = 'Nog geen account bij PAY.? Klik ';
