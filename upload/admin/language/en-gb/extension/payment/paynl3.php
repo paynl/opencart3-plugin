@@ -15,7 +15,8 @@ $_['error_api_error'] = 'The PAY. Api replied with the following error: ';
 $_['error_error_occurred'] = 'An error has occurred: ';
 $_['error_no_apitoken'] = 'You must enter an APItoken, you can find your APItokens on: 
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
-$_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
+$_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: 
+    <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
 //texts
 $_['text_register'] = 'Not registered at PAY.? Sign up ';
