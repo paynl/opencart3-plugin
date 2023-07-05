@@ -45,7 +45,7 @@ class Pay_Controller_Payment extends Controller
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_vat')) && strlen($company) > 0) {
             $this->data['vat'] = $this->config->get('payment_' . $this->_paymentMethodName . '_vat');
         }
-        
+
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_dob'))) {
             $this->data['dob'] = $this->config->get('payment_' . $this->_paymentMethodName . '_dob');
         }
