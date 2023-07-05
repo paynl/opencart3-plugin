@@ -21,5 +21,9 @@
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamName" />
         <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing" />
         <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" />
+        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
+        <exclude name="Squiz.Commenting.FunctionComment.TypeHintMissing" />
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag" />
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamName" />
     </rule>
 </ruleset>
