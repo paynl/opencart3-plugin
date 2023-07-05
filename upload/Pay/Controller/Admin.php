@@ -62,7 +62,8 @@ class Pay_Controller_Admin extends Controller
                   'payment_paynl_general_gateway' => trim($settings['payment_paynl_general_gateway']),
                   'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
                   'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
-                  'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style']
+                  'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style'],
+                  'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url']
                 );
                 $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
@@ -92,6 +93,7 @@ class Pay_Controller_Admin extends Controller
         $data['gateway'] = $this->configGet('gateway');
         $data['prefix'] = $this->configGet('prefix');
         $data['icon_style'] = $this->configGet('icon_style');
+        $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['display_icon'] = $this->configGet('display_icon');
         $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
         $data['error_warning'] = '';
@@ -232,7 +234,8 @@ class Pay_Controller_Admin extends Controller
 	        	'payment_paynl_general_gateway' => $this->config->get('payment_paynl_general_gateway'),
                 'payment_paynl_general_prefix' => 'Order ',
 	        	'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
-	        	'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style')
+                'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style'),
+                'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url')
 	        );
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
