@@ -83,7 +83,7 @@ class Pay_Controller_Payment extends Controller
             $exchangeUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/exchange');
 
             if (!empty($this->config->get('payment_paynl_general_custom_exchange_url'))) {
-                $exchangeUrl = trim($this->config->get('payment_paynl_general_custom_exchange_url'));
+                $exchangeUrl = trim(htmlspecialchars_decode($this->config->get('payment_paynl_general_custom_exchange_url')));
             }
 
             $apiStart->setFinishUrl($returnUrl);
