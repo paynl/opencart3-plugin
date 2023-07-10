@@ -80,15 +80,15 @@ class Pay_Controller_Payment extends Controller
             }
 
             $returnUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/finish');
-            $exchangeUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/exchange');
+            $customExchangeUrl = $this->config->get('payment_paynl_general_custom_exchange_url');
+            $customExchangeUrl = is_null($customExchangeUrl) ? '' : trim($customExchangeUrl);
 
-            if (!empty($this->config->get('payment_paynl_general_custom_exchange_url'))) {
-                $exchangeUrl = trim(htmlspecialchars_decode($this->config->get('payment_paynl_general_custom_exchange_url')));
+            if (!empty($customExchangeUrl)) {
+                $exchangeUrl = htmlspecialchars_decode($customExchangeUrl);
             }
 
             $apiStart->setFinishUrl($returnUrl);
             $apiStart->setExchangeUrl($exchangeUrl);
-
 
             $apiStart->setPaymentOptionId($this->_paymentOptionId);
             $amount = round($order_info['total'] * 100 * $currency_value);
