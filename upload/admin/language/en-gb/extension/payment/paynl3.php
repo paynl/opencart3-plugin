@@ -64,6 +64,10 @@ $_['text_icon_style_tooltip'] = 'Select whether you want to use the classic or n
 $_['text_classic'] = 'Classic';
 $_['text_newest'] = 'Newest';
 
+$_['text_custom_exchange_url'] = 'Alternatieve Exchange URL';
+$_['text_custom_exchange_url_tooltip'] = 'Use your own exchange-handler. Requests will be send as GET.<br/>
+    Example: https://www.yourdomain.nl/exchange_handler?action=#action#&order_id=#order_id#';
+
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between PAY. and your webshop';
 

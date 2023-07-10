@@ -6,6 +6,9 @@ class Pay_Controller_Payment extends Controller
     protected $_paymentMethodName;
     protected $data = array();
 
+    /**
+     * @return mixed
+     */
     public function index()
     {
         $this->load->language('extension/payment/paynl3');
@@ -15,7 +18,7 @@ class Pay_Controller_Payment extends Controller
         $this->data['button_confirm'] = $this->language->get('button_confirm');
         $this->data['button_loading'] = $this->language->get('text_loading');
 
-        $this->data['paymentMethodName'] = $this->_paymentMethodName;        
+        $this->data['paymentMethodName'] = $this->_paymentMethodName;
 
         // paymentoption ophalen
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
@@ -42,7 +45,7 @@ class Pay_Controller_Payment extends Controller
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_vat')) && strlen($company) > 0) {
             $this->data['vat'] = $this->config->get('payment_' . $this->_paymentMethodName . '_vat');
         }
-        
+
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_dob'))) {
             $this->data['dob'] = $this->config->get('payment_' . $this->_paymentMethodName . '_dob');
         }
@@ -50,9 +53,11 @@ class Pay_Controller_Payment extends Controller
         $this->data['terms'] = '';
 
         return $this->load->view('payment/paynl3', $this->data);
-
     }
 
+    /**
+     * @return void
+     */
     public function startTransaction()
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
@@ -75,11 +80,15 @@ class Pay_Controller_Payment extends Controller
             }
 
             $returnUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/finish');
-            $exchangeUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/exchange');
+            $customExchangeUrl = $this->config->get('payment_paynl_general_custom_exchange_url');
+            $customExchangeUrl = is_null($customExchangeUrl) ? '' : trim($customExchangeUrl);
+
+            if (!empty($customExchangeUrl)) {
+                $exchangeUrl = htmlspecialchars_decode($customExchangeUrl);
+            }
 
             $apiStart->setFinishUrl($returnUrl);
             $apiStart->setExchangeUrl($exchangeUrl);
-
 
             $apiStart->setPaymentOptionId($this->_paymentOptionId);
             $amount = round($order_info['total'] * 100 * $currency_value);
@@ -157,14 +166,22 @@ class Pay_Controller_Payment extends Controller
 
             //Producten toevoegen
             foreach ($this->cart->getProducts() as $product) {
-                $priceWithTax = $this->tax->calculate($product['price'] * $currency_value,
-                    $product['tax_class_id'], $this->config->get('config_tax'));
+                $priceWithTax = $this->tax->calculate(
+                    $product['price'] * $currency_value,
+                    $product['tax_class_id'],
+                    $this->config->get('config_tax')
+                );
 
                 $tax = $priceWithTax - ($product['price'] * $currency_value);
 
                 $price = round($priceWithTax * 100);
-                $apiStart->addProduct($product['product_id'], $product['name'],
-                    $price, $product['quantity'], Pay_Helper::calculateTaxClass($priceWithTax, $tax));
+                $apiStart->addProduct(
+                    $product['product_id'],
+                    $product['name'],
+                    $price,
+                    $product['quantity'],
+                    Pay_Helper::calculateTaxClass($priceWithTax, $tax)
+                );
             }
 
             $taxes = $this->cart->getTaxes();
@@ -199,7 +216,7 @@ class Pay_Controller_Payment extends Controller
                     $totalIncl = $totalIncl * $currency_value;
                     $total_row_tax = $total_row_tax * $currency_value;
 
-                    switch($total_row['code']){
+                    switch ($total_row['code']) {
                         case 'shipping':
                             $type = "SHIPPING";
                             break;
@@ -209,7 +226,7 @@ class Pay_Controller_Payment extends Controller
                     }
 
                     $apiStart->addProduct($total_row['code'], $total_row['title'], round($totalIncl * 100), 1, Pay_Helper::calculateTaxClass($totalIncl, $total_row_tax), $type);
-               }
+                }
             }
 
             $postData = $apiStart->getPostData();
@@ -218,9 +235,14 @@ class Pay_Controller_Payment extends Controller
 
             //transactie is aangemaakt, nu loggen
             $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-            $this->$modelName->addTransaction($result['transaction']['transactionId'],
-                $order_info['order_id'], $this->_paymentOptionId, $amount,
-                $postData, $optionSub);
+            $this->$modelName->addTransaction(
+                $result['transaction']['transactionId'],
+                $order_info['order_id'],
+                $this->_paymentOptionId,
+                $amount,
+                $postData,
+                $optionSub
+            );
 
             $message = 'PAY. Transactie aangemaakt. TransactieId: ' . $result['transaction']['transactionId'] . ' .<br />';
 
@@ -241,6 +263,9 @@ class Pay_Controller_Payment extends Controller
         die(json_encode($response));
     }
 
+    /**
+     * @return void
+     */
     public function finish()
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
@@ -262,7 +287,7 @@ class Pay_Controller_Payment extends Controller
             $action = $this->request->get['orderStatusId'];
             if ($action == -90) {
                 $this->session->data['error'] = $this->language->get('text_cancel');
-            } else if ($action == -63) {
+            } elseif ($action == -63) {
                 $this->session->data['error'] = $this->language->get('text_denied');
             }
 
@@ -271,6 +296,9 @@ class Pay_Controller_Payment extends Controller
         die();
     }
 
+    /**
+     * @return void
+     */
     public function exchange()
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
