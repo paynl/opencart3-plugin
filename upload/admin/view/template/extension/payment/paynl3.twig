@@ -33,7 +33,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3><br/><br/>
-                <p>{{ text_register }}<a href="{{ link_register }}" target="_blank">{{ text_link_register }}</a>{{ text_after_register }} </p>
+                <p>{{ text_register }}<a href="{{ link_register }}" target="_blank">{{ text_link_register }}</a>{{ text_after_register }}</p>
+                <p>
+                    <a href="{{ url }}#suggestions" class="btn btn-primary">Suggestions?</a>
+                </p>
             </div>
             <div class="panel-body">
                 <form action="{{ action }}" method="post" class="form-horizontal"
@@ -362,8 +365,121 @@
                         </div>
                     </div>
                 </form>
+                <form class="form-horizontal" id="suggestions" id="suggestions_form">
+                    <div class="form-group">
+                        <div class="panel-heading" style="border-top: 1px solid #dcdcdc;  margin-top: 15px;">
+                            <h3 class="panel-title"><i class="fa fa-envelope"></i> Suggestions?</h3>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <p>
+                                {{ text_suggestions}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="suggestions_form_email">{{ text_email_label }}</label>
+                        <div id="email_error" class="text-danger col-sm-10" style="display: none">{{ text_email_error }}</div>
+                        <div class="col-sm-10">
+                            <input id="suggestions_form_url" type="hidden" class="form-control" name="suggestions_form_url" value="{{ action }}"/>
+                            <input id="suggestions_form_email" type="text" class="form-control" name="suggestions_form_email"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="message">{{ text_message_label }}</label>
+                        <div id="message_error" class="text-danger col-sm-10" style="display: none">{{ text_message_error }}</div>
+                        <div class="col-sm-10">
+                            <textarea id="suggestions_form_message" class="form-control" name="suggestions_form_message" placeholder="{{ text_message_placeholder }}" cols="80" rows="10"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button form="suggestions_form" title="Submit" id="suggestions_form_submit" style="float: right; margin-right: 15px;" class="btn btn-primary">{{ text_suggestions_submit }}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="suggestions_form_success" tabindex="-1" role="dialog" aria-labelledby="suggestions_form_success_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ text_suggestions_success_modal }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="suggestions_form_fail" tabindex="-1" role="dialog" aria-labelledby="suggestions_form_fail_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ text_suggestions_fail_modal }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+jQuery(document).ready(function () {
+    jQuery("#suggestions_form_submit").click(function () {
+        $('#email_error').hide();
+        $('#message_error').hide();
+        var email = $('#suggestions_form_email').val();
+        var message = $('#suggestions_form_message').val();
+
+        var regex = /^[\w-\.]+@([\w-]+\.)+[\w-]/i;
+        if($.trim(message) == '' || ($.trim(email) != '' && !regex.test($('#suggestions_form_email').val()))){
+            if($.trim(email) != '' && !regex.test($('#suggestions_form_email').val())){
+                $('#email_error').css('display', 'inline');
+            }
+            if($.trim(message) == ''){
+                $('#message_error').css('display', 'inline');
+            }
+            return false;
+        }
+
+        var ajaxurl = $('#suggestions_form_url').val();
+        var data = {
+            'email' : email,
+            'message' : message
+        };
+        setTimeout(function () {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        $('#suggestions_form_email').val("");
+                        $('#suggestions_form_message').val("");
+                        $('#suggestions_form_success').modal('show');
+                    } else {
+                        $('#suggestions_form_fail').modal('show');
+                    }
+                },
+                error: function () {
+                    $('#suggestions_form_fail').modal('show');
+                }
+            });
+        }, 750);
+
+    });
+});
+</script>
+
 {{ footer }}

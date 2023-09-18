@@ -57,6 +57,11 @@ class Pay_Controller_Admin extends Controller
         if ($reqMethod == 'POST') {
             $generalValid = $this->validateGeneral();
 
+            if ($this->getPost('message')){
+                $this->sendSuggestionsForm($this->getPost('message'), $this->getPost('email'));
+                die();
+            }
+
             if ($generalValid) {
                 $settingsGeneral = array(
                   'payment_paynl_general_apitoken' => $settings['payment_paynl_general_apitoken'],
@@ -159,6 +164,8 @@ class Pay_Controller_Admin extends Controller
             'href' => $this->url->link('extension/payment/' . $this->_paymentMethodName, 'user_token=' . $this->session->data['user_token'], true)
         );
 
+        $data['url'] = $this->url->link('extension/payment/' . $this->_paymentMethodName, 'user_token=' . $this->session->data['user_token'], true);
+
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
@@ -257,5 +264,57 @@ class Pay_Controller_Admin extends Controller
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
         }
+    }
+
+    public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email = ''){
+        try {
+            $opencartVersion = 'Opencart3 1.7.1';
+            $phpVersion = phpversion();
+            $email = isset($suggestions_form_email) ? strtolower($suggestions_form_email) : null;
+            $message = isset($suggestions_form_message) ? nl2br($suggestions_form_message) : null;
+
+            if (empty($message)) {
+                throw new Exception('Empty message');
+            }
+
+            $to = 'webshop@pay.nl';
+            $subject = 'Feature Request Opencart3';
+            $body = '
+            <table role="presentation" style="margin-top:50px; margin-bottom:50px; width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+                <tr>
+                    <td align="center" style="padding:0;">
+                        <table role="presentation" style="width:600px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+                            <tr>
+                                <td style="padding:25px;">
+                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Pay. Suggestion</h1>
+                                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
+                                        Pay. plugin version: ' . $opencartVersion . '.<br/>
+                                        PHP version: ' . $phpVersion . '.
+                                        <br/><br/>
+                                        <b>Client Email:</b>
+                                        <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $email. '</span>
+                                        <br/><br/>
+                                        <b>Message:</b>
+                                        <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $message . '</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            ';
+            $headers = "Content-Type: text/html; charset=UTF-8";
+
+            mail($to, $subject, $body, $headers);
+            $result = true;
+        } catch (Exception $e) {
+            $result = false;
+        }
+        header('Content-Type: application/json;charset=UTF-8');
+        $returnarray = array(
+            'success' => $result
+        );
+        die(json_encode($returnarray));
     }
 }
