@@ -68,6 +68,10 @@ $_['text_custom_exchange_url'] = 'Alternatieve Exchange URL';
 $_['text_custom_exchange_url_tooltip'] = 'Use your own exchange-handler. Requests will be send as GET.<br/>
     Example: https://www.yourdomain.nl/exchange_handler?action=#action#&order_id=#order_id#';
 
+$_['text_current_ip'] = 'Current user IP address: ';
+$_['text_test_ip'] = 'Test IP Address';
+$_['text_test_ip_tooltip'] = 'Forces testmode on these IP addresses, separate IPs by commas for multiple IPs';
+
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between PAY. and your webshop';
 
