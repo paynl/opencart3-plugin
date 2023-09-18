@@ -59,7 +59,6 @@ class Pay_Controller_Admin extends Controller
 
             if ($this->getPost('message')){
                 $this->sendSuggestionsForm($this->getPost('message'), $this->getPost('email'));
-                die();
             }
 
             if ($generalValid) {
