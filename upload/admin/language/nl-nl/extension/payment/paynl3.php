@@ -95,10 +95,10 @@ $_['text_business'] = 'Zakelijk';
 
 $_['text_extension'] = 'PAY.';
 
-$_['text_suggestions'] = 'Als je een idee hebt voor een functie die je graag terugziet, laat het ons weten!<br/>Na het indienen, wordt deze intern beoordeeld door ons ontwikkelteam.<br/<br/>Zo nodig, nemen wij contact op voor nadere informatie via het opgegeven mailadres<br/>Let op: dit formulier is niet voor Support aanvragen, neem hiervoor contact op met <a href="mailto:support@pay.nl" target="_blank">support@pay.nl</a>.';
+$_['text_suggestions'] = 'Als je een idee hebt voor een functie die je graag terugziet, laat het ons weten!<br/>Na het indienen, wordt deze intern beoordeeld door ons ontwikkelteam.<br/<br/>Zo nodig, nemen wij contact op voor nadere informatie via het opgegeven mailadres<br/>Let op: dit formulier is niet voor Support aanvragen, neem hiervoor contact op met <a href="mailto:support@pay.nl" target="_blank">support@pay.nl</a>.'; // phpcs:ignore
 
-$_['text_email_label'] = 'Email (optioneel)';
-$_['text_email_error'] = 'Vul een geldig emailadres in.';
+$_['text_email_label'] = 'E-mail (optioneel)';
+$_['text_email_error'] = 'Vul een geldig e-mailadres in.';
 
 $_['text_message_label'] = 'Bericht';
 $_['text_message_error'] = 'Vul een bericht in.';
@@ -107,7 +107,7 @@ $_['text_message_placeholder'] = 'Laat hier jouw wens of idee achter...';
 $_['text_suggestions_submit'] = 'Verstuur';
 
 $_['text_suggestions_success_modal'] = 'Verstuurd! Bedankt voor het delen van jouw input.';
-$_['text_suggestions_fail_modal'] = 'Email kon niet worden verzonden. Probeer het later opnieuw.';
+$_['text_suggestions_fail_modal'] = 'E-mail kon niet worden verzonden. Probeer het later opnieuw.';
 
 $version = '1.7.1';
 $css = 'position: relative;top:0px;display: inline;left: 10px;';

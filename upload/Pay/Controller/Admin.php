@@ -57,7 +57,7 @@ class Pay_Controller_Admin extends Controller
         if ($reqMethod == 'POST') {
             $generalValid = $this->validateGeneral();
 
-            if ($this->getPost('message')){
+            if ($this->getPost('message')) {
                 $this->sendSuggestionsForm($this->getPost('message'), $this->getPost('email'));
             }
 
@@ -265,7 +265,13 @@ class Pay_Controller_Admin extends Controller
         }
     }
 
-    public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email = ''){
+    /**
+     * @param $suggestions_form_message
+     * @param $suggestions_form_email
+     * @return void
+     */
+    public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email = '')
+    {
         try {
             $opencartVersion = 'Opencart3 1.7.1';
             $phpVersion = phpversion();
@@ -291,7 +297,7 @@ class Pay_Controller_Admin extends Controller
                                         PHP version: ' . $phpVersion . '.
                                         <br/><br/>
                                         <b>Client Email:</b>
-                                        <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $email. '</span>
+                                        <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $email . '</span>
                                         <br/><br/>
                                         <b>Message:</b>
                                         <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $message . '</span>
