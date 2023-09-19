@@ -297,6 +297,4 @@ class Pay_Controller_Admin extends Controller
         );
         die(json_encode($returnarray));
     }
-
-    
 }
