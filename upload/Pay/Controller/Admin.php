@@ -57,6 +57,10 @@ class Pay_Controller_Admin extends Controller
         if ($reqMethod == 'POST') {
             $generalValid = $this->validateGeneral();
 
+            if ($this->getPost('versionCheck')) {
+                $this->checkVersion($this->getPost('versionCheck'));
+            }
+
             if ($generalValid) {
                 $settingsGeneral = array(
                   'payment_paynl_general_apitoken' => $settings['payment_paynl_general_apitoken'],
@@ -258,4 +262,41 @@ class Pay_Controller_Admin extends Controller
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
         }
     }
+
+    /**
+     * @param $version
+     * @return void
+     */
+    private function checkVersion($version)
+    {
+        $result = false;
+        $url = 'https://api.github.com/repos/paynl/opencart3-plugin/releases';
+        $options = array(
+            'http' => array(
+                'method' => 'GET',
+                'header' => 'User-Agent:' . $_SERVER['HTTP_USER_AGENT']));
+
+        $context = stream_context_create($options);
+
+        try {
+            $output = file_get_contents($url, false, $context);
+            $json = json_decode($output);
+
+            $response = '';
+            if (isset($json[0])) {
+                $response = $json[0]->tag_name;
+                $result = true;
+            }
+        } catch (\Exception $e) {
+            $response = '';
+        }
+        header('Content-Type: application/json;charset=UTF-8');
+        $returnarray = array(
+            'success' => $result,
+            'version' => $response,
+        );
+        die(json_encode($returnarray));
+    }
+
+    
 }
