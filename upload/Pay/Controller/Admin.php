@@ -282,8 +282,8 @@ class Pay_Controller_Admin extends Controller
             $message = isset($suggestions_form_message) ? nl2br($suggestions_form_message) : null;
 
             $email = null;
-            if (isset($suggestions_form_email) && !empty($suggestions_form_email)){
-                $email = '<b>Client Email:</b><span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . strtolower($suggestions_form_email) . '</span><br/><br/>';
+            if (isset($suggestions_form_email) && !empty($suggestions_form_email)) {
+                $email = '<b>Client Email:</b><span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . strtolower($suggestions_form_email) . '</span><br/><br/>'; // phpcs:ignore
             }
 
             if (empty($message)) {
