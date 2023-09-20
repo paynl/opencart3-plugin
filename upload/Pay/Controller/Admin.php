@@ -33,7 +33,7 @@ class Pay_Controller_Admin extends Controller
         $this->load->language('extension/payment/' . $this->_paymentMethodName);
 
         $this->document->addStyle('view/stylesheet/pay.css');
-        $this->document->addScript('view/javascript/pay.js');  
+        $this->document->addScript('view/javascript/pay.js');
 
         $data = array();
 
