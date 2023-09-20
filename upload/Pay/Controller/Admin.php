@@ -32,6 +32,9 @@ class Pay_Controller_Admin extends Controller
     {
         $this->load->language('extension/payment/' . $this->_paymentMethodName);
 
+        $this->document->addStyle('view/stylesheet/pay.css');
+        $this->document->addScript('view/javascript/pay.js');
+
         $data = array();
 
         $stringsToTranslate = array(
@@ -58,7 +61,7 @@ class Pay_Controller_Admin extends Controller
             $generalValid = $this->validateGeneral();
 
             if ($this->getPost('message')) {
-                $this->sendSuggestionsForm($this->getPost('message'), $this->getPost('email'));
+                $this->sendSuggestionsForm($this->getPost('message'), $this->getPost('email'), $this->getPost('pluginverison'));
             }
 
             if ($generalValid) {
@@ -270,13 +273,18 @@ class Pay_Controller_Admin extends Controller
      * @param $suggestions_form_email
      * @return void
      */
-    public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email = '')
+    public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email, $suggestions_form_plugin_version)
     {
         try {
-            $opencartVersion = 'Opencart3 1.7.1';
+            $opencartVersion = VERSION;
+            $pluginVersion = strtolower($suggestions_form_plugin_version);
             $phpVersion = phpversion();
-            $email = isset($suggestions_form_email) ? strtolower($suggestions_form_email) : null;
             $message = isset($suggestions_form_message) ? nl2br($suggestions_form_message) : null;
+
+            $email = null;
+            if (isset($suggestions_form_email) && !empty($suggestions_form_email)){
+                $email = '<b>Client Email:</b><span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . strtolower($suggestions_form_email) . '</span><br/><br/>';
+            }
 
             if (empty($message)) {
                 throw new Exception('Empty message');
@@ -293,12 +301,11 @@ class Pay_Controller_Admin extends Controller
                                 <td style="padding:25px;">
                                     <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Pay. Suggestion</h1>
                                     <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
-                                        Pay. plugin version: ' . $opencartVersion . '.<br/>
+                                        Opencart version: ' . $opencartVersion . '.<br/>
+                                        Pay. plugin version: ' . $pluginVersion . '.<br/>
                                         PHP version: ' . $phpVersion . '.
                                         <br/><br/>
-                                        <b>Client Email:</b>
-                                        <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $email . '</span>
-                                        <br/><br/>
+                                        ' . $email . '
                                         <b>Message:</b>
                                         <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $message . '</span>
                                     </p>
