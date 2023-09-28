@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <div class="form-group required">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_apitoken">Apitoken</label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_apitoken">{{ text_apitoken }}</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="payment_paynl_general_apitoken"
                                    value="{{ apitoken }}"/>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="form-group required">
                         <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_serviceid">ServiceId</label>
+                               for="payment_paynl_general_serviceid">{{ text_serviceid }}</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="payment_paynl_general_serviceid"
                                    value="{{ serviceid }}"/>

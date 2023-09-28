@@ -1,5 +1,8 @@
 <?php
 
+$_['text_apitoken'] = 'API token';
+$_['text_serviceid'] = 'SL-code';
+
 // Text
 $_['text_payment'] = 'Payment';
 
@@ -94,6 +97,9 @@ $_['text_private'] = 'Private';
 $_['text_business'] = 'Business';
 
 $_['text_extension'] = 'PAY.';
+
+$_['text_enabled'] = 'On';
+$_['text_disabled'] = 'Off';
 
 $version = '1.7.1';
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
