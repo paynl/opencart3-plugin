@@ -16,15 +16,15 @@ $_['error_not_activated'] = "Diese Zahlungsmethode ist für diesen Dienst nicht 
 <a target='paynl' href='https://admin.pay.nl/programs/programs'>https://admin.pay.nl/programs/programs</a>, um dies anzupassen.";
 $_['error_api_error'] = 'Die Pay. API hat den folgenden Fehler ausgegeben: ';
 $_['error_error_occurred'] = 'Ein Fehler ist aufgetreten: ';
-$_['error_no_apitoken'] = 'Sie müssen einen Apitoken eingeben. Sie finden Ihre API token unter:
-    <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_no_apitoken'] = 'Sie müssen einen API token eingeben. Sie finden Ihre API token unter:
+    <a href="https://my.pay.nl/programs/programs">https://my.pay.nl/programs/programs</a>';
 $_['error_no_serviceid'] = 'Sie müssen eine SL-code eingeben. Sie finden Ihre SL-code unter:
-    <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Eine SL-code beginnt immer mit SL-';
+    <a href="https://my.pay.nl/programs/programs">https://my.pay.nl/programs/programs</a>. Eine SL-code beginnt immer mit SL-';
 
 //texts
-$_['text_register'] = 'Sie haben noch kein Konto bei PAY? klicken Sie ';
+$_['text_register'] = 'Sie haben noch kein Konto bei Pay? klicken Sie ';
 $_['text_link_register'] = 'hier';
-$_['link_register'] = 'https://www.pay.nl/registreren';
+$_['link_register'] = 'https://signup.pay.nl/';
 $_['text_after_register'] = ' um sich zu registrieren.';
 
 $_['text_general_settings'] = 'Pay. Allgemeine Einstellungen';
@@ -36,25 +36,25 @@ $_['text_send_statusupdates'] = 'Statusaktualisierungen senden';
 $_['text_send_statusupdates_tooltip'] = 'Senden Sie dem Benutzer eine E-Mail, wenn sich der Status der Bestellung ändert';
 
 $_['text_gateway'] = 'Failover gateway';
-$_['text_gateway_tooltip'] = 'Geben Sie hier nur etwas ein, wenn wir von Pay. stellen Ihnen ein Gateway zur Verfügung, das Sie hier ausfüllen können';
+$_['text_gateway_tooltip'] = 'Nur ändern, wenn sie von Pay dazu aufgefordert werden.';
 
 $_['text_prefix'] = 'Präfix der Bestellbeschreibung';
 $_['text_prefix_tooltip'] = 'Ändern Sie hier das Präfix der Bestellbeschreibung. Wenn dieses Feld leer ist, ist die Beschreibung die Bestellnummer.';
 
 $_['text_coc'] = 'Feld mit der Nummer der Handelskammer anzeigen';
-$_['text_coc_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, seine Handelskammernummer einzugeben, bevor er die Transaktion abschließt';
+$_['text_coc_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, seine Handelskammernummer einzugeben im Checkout';
 $_['text_coc_disabled'] = 'nein';
 $_['text_coc_enabled'] = 'Ja, als optionales Feld';
 $_['text_coc_required'] = 'Ja, als Pflichtfeld';
 
-$_['text_vat'] = 'Feld Umsatzsteuer-Identifikationsnummer für Geschäftskunden anzeigen';
-$_['text_vat_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, seine Umsatzsteuer-Identifikationsnummer einzugeben, bevor er die Transaktion abschließt';
+$_['text_vat'] = 'Feld USt-IdNr für Geschäftskunden anzeigen';
+$_['text_vat_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, seine Umsatzsteuer-Identifikationsnummer einzugeben im Checkout';
 $_['text_vat_disabled'] = 'Aus';
 $_['text_vat_enabled'] = 'Optional für Geschäftskunden';
-$_['text_vat_required'] = 'Obligatorisch für Geschäftskunden';
+$_['text_vat_required'] = 'Erforderlich für Geschäftskunden';
 
 $_['text_dob'] = 'Feld „Geburtsdatum“ anzeigen';
-$_['text_dob_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, vor Abschluss der Transaktion sein Geburtsdatum einzugeben';
+$_['text_dob_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, seine Geburtsdatum einzugeben im Checkout';
 $_['text_dob_disabled'] = 'nein';
 $_['text_dob_enabled'] = 'Ja, als optionales Feld';
 $_['text_dob_required'] = 'Ja, als Pflichtfeld';
@@ -77,7 +77,7 @@ $_['text_status_complete_tooltip'] = 'Der Status, den die Bestellung nach erfolg
 $_['text_status_canceled'] = 'Bestellstatus storniert';
 $_['text_status_canceled_tooltip'] = 'Der Status, den die Bestellung erhalten soll, nachdem die Zahlung storniert wurde';
 $_['text_minimum_amount'] = 'Mindestbestellmenge';
-$_['text_maximum_amount'] = 'Maximaler Bestellwert';
+$_['text_maximum_amount'] = 'Maximale Bestellmenge';
 $_['text_payment_instructions'] = 'Anweisungen';
 $_['text_payment_instructions_tooltip'] = 'Wenn Sie dem Kunden Anweisungen zeigen möchten, können Sie diese hier angeben';
 
