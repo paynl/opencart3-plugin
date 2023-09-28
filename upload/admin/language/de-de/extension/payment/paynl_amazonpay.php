@@ -2,4 +2,4 @@
 
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Amazon Pay';
+$_['heading_title'] = 'Pay. - Amazon Pay';
