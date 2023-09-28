@@ -13,18 +13,18 @@ $_['text_success'] = 'Paramètres sauvegardés';
 
 //errors
 $_['error_not_activated'] = "Ce mode de paiement n'est pas activé pour ce site, rendez-vous sur 
-    <a target='paynl' href='https://admin.pay.nl/programs/programs'>https://admin.pay.nl/programs/programs</a> pour modifier votre site";
+    <a target='paynl' href='https://my.pay.nl/programs/programs'>https://my.pay.nl/programs/programs</a> pour modifier votre site";
 $_['error_api_error'] = 'Le Pay. Api a répondu avec l\'erreur suivante : ';
 $_['error_error_occurred'] = 'Une erreur est survenue: ';
 $_['error_no_apitoken'] = 'Vous devez saisir un jeton API, vous pouvez retrouver vos jeton API sur: 
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 $_['error_no_serviceid'] = 'Vous avez un SL-code demandé et vous avez un ID de service op: 
-    <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Un SL-code commence altijd avec SL-';
+    <a href="https://my.pay.nl/company/tokens">https://my.pay.nl/company/tokens</a>. Un SL-code commence altijd avec SL-';
 
 //texts
-$_['text_register'] = 'Vous n\'êtes pas inscrit chez Pay.? Inscrivez-vous ';
+$_['text_register'] = 'Vous n\'êtes pas inscrit chez Pay? Inscrivez-vous ';
 $_['text_link_register'] = 'ici';
-$_['link_register'] = 'https://www.pay.nl/en/register';
+$_['link_register'] = 'https://signup.pay.nl/';
 $_['text_after_register'] = '!';
 
 $_['text_general_settings'] = 'Pay. Réglages généraux';
@@ -104,7 +104,7 @@ $_['text_disabled'] = 'arrêt';
 $version = '1.7.1';
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
-    src="view/image/payment/main_pay_logo.png" alt="Pay." title="Pay." /></a>' . '<div style="' . $css . '">Version: ' . $version . '</div>';
+    src="view/image/payment/main_pay_logo.png" alt="PAY." title="PAY." /></a>' . '<div style="' . $css . '">Version: ' . $version . '</div>';
 
 $arrPaymentMethods = array(
     'afterpay',
