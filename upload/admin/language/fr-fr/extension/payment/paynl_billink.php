@@ -1,4 +1,4 @@
 <?php
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Payez ensuite via Billink';
+$_['heading_title'] = 'Pay. - Payez ensuite via Billink';

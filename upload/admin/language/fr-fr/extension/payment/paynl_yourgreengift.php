@@ -2,4 +2,4 @@
 
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Your Green Gift Cadeaukaart';
+$_['heading_title'] = 'Pay. - Your Green Gift Cadeaukaart';

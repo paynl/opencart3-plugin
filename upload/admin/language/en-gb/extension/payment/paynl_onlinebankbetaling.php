@@ -2,4 +2,4 @@
 
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Onlinebankbetaling';
+$_['heading_title'] = 'Pay. - Onlinebankbetaling';

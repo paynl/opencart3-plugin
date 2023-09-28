@@ -98,7 +98,7 @@ class Pay_Controller_Admin extends Controller
         $data['icon_style'] = $this->configGet('icon_style');
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['display_icon'] = $this->configGet('display_icon');
-        $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
+        $data['text_edit'] = 'Pay. - ' . $this->_defaultLabel;
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';

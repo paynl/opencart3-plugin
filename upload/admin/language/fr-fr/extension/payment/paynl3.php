@@ -104,7 +104,7 @@ $_['text_disabled'] = 'arrêt';
 $version = '1.7.1';
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
-    src="view/image/payment/main_pay_logo.png" alt="PAY." title="PAY." /></a>' . '<div style="' . $css . '">Version: ' . $version . '</div>';
+    src="view/image/payment/main_pay_logo.png" alt="Pay." title="Pay." /></a>' . '<div style="' . $css . '">Version: ' . $version . '</div>';
 
 $arrPaymentMethods = array(
     'afterpay',

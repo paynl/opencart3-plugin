@@ -1,4 +1,4 @@
 <?php
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Langues téléphoniques';
+$_['heading_title'] = 'Pay. - Langues téléphoniques';

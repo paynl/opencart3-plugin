@@ -173,7 +173,7 @@ class Pay_Api_Start extends Pay_Api {
     }
 
     /**
-     * Set the comunication url, the PAY. server will call this url when the status of the transaction changes
+     * Set the comunication url, the Pay. server will call this url when the status of the transaction changes
      * 
      * @param string $exchangeUrl
      */

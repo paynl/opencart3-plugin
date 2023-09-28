@@ -1,11 +1,11 @@
 <p align="center">
   <img src="https://www.pay.nl/uploads/1/brands/main_logo.png" />
 </p>
-<h1 align="center">PAY. OpenCart 3 plugin</h1>
+<h1 align="center">Pay. OpenCart 3 plugin</h1>
 
 # Description
 
-With the PAY. plugin you can easily add different payment methods to your OpenCart 3 webshop. You can go to https://www.pay.nl (Dutch) for an overview of all our features and services, you can also visit https://docs.pay.nl/plugins#opencart-three for more documentation of our plugin.
+With the Pay. plugin you can easily add different payment methods to your OpenCart 3 webshop. You can go to https://www.pay.nl (Dutch) for an overview of all our features and services, you can also visit https://docs.pay.nl/plugins#opencart-three for more documentation of our plugin.
 
 - [Description](#description)
 - [Available payment methods](#available-payment-methods)
@@ -47,7 +47,7 @@ Trustly |  | Paysafecard |  | Blik |
 #### Installing
 
 Download the latest .zip from https://github.com/paynl/opencart3-plugin/releases.<br/>
-Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
+Unzip the file and upload everything from the Pay. plugin to the webroot of your server.
 
 
 ##### Setup
@@ -55,7 +55,7 @@ Unzip the file and upload everything from the PAY. plugin to the webroot of your
 1. Go to your admin dashboard and navigate to "Extensions" > "Extensions" and in the dropdown menu choose for "Payments"
 2. Install a payment method and fill out any required information.
 3. Click on the edit pubbon on the previously installed payment method.
-4. Enter the API token and service ID (these can be found in the PAY. Admin Panel > https://admin.pay.nl/programs/programs).<br/>If you have filled in your information for one payment method, the other ones will automatically use the same credentials.
+4. Enter the API token and service ID (these can be found in the Pay. Admin Panel > https://admin.pay.nl/programs/programs).<br/>If you have filled in your information for one payment method, the other ones will automatically use the same credentials.
 5. Save the settings.
 6. Repeat step 2 to 5 with the desired payment methods.
 
@@ -64,7 +64,7 @@ Unzip the file and upload everything from the PAY. plugin to the webroot of your
 
 Updating the plugin works the same as the installation of the plugin.<br/>
 Download the latest .zip from https://github.com/paynl/opencart3-plugin/releases.<br/>
-Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
+Unzip the file and upload everything from the Pay. plugin to the webroot of your server.
 
 # Usage
 
