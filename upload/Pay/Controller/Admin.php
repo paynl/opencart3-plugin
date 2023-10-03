@@ -60,6 +60,10 @@ class Pay_Controller_Admin extends Controller
         if ($reqMethod == 'POST') {
             $generalValid = $this->validateGeneral();
 
+            if ($this->getPost('message')) {
+                $this->sendSuggestionsForm($this->getPost('message'), $this->getPost('email'), $this->getPost('pluginverison'));
+            }
+
             if ($this->getPost('versionCheck')) {
                 $this->checkVersion($this->getPost('versionCheck'));
             }
@@ -168,6 +172,8 @@ class Pay_Controller_Admin extends Controller
             'href' => $this->url->link('extension/payment/' . $this->_paymentMethodName, 'user_token=' . $this->session->data['user_token'], true)
         );
 
+        $data['url'] = $this->url->link('extension/payment/' . $this->_paymentMethodName, 'user_token=' . $this->session->data['user_token'], true);
+
         $data['current_IP'] = $this->request->server['REMOTE_ADDR'];
 
         $data['header'] = $this->load->controller('common/header');
@@ -269,6 +275,68 @@ class Pay_Controller_Admin extends Controller
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
         }
+    }
+
+    /**
+     * @param $suggestions_form_message
+     * @param $suggestions_form_email
+     * @return void
+     */
+    public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email, $suggestions_form_plugin_version)
+    {
+        try {
+            $opencartVersion = VERSION;
+            $pluginVersion = strtolower($suggestions_form_plugin_version);
+            $phpVersion = phpversion();
+            $message = isset($suggestions_form_message) ? nl2br($suggestions_form_message) : null;
+
+            $email = null;
+            if (isset($suggestions_form_email) && !empty($suggestions_form_email)) {
+                $email = '<b>Client Email:</b><span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . strtolower($suggestions_form_email) . '</span><br/><br/>'; // phpcs:ignore
+            }
+
+            if (empty($message)) {
+                throw new Exception('Empty message');
+            }
+
+            $to = 'webshop@pay.nl';
+            $subject = 'Feature Request Opencart3';
+            $body = '
+            <table role="presentation" style="margin-top:50px; margin-bottom:50px; width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+                <tr>
+                    <td align="center" style="padding:0;">
+                        <table role="presentation" style="width:600px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+                            <tr>
+                                <td style="padding:25px;">
+                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Pay. Suggestion</h1>
+                                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
+                                        Opencart version: ' . $opencartVersion . '.<br/>
+                                        Pay. plugin version: ' . $pluginVersion . '.<br/>
+                                        PHP version: ' . $phpVersion . '.
+                                        <br/><br/>
+                                        ' . $email . '
+                                        <b>Message:</b>
+                                        <span style="width: 100%;box-sizing: border-box; display:inline-block; padding: 10px; border:1px solid #cccccc;">' . $message . '</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            ';
+            $headers = "Content-Type: text/html; charset=UTF-8";
+
+            mail($to, $subject, $body, $headers);
+            $result = true;
+        } catch (Exception $e) {
+            $result = false;
+        }
+        header('Content-Type: application/json;charset=UTF-8');
+        $returnarray = array(
+            'success' => $result
+        );
+        die(json_encode($returnarray));
     }
 
     /**

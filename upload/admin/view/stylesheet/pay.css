@@ -1,3 +1,8 @@
+#suggestions_form_submit {
+    float: right;
+    margin-right: 15px;
+}
+
 .versionUpToDate {
     color: white !important;
     background-color: #5aa70d;

@@ -99,6 +99,20 @@ $_['text_business'] = 'Business';
 
 $_['text_extension'] = 'PAY.';
 
+$_['text_suggestions'] = 'If you have a feature request or other ideas, let us know!<br/>Your submission will be reviewed by our development team.<br/><br/>If needed, we will contact you for further information via the e-mail address provided.<br/>Please note: this form is not for Support requests, please contact <a href="mailto:support@pay.nl" target="_blank">support@pay.nl</a> for this.'; // phpcs:ignore
+
+$_['text_email_label'] = 'E-mail (optional)';
+$_['text_email_error'] = 'Please fill in a valid e-mail.';
+
+$_['text_message_label'] = 'Message';
+$_['text_message_error'] = 'Please fill in your message.';
+$_['text_message_placeholder'] = 'Leave your suggestions here…';
+
+$_['text_suggestions_submit'] = 'Submit';
+
+$_['text_suggestions_success_modal'] = 'Sent! Thank you for your contribution.';
+$_['text_suggestions_fail_modal'] = 'E-mail could not be sent, please try again later.';
+
 $version = '1.7.1';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
