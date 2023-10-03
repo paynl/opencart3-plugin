@@ -73,7 +73,8 @@ class Pay_Controller_Payment extends Controller
             $apiStart = new Pay_Api_Start();
             $apiStart->setApiToken($this->config->get('payment_paynl_general_apitoken'));
             $apiStart->setServiceId($this->config->get('payment_paynl_general_serviceid'));
-            $apiStart->setTestmode($this->config->get('payment_paynl_general_testmode'));
+
+            $apiStart->setTestmode($this->isTestMode());
 
             if (!empty(trim($this->config->get('payment_paynl_general_gateway')))) {
                 $apiStart->setApiBase(trim($this->config->get('payment_paynl_general_gateway')));
@@ -327,5 +328,28 @@ class Pay_Controller_Payment extends Controller
             }
             die("FALSE|" . $message);
         }
+    }
+
+    /**
+     * @return true
+     */
+    public function isTestMode()
+    {
+        $ip = $this->request->server['REMOTE_ADDR'];
+        $ipconfig = $this->config->get('payment_paynl_general_test_ip');
+
+        if (!empty($ipconfig)) {
+            $allowed_ips = explode(',', $ipconfig);
+
+            if (
+                in_array($ip, $allowed_ips) &&
+                filter_var($ip, FILTER_VALIDATE_IP) &&
+                strlen($ip) > 0 &&
+                count($allowed_ips) > 0
+            ) {
+                return true;
+            }
+        }
+        return $this->config->get('payment_paynl_general_testmode');
     }
 }
