@@ -1,4 +1,30 @@
-#suggestions_form_submit{
+#suggestions_form_submit {
     float: right;
     margin-right: 15px;
+}
+
+.versionUpToDate {
+    color: white !important;
+    background-color: #5aa70d;
+    font-weight: bold;
+    border: 0;
+    padding: 5px 9px !important;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+#check_version_submit {
+    display: inline-block;
+    margin-left: 15px
+}
+
+#paynl_version_check {
+    display: inline-block;
+    margin-left: 12px;
+}
+
+.payHide {
+    display: none;
 }

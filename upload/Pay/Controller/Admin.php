@@ -64,6 +64,10 @@ class Pay_Controller_Admin extends Controller
                 $this->sendSuggestionsForm($this->getPost('message'), $this->getPost('email'), $this->getPost('pluginverison'));
             }
 
+            if ($this->getPost('versionCheck')) {
+                $this->checkVersion($this->getPost('versionCheck'));
+            }
+
             if ($generalValid) {
                 $settingsGeneral = array(
                   'payment_paynl_general_apitoken' => $settings['payment_paynl_general_apitoken'],
@@ -73,7 +77,8 @@ class Pay_Controller_Admin extends Controller
                   'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
                   'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
                   'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style'],
-                  'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url']
+                  'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
+                  'payment_paynl_general_test_ip' => $settings['payment_paynl_general_test_ip'],
                 );
                 $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
@@ -104,6 +109,7 @@ class Pay_Controller_Admin extends Controller
         $data['prefix'] = $this->configGet('prefix');
         $data['icon_style'] = $this->configGet('icon_style');
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
+        $data['test_ip'] = $this->configGet('test_ip');
         $data['display_icon'] = $this->configGet('display_icon');
         $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
         $data['error_warning'] = '';
@@ -167,6 +173,8 @@ class Pay_Controller_Admin extends Controller
         );
 
         $data['url'] = $this->url->link('extension/payment/' . $this->_paymentMethodName, 'user_token=' . $this->session->data['user_token'], true);
+
+        $data['current_IP'] = $this->request->server['REMOTE_ADDR'];
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
@@ -261,7 +269,8 @@ class Pay_Controller_Admin extends Controller
                 'payment_paynl_general_prefix' => 'Order ',
                 'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
                 'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style'),
-                'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url')
+                'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url'),
+                'payment_paynl_general_test_ip' => $this->config->get('payment_paynl_general_test_ip')
             );
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
@@ -326,6 +335,41 @@ class Pay_Controller_Admin extends Controller
         header('Content-Type: application/json;charset=UTF-8');
         $returnarray = array(
             'success' => $result
+        );
+        die(json_encode($returnarray));
+    }
+
+    /**
+     * @param $version
+     * @return void
+     */
+    private function checkVersion($version)
+    {
+        $result = false;
+        $url = 'https://api.github.com/repos/paynl/opencart3-plugin/releases';
+        $options = array(
+            'http' => array(
+                'method' => 'GET',
+                'header' => 'User-Agent:' . $_SERVER['HTTP_USER_AGENT']));
+
+        $context = stream_context_create($options);
+
+        try {
+            $output = file_get_contents($url, false, $context);
+            $json = json_decode($output);
+
+            $response = '';
+            if (isset($json[0])) {
+                $response = $json[0]->tag_name;
+                $result = true;
+            }
+        } catch (\Exception $e) {
+            $response = '';
+        }
+        header('Content-Type: application/json;charset=UTF-8');
+        $returnarray = array(
+            'success' => $result,
+            'version' => $response,
         );
         die(json_encode($returnarray));
     }

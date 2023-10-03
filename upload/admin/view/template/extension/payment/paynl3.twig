@@ -41,15 +41,30 @@
             <div class="panel-body">
                 <form action="{{ action }}" method="post" class="form-horizontal"
                       enctype="multipart/form-data" id="form-pay">
+                    <input id="ajax_url" type="hidden" class="form-control" name="ajax_url" value="{{ action }}"/>
                     <div class="form-group">
                         <div class="panel-heading" style="border-top: 1px solid #dcdcdc;">
                             <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_general_settings }}</h3>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="payment_paynl_version">Version</label>
+                        <div class="col-sm-10">
+                            <input id="pay_current_version" type="hidden" class="form-control" name="pay_current_version" value="{{ version }}"/>
+                            <div class="version">
+                                <span id="paynl_version_check_current_version">{{ version }}</span>
+                                <button title="Submit" id="check_version_submit" class="btn btn-primary">Check Version</button>
+                                <span id="paynl_version_check">
+                                    <span id="paynl_version_check_loading" class="payHide">Loading...</span>
+                                    <span id="paynl_version_check_result" class="payHide"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group required">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_apitoken">Apitoken</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_apitoken"
+                            <input type="password" class="form-control" name="payment_paynl_general_apitoken"
                                    value="{{ apitoken }}"/>
                             {% if error_apitoken %}
                                 <div class="text-danger">{{ error_apitoken }}</div>
@@ -147,6 +162,20 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="payment_paynl_general_custom_exchange_url"
                                    value="{{ custom_exchange_url }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            {{ text_current_ip }}{{ current_IP }}
+                        </div>
+                        <label class="col-sm-2 control-label"
+                               for="payment_paynl_general_test_ip">
+                            <span data-toggle="tooltip" title="{{ text_test_ip_tooltip }}">
+                                {{ text_test_ip }}
+                            </span></label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="payment_paynl_general_test_ip"
+                                   value="{{ test_ip }}"/>
                         </div>
                     </div>
                     <div class="form-group">
