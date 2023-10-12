@@ -1,4 +1,5 @@
 <?php
+
 $_['text_choose_bank'] = 'Choisissez votre banque';
 $_['text_coc'] = 'Numéro de Chambre de Commerce';
 $_['error_coc'] = 'Un numéro de Chambre de Commerce est requis pour finaliser cette transaction, veuillez le saisir ici.';
