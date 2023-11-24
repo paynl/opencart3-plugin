@@ -1,4 +1,5 @@
 <?php
+
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Nexi';
+$_['heading_title'] = 'Pay. - Nexi';

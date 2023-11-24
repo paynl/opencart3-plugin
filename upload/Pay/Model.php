@@ -1,14 +1,18 @@
 <?php
 
-class Pay_Model extends Model {
-
-    const STATUS_PENDING = 'PENDING';
-    const STATUS_CANCELED = 'CANCELED';
-    const STATUS_COMPLETE = 'COMPLETE';
+class Pay_Model extends Model
+{
+    const STATUS_PENDING = 'PENDING'; // phpcs:ignore
+    const STATUS_CANCELED = 'CANCELED'; // phpcs:ignore
+    const STATUS_COMPLETE = 'COMPLETE'; // phpcs:ignore
 
     protected $_paymentOptionId;
 
-    public function createTables() {
+    /**
+     * @return void
+     */
+    public function createTables()
+    {
         $this->db->query("                
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "paynl_transactions` (
                             `id` varchar(255) NOT NULL,
@@ -47,7 +51,17 @@ class Pay_Model extends Model {
 		");
     }
 
-    public function addTransaction($transactionId, $orderId, $optionId, $amount, $startData, $optionSubId = null) {
+    /**
+     * @param string $transactionId
+     * @param string $orderId
+     * @param string $optionId
+     * @param string $amount
+     * @param string $startData
+     * @param string|null $optionSubId
+     * @return string
+     */
+    public function addTransaction($transactionId, $orderId, $optionId, $amount, $startData, $optionSubId = null)
+    {
         $sql = "INSERT INTO `" . DB_PREFIX . "paynl_transactions` (id, orderId, optionId, optionSubId, amount, status, created, start_data) VALUES ("
                 . "'" . $this->db->escape($transactionId) . "'"
                 . ",'" . $this->db->escape($orderId) . "'"
@@ -61,7 +75,14 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
-    public function refreshPaymentOptions($serviceId, $apiToken, $gateway) {      
+    /**
+     * @param string $serviceId
+     * @param string $apiToken
+     * @param string $gateway
+     * @return void
+     */
+    public function refreshPaymentOptions($serviceId, $apiToken, $gateway)
+    {
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
@@ -73,12 +94,12 @@ class Pay_Model extends Model {
         $api->setApiToken($apiToken);
         $api->setServiceId($serviceId);
 
-        if (!empty($gateway)){
+        if (!empty($gateway)) {
             $api->setApiBase($gateway);
         }
 
-        $result = $api->doRequest();       
-   
+        $result = $api->doRequest();
+
         foreach ($result['paymentOptions'] as $paymentOption) {
             $img = $paymentOption['img'];
 
@@ -99,7 +120,6 @@ class Pay_Model extends Model {
 
             $internalOptionId = $this->db->getLastId();
             foreach ($paymentOption['paymentOptionSubList'] as $optionSub) {
-
                 $optionSubId = $optionSub['id'];
                 $name = $optionSub['visibleName'];
                 $img = $optionSub['image'];
@@ -107,8 +127,8 @@ class Pay_Model extends Model {
                 //variabelen filteren
                 $optionSubId = $this->db->escape($optionSubId);
                 $name = $this->db->escape($name);
-                $img = $this->db->escape($img);                   
-                
+                $img = $this->db->escape($img);
+
                 $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
                         . "(optionSubId, paymentOptionId, name, img, update_date) VALUES "
                         . "('$optionSubId', $internalOptionId, '$name', '$img', NOW() )";
@@ -117,7 +137,12 @@ class Pay_Model extends Model {
         }
     }
 
-    public function getPaymentOption($paymentOptionId) {       
+    /**
+     * @param integer $paymentOptionId
+     * @return boolean|array
+     */
+    public function getPaymentOption($paymentOptionId)
+    {
 
         $paymentOptionId = $this->db->escape($paymentOptionId);
         $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_paymentoptions` WHERE optionId = '$paymentOptionId' LIMIT 1;";
@@ -148,8 +173,7 @@ class Pay_Model extends Model {
         if (is_object($imgArr)) {
             $img = $imgArr->img;
             $brand_id = $imgArr->brand_id;
-        }
-        else{
+        } else {
             $img = $paymentOption['img'];
             $brand_id = 0;
         }
@@ -166,7 +190,12 @@ class Pay_Model extends Model {
         return $arrPaymentOption;
     }
 
-    public function getTransaction($transactionId) {
+    /**
+     * @param string $transactionId
+     * @return array
+     */
+    public function getTransaction($transactionId)
+    {
         $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE id = '" . $this->db->escape($transactionId) . "' LIMIT 1;";
         $result = $this->db->query($sql);
 
@@ -175,10 +204,14 @@ class Pay_Model extends Model {
 
     /**
      * Get The statusses of the order.
-     * Because the order can have multiple transactions, 
+     * Because the order can have multiple transactions,
      * We have to check here if the order hasn't already been completed
+     *
+     * @param integer $orderId
+     * @return array
      */
-    public function getStatussesOfOrder($orderId) {
+    public function getStatussesOfOrder($orderId)
+    {
         $sql = "SELECT `status` FROM `" . DB_PREFIX . "paynl_transactions` WHERE orderId = '" . $this->db->escape($orderId) . "';";
         $result = $this->db->query($sql);
 
@@ -190,7 +223,13 @@ class Pay_Model extends Model {
         return $result;
     }
 
-    public function updateTransactionStatus($transactionId, $status) {
+    /**
+     * @param string $transactionId
+     * @param string $status
+     * @return boolean|array
+     */
+    public function updateTransactionStatus($transactionId, $status)
+    {
         if (!in_array($status, array(self::STATUS_CANCELED, self::STATUS_COMPLETE, self::STATUS_PENDING))) {
             throw new Pay_Exception('Invalid transaction status');
         }
@@ -219,11 +258,21 @@ class Pay_Model extends Model {
         return $this->db->query($sql);
     }
 
+    /**
+     * @param string $key
+     * @param string $pm
+     * @return string
+     */
     private function getConfig($key, $pm)
     {
         return $this->config->get('payment_' . $pm . '_' . $key);
     }
 
+    /**
+     * @param string|boolean $address
+     * @param string|boolean $orderAmount
+     * @return boolean|array
+     */
     public function getMethod($address = false, $orderAmount = false)
     {
         $pm = empty($this->_paymentMethodName) ? null : $this->_paymentMethodName;
@@ -248,7 +297,7 @@ class Pay_Model extends Model {
             }
         }
 
-        $strQuery = "SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . $geozone. "' AND country_id = '" . (int) $address['country_id'] . "' ".
+        $strQuery = "SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . $geozone . "' AND country_id = '" . (int) $address['country_id'] . "' " .
           " AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')";
         $query = $this->db->query($strQuery);
 
@@ -258,8 +307,10 @@ class Pay_Model extends Model {
 
         $company = (isset($address['company'])) ? trim($address['company']) : '';
 
-        if ( ($customerType == 'private' && !empty($company)) ||
-             ($customerType == 'business' && empty($company)) ) {
+        if (
+            ($customerType == 'private' && !empty($company)) ||
+             ($customerType == 'business' && empty($company))
+        ) {
             return false;
         }
 
@@ -269,14 +320,24 @@ class Pay_Model extends Model {
             $iconStyle = $this->config->get('payment_paynl_general_icon_style') ;
             $icon = "<img class='paynl_icon' src=\"https://static.pay.nl/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
 
-            if($iconStyle == 'newest' && !empty($paymentOptions['brand_id'])) {
+            if ($iconStyle == 'newest' && !empty($paymentOptions['brand_id'])) {
                 $style = ' style="width:50px; height:50px;"';
-                switch($iconSize) {
-                    case '20x20': $style = ' style="width:20px; height:20px;"'; break;
-                    case '25x25': $style = ' style="width:25px; height:25px;"'; break;
-                    case '50x50': $style = ' style="width:50px; height:50px;"'; break;
-                    case '75x75': $style = ' style="width:75px; height:75px;"'; break;
-                    case '100x100': $style = ' style="width:100px; height:100px;"'; break;
+                switch ($iconSize) {
+                    case '20x20':
+                        $style = ' style="width:20px; height:20px;"';
+                        break;
+                    case '25x25':
+                        $style = ' style="width:25px; height:25px;"';
+                        break;
+                    case '50x50':
+                        $style = ' style="width:50px; height:50px;"';
+                        break;
+                    case '75x75':
+                        $style = ' style="width:75px; height:75px;"';
+                        break;
+                    case '100x100':
+                        $style = ' style="width:100px; height:100px;"';
+                        break;
                 }
                 $icon = "<img " . $style . " class='paynl_icon' src=\"/image/Pay/" . $paymentOptions['brand_id'] . ".png\"> ";
             }
@@ -289,11 +350,20 @@ class Pay_Model extends Model {
           'sort_order' =>  $this->getConfig('sort_order', $pm));
     }
 
-    public function getLabel() {
-        return $this->config->get('payment_'.$this->_paymentMethodName . '_label');
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->config->get('payment_' . $this->_paymentMethodName . '_label');
     }
 
-    public function isAlreadyPaid($orderId) {
+    /**
+     * @param integer $orderId
+     * @return boolean
+     */
+    public function isAlreadyPaid($orderId)
+    {
         //Because an order can have multiple transactions, we have to look for the status complete in all transactions for this order.
         $orderStatusses = $this->getStatussesOfOrder($orderId);
 
@@ -303,25 +373,30 @@ class Pay_Model extends Model {
         return false;
     }
 
-    public function processTransaction($transactionId) {
+    /**
+     * @param string $transactionId
+     * @return string
+     */
+    public function processTransaction($transactionId)
+    {
         $this->load->model('setting/setting');
         $this->load->model('checkout/order');
 
-        $settings = $this->model_setting_setting->getSetting('payment_'.$this->_paymentMethodName );
+        $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
 
-        $statusPending = $settings['payment_'.$this->_paymentMethodName . '_pending_status'];
-        $statusComplete = $settings['payment_'.$this->_paymentMethodName . '_completed_status'];
-        $statusCanceled = $settings['payment_'.$this->_paymentMethodName . '_canceled_status'];
+        $statusPending = $settings['payment_' . $this->_paymentMethodName . '_pending_status'];
+        $statusComplete = $settings['payment_' . $this->_paymentMethodName . '_completed_status'];
+        $statusCanceled = $settings['payment_' . $this->_paymentMethodName . '_canceled_status'];
 
         $transaction = $this->getTransaction($transactionId);
         $apiInfo = new Pay_Api_Info();
         $apiInfo->setApiToken($this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken'));
         $apiInfo->setServiceId($this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid'));
 
-        if (!empty(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')))){
+        if (!empty(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')))) {
             $apiInfo->setApiBase(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')));
         }
-        
+
         $apiInfo->setTransactionId($transactionId);
 
         $result = $apiInfo->doRequest();
@@ -332,36 +407,38 @@ class Pay_Model extends Model {
         if ($state == 100) {
             $status = self::STATUS_COMPLETE;
             $orderStatusId = $statusComplete;
-        } else if ($state < 0) {
+        } elseif ($state < 0) {
             $status = self::STATUS_CANCELED;
             $orderStatusId = $statusCanceled;
         }
         if ($this->isAlreadyPaid($transaction['orderId'])) {
-            // order is al betaald, 
+            // order is al betaald,
             return self::STATUS_COMPLETE;
         }
 
         //status updaten
         $this->updateTransactionStatus($transactionId, $status);
 
-        $message = "PAY. Updated order to $status.";
+        $message = "Pay. Updated order to $status.";
 
         //order updaten
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
 
-        if($order_info['payment_code'] != $this->_paymentMethodName &&
-           $status == self::STATUS_CANCELED){
+        if (
+            $order_info['payment_code'] != $this->_paymentMethodName &&
+            $status == self::STATUS_CANCELED
+        ) {
             return 'Not cancelling because the last used method is not this method';
         }
 
         if ($order_info['order_status_id'] != $orderStatusId) {
             //alleen updaten als de status daadwerkelijk veranderd, ivm exchange, de order wordt 2 keer aangepast
-            if ($settings['payment_'.$this->_paymentMethodName . '_send_status_updates'] == 1) {
+            if ($settings['payment_' . $this->_paymentMethodName . '_send_status_updates'] == 1) {
                 $send_status_update = true;
             } else {
                 $send_status_update = false;
             }
-            if($order_info['order_status_id'] == 0 && $status != self::STATUS_COMPLETE && !$send_status_update){
+            if ($order_info['order_status_id'] == 0 && $status != self::STATUS_COMPLETE && !$send_status_update) {
                 // hij is nog niet confirmed, we gaan hem alleen opslaan als status complete is
                 return $status;
             }
@@ -370,5 +447,4 @@ class Pay_Model extends Model {
 
         return $status;
     }
-
 }

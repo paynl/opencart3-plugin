@@ -111,7 +111,7 @@ class Pay_Controller_Admin extends Controller
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['test_ip'] = $this->configGet('test_ip');
         $data['display_icon'] = $this->configGet('display_icon');
-        $data['text_edit'] = 'PAY. - ' . $this->_defaultLabel;
+        $data['text_edit'] = 'Pay. - ' . $this->_defaultLabel;
         $data['error_warning'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';

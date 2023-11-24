@@ -2,4 +2,4 @@
 
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Sofortbanking Digital Services';
+$_['heading_title'] = 'Pay. - Sofortbanking Digital Services';

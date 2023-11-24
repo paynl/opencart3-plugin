@@ -1,5 +1,8 @@
 <?php
 
+$_['text_apitoken'] = 'API token';
+$_['text_serviceid'] = 'SL-code';
+
 // Text
 $_['text_payment'] = 'Betaling';
 
@@ -11,7 +14,7 @@ $_['text_success'] = 'Instellingen opgeslagen';
 //errors
 $_['error_not_activated'] = "Deze betaalmethode is niet geactiveerd voor deze dienst. Ga naar  
     <a target='paynl' href='https://admin.pay.nl/programs/programs'>https://admin.pay.nl/programs/programs</a> om dit aan te passen.";
-$_['error_api_error'] = 'De PAY. Api gaf de volgende fout: ';
+$_['error_api_error'] = 'De Pay. Api gaf de volgende fout: ';
 $_['error_error_occurred'] = 'Er is een fout opgetreden: ';
 $_['error_no_apitoken'] = 'U moet een apitokeninvoeren, u vind uw apitokens op: 
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
@@ -19,12 +22,12 @@ $_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId o
     <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
 //texts
-$_['text_register'] = 'Nog geen account bij PAY.? Klik ';
+$_['text_register'] = 'Nog geen account bij Pay.? Klik ';
 $_['text_link_register'] = 'hier';
 $_['link_register'] = 'https://www.pay.nl/registreren';
 $_['text_after_register'] = ' om u aan te melden.';
 
-$_['text_general_settings'] = 'PAY. Algemene instellingen';
+$_['text_general_settings'] = 'Pay. Algemene instellingen';
 $_['text_method_settings'] = 'Betaalmethode instellingen';
 
 $_['text_confirm_start_tooltip'] = 'De order bevestigen bij het starten van de transactie, dus voordat er betaald is. De bevestigingsmail wordt dan ook meteen verstuurd';
@@ -33,7 +36,7 @@ $_['text_send_statusupdates'] = 'Statusupdates versturen';
 $_['text_send_statusupdates_tooltip'] = 'De gebruiker een email sturen als de status van de bestelling veranderd';
 
 $_['text_gateway'] = 'Failover gateway';
-$_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van PAY. een gateway aan u doorgeven om hier in te vullen';
+$_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van Pay. een gateway aan u doorgeven om hier in te vullen';
 
 $_['text_prefix'] = 'Order omschrijving prefix';
 $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit leeg is, zal de omschrijving het ordernummer zijn.';
@@ -73,7 +76,7 @@ $_['text_test_ip'] = 'Test IP Adressen';
 $_['text_test_ip_tooltip'] = "Forceer testmode voor de ingevulde IP adressen, scheid IP's met komma's voor meerdere IP's";
 
 $_['text_testmode'] = 'Testmode';
-$_['text_testmode_tooltip'] = 'Zet de testmode aan of uit om de exchanges te testen tussen PAY. en uw webshop';
+$_['text_testmode_tooltip'] = 'Zet de testmode aan of uit om de exchanges te testen tussen Pay. en uw webshop';
 
 $_['text_status_pending'] = 'Order status wacht op betaling';
 $_['text_status_pending_tooltip'] = 'De status van de order wanneer de betaling is gestart, maar nog niet afgerond';
@@ -97,7 +100,10 @@ $_['text_both'] = 'Beide';
 $_['text_private'] = 'Privé';
 $_['text_business'] = 'Zakelijk';
 
-$_['text_extension'] = 'PAY.';
+$_['text_extension'] = 'Pay.';
+
+$_['text_enabled'] = 'Aan';
+$_['text_disabled'] = 'Uit';
 
 $_['text_suggestions'] = 'Als je een idee hebt voor een functie die je graag terugziet, laat het ons weten!<br/>Na het indienen, wordt deze intern beoordeeld door ons ontwikkelteam.<br/<br/>Zo nodig, nemen wij contact op voor nadere informatie via het opgegeven mailadres<br/>Let op: dit formulier is niet voor Support aanvragen, neem hiervoor contact op met <a href="mailto:support@pay.nl" target="_blank">support@pay.nl</a>.'; // phpcs:ignore
 
@@ -117,7 +123,7 @@ $version = '1.8.0';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
-    src="view/image/payment/main_pay_logo.png" alt="PAY." title="PAY." /></a>' . '<div style="' . $css . '">Version: ' . $version . '</div>';
+    src="view/image/payment/main_pay_logo.png" alt="Pay." title="Pay." /></a>' . '<div style="' . $css . '">Version: ' . $version . '</div>';
 
 $arrPaymentMethods = array(
     'afterpay',

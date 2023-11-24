@@ -247,7 +247,7 @@ class Pay_Controller_Payment extends Controller
                 $optionSub
             );
 
-            $message = 'PAY. Transactie aangemaakt. TransactieId: ' . $result['transaction']['transactionId'] . ' .<br />';
+            $message = 'Pay. Transactie aangemaakt. TransactieId: ' . $result['transaction']['transactionId'] . ' .<br />';
 
             $confirm_on_start = $this->config->get($this->_paymentMethodName . '_confirm_on_start');
             if ($confirm_on_start == 1) {
@@ -256,7 +256,7 @@ class Pay_Controller_Payment extends Controller
 
             $response['success'] = $result['transaction']['paymentURL'];
         } catch (Pay_Api_Exception $e) {
-            $response['error'] = "De PAY. api gaf de volgende fout: " . $e->getMessage();
+            $response['error'] = "De Pay. api gaf de volgende fout: " . $e->getMessage();
         } catch (Pay_Exception $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
         } catch (Exception $e) {

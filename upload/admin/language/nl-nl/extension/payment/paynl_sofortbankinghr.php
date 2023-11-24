@@ -2,4 +2,4 @@
 
 include 'paynl3.php';
 // Heading
-$_['heading_title'] = 'PAY. - Sofortbanking High Risk';
+$_['heading_title'] = 'Pay. - Sofortbanking High Risk';
