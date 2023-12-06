@@ -10,5 +10,5 @@ class ControllerExtensionPaymentPaynlBiller extends Pay_Controller_Admin
     protected $_paymentOptionId = 2931;
     protected $_paymentMethodName = 'paynl_biller';
     protected $_postPayment = true;
-    protected $_defaultLabel = 'Biller';
+    protected $_defaultLabel = 'NOTYD';
 }
