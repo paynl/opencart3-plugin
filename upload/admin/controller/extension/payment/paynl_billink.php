@@ -9,5 +9,5 @@ class ControllerExtensionPaymentPaynlBillink extends Pay_Controller_Admin
     protected $_paymentOptionId = 1672;
     protected $_paymentMethodName = 'paynl_billink';
     protected $_postPayment = true;
-    protected $_defaultLabel = 'Achteraf betalen via Billink';
+    protected $_defaultLabel = 'NOTYD';
 }
