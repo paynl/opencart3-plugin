@@ -240,12 +240,12 @@ class Pay_Controller_Payment extends Controller
             //transactie is aangemaakt, nu loggen
             $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
             $this->$modelName->addTransaction(
-              $result['transaction']['transactionId'],
-              $order_info['order_id'],
-              $this->_paymentOptionId,
-              $amount,
-              $postData,
-              $optionSub
+                $result['transaction']['transactionId'],
+                $order_info['order_id'],
+                $this->_paymentOptionId,
+                $amount,
+                $postData,
+                $optionSub
             );
 
             $message = 'Pay. Transactie aangemaakt. TransactieId: ' . $result['transaction']['transactionId'] . ' .<br />';
