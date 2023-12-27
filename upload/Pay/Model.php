@@ -435,7 +435,7 @@ class Pay_Model extends Model
                 $this->log('No update, returning. Vars:' . print_r(array($order_info['order_status_id'], $status), true));
                 return $status;
             }
-            $this->log('addOrderHistory: ' . array($order_info['order_id'], $orderStatusId, $message, $send_status_update, true));
+            $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $message, $send_status_update), true));
             $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $message, $send_status_update);
         } else {
             $this->log('Not updating  ' . $order_info['order_status_id'] . ' vs ' . $orderStatusId);
