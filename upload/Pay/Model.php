@@ -138,6 +138,18 @@ class Pay_Model extends Model
     }
 
     /**
+     * @param $text
+     * @return void
+     */
+    public function log($text)
+    {
+        if ($this->config->get('payment_paynl_general_logging')) {
+            $log = new Log('pay.log');
+            $log->write($text);
+        }
+    }
+
+    /**
      * @param integer $paymentOptionId
      * @return boolean|array
      */
@@ -374,19 +386,17 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param string $transactionId
+     * @param $transactionId
      * @return string
+     * @throws Pay_Api_Exception
+     * @throws Pay_Exception
      */
     public function processTransaction($transactionId)
     {
         $this->load->model('setting/setting');
         $this->load->model('checkout/order');
-
         $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
-
-        $statusPending = $settings['payment_' . $this->_paymentMethodName . '_pending_status'];
-        $statusComplete = $settings['payment_' . $this->_paymentMethodName . '_completed_status'];
-        $statusCanceled = $settings['payment_' . $this->_paymentMethodName . '_canceled_status'];
+        $this->log('processTransaction ' . $transactionId . ' name: ' . $this->_paymentMethodName . print_r($settings, true));
 
         $transaction = $this->getTransaction($transactionId);
         $apiInfo = new Pay_Api_Info();
@@ -398,51 +408,37 @@ class Pay_Model extends Model
         }
 
         $apiInfo->setTransactionId($transactionId);
-
         $result = $apiInfo->doRequest();
 
-        $state = $result['paymentDetails']['state'];
-        $status = self::STATUS_PENDING;
-        $orderStatusId = $statusPending;
-        if ($state == 100) {
-            $status = self::STATUS_COMPLETE;
-            $orderStatusId = $statusComplete;
-        } elseif ($state < 0) {
-            $status = self::STATUS_CANCELED;
-            $orderStatusId = $statusCanceled;
-        }
-        if ($this->isAlreadyPaid($transaction['orderId'])) {
-            // order is al betaald,
-            return self::STATUS_COMPLETE;
-        }
+        $status = Pay_Helper::getStatus($result['paymentDetails']['state']);
+        $orderStatusId = Pay_Helper::getOrderStatusId($result['paymentDetails']['state'], $settings, $this->_paymentMethodName);
 
-        //status updaten
+        $this->log('pre ' . print_r(array($result['paymentDetails']['state'], $this->_paymentMethodName, $status, $orderStatusId), true));
+
+        # Status update
         $this->updateTransactionStatus($transactionId, $status);
-
         $message = "Pay. Updated order to $status.";
 
-        //order updaten
+        # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
 
-        if (
-            $order_info['payment_code'] != $this->_paymentMethodName &&
-            $status == self::STATUS_CANCELED
-        ) {
+        if ($order_info['payment_code'] != $this->_paymentMethodName && $status == self::STATUS_CANCELED) {
             return 'Not cancelling because the last used method is not this method';
         }
 
         if ($order_info['order_status_id'] != $orderStatusId) {
-            //alleen updaten als de status daadwerkelijk veranderd, ivm exchange, de order wordt 2 keer aangepast
-            if ($settings['payment_' . $this->_paymentMethodName . '_send_status_updates'] == 1) {
-                $send_status_update = true;
-            } else {
-                $send_status_update = false;
-            }
+            # Only update when status is changed
+            $settingSendUpdates = $this->model_setting_setting->getSettingValue('payment_' . $this->_paymentMethodName . '_send_status_updates');
+            $send_status_update = $settingSendUpdates == 1;
             if ($order_info['order_status_id'] == 0 && $status != self::STATUS_COMPLETE && !$send_status_update) {
-                // hij is nog niet confirmed, we gaan hem alleen opslaan als status complete is
+                # not confirmed, only save when completed
+                $this->log('No update, returning. Vars:' . print_r(array($order_info['order_status_id'], $status), true));
                 return $status;
             }
+            $this->log('addOrderHistory: ' . array($order_info['order_id'], $orderStatusId, $message, $send_status_update));
             $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $message, $send_status_update);
+        } else {
+            $this->log('Not updating  ' . $order_info['order_status_id'] . ' vs ' . $orderStatusId);
         }
 
         return $status;

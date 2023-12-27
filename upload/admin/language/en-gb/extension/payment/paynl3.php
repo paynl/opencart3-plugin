@@ -75,6 +75,9 @@ $_['text_current_ip'] = 'Current user IP address: ';
 $_['text_test_ip'] = 'Test IP Address';
 $_['text_test_ip_tooltip'] = 'Forces testmode on these IP addresses, separate IPs by commas for multiple IPs';
 
+$_['text_logging'] = 'Logging';
+$_['text_logging_tooltip'] = "Enable logging";
+
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between Pay. and your webshop';
 

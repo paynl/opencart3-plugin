@@ -75,6 +75,9 @@ $_['text_current_ip'] = 'IP-adres van huidige gebruiker: ';
 $_['text_test_ip'] = 'Test IP Adressen';
 $_['text_test_ip_tooltip'] = "Forceer testmode voor de ingevulde IP adressen, scheid IP's met komma's voor meerdere IP's";
 
+$_['text_logging'] = 'Logging';
+$_['text_logging_tooltip'] = "Schakel logging in";
+
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Zet de testmode aan of uit om de exchanges te testen tussen Pay. en uw webshop';
 
