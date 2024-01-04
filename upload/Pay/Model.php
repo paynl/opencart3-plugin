@@ -244,7 +244,7 @@ class Pay_Model extends Model
         $orderStatusses = self::getStatussesOfOrder($transaction['orderId']);
 
         if (in_array(self::STATUS_COMPLETE, $orderStatusses) && $status != self::STATUS_COMPLETE) {
-            throw new Pay_Exception('Order already complete');
+            die("TRUE|already paid");
         }
 
 

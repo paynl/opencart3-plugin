@@ -27,6 +27,8 @@ class Pay_Api_Start extends Pay_Api
 
     private $_testmode;
 
+    private $_orderNumber;
+
     private $_products = array();
 
     /**
@@ -90,6 +92,15 @@ class Pay_Api_Start extends Pay_Api
     public function setTestmode($testmode)
     {
         $this->_testmode = $testmode;
+    }
+
+    /**
+     * @param $orderNumber
+     * @return void
+     */
+    public function setOrderNumber($orderNumber)
+    {
+        $this->_orderNumber = $orderNumber;
     }
 
     /**
@@ -332,6 +343,10 @@ class Pay_Api_Start extends Pay_Api
 
         if (!empty($this->_testmode)) {
             $data['testMode'] = $this->_testmode;
+        }
+
+        if (!empty($this->_orderNumber)) {
+            $data['transaction']['orderNumber'] = $this->_orderNumber;
         }
 
 
