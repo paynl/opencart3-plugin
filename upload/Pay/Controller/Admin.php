@@ -57,6 +57,10 @@ class Pay_Controller_Admin extends Controller
         $settings = array_merge($settings, $this->request->post);
         $reqMethod = $this->request->server['REQUEST_METHOD'];
 
+        if ((!empty($this->request->get['downloadlogs']) ? $this->request->get['downloadlogs'] : false)) {
+            $this->downloadLogs();
+        }
+
         if ($reqMethod == 'POST') {
             $generalValid = $this->validateGeneral();
 
@@ -375,5 +379,40 @@ class Pay_Controller_Admin extends Controller
             'version' => $response,
         );
         die(json_encode($returnarray));
+    }
+
+    /**
+     * @return void
+     */
+    private function downloadLogs()
+    {
+        if (file_exists(DIR_LOGS)) {
+            if (class_exists('ZipArchive') && is_writable(DIR_LOGS)) {
+                $file = DIR_LOGS . '/logs.zip';
+                $zipArchive = new ZipArchive();
+                $zipArchive->open($file, (ZipArchive::CREATE | ZipArchive::OVERWRITE));
+                if (file_exists(DIR_LOGS . 'error.log')) {
+                    $zipArchive->addFile(DIR_LOGS . 'error.log', 'error.log');
+                }
+                if (file_exists(DIR_LOGS . 'pay.log')) {
+                    $zipArchive->addFile(DIR_LOGS . 'pay.log', 'pay.log');
+                }
+                $zipArchive->close();
+            } else {
+                $file = DIR_LOGS . '/pay.log';
+            }
+            if (file_exists($file)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($file));
+                readfile($file);
+                unlink(DIR_LOGS . '/logs.zip');
+                exit;
+            }
+        }
     }
 }
