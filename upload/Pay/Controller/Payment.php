@@ -12,9 +12,7 @@ class Pay_Controller_Payment extends Controller
     public function index()
     {
         $this->load->language('extension/payment/paynl3');
-
         $this->data['text_choose_bank'] = $this->language->get('text_choose_bank');
-
         $this->data['button_confirm'] = $this->language->get('button_confirm');
         $this->data['button_loading'] = $this->language->get('text_loading');
 
@@ -61,8 +59,9 @@ class Pay_Controller_Payment extends Controller
     public function startTransaction()
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
-
         $this->load->model('checkout/order');
+        $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
+
         $statusPending = $this->config->get('payment_' . $this->_paymentMethodName . '_pending_status');
 
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -70,6 +69,8 @@ class Pay_Controller_Payment extends Controller
         $currency_value = $order_info['currency_value'];
         $response = array();
         try {
+            $this->$modelName->log('start payment : ' . $this->_paymentMethodName);
+
             $apiStart = new Pay_Api_Start();
             $apiStart->setApiToken($this->config->get('payment_paynl_general_apitoken'));
             $apiStart->setServiceId($this->config->get('payment_paynl_general_serviceid'));
@@ -193,9 +194,9 @@ class Pay_Controller_Payment extends Controller
             $totals = array();
             $total = 0;
             $arrTotals = array(
-                'totals' => &$totals,
-                'taxes' => &$taxes,
-                'total' => &$total
+              'totals' => &$totals,
+              'taxes' => &$taxes,
+              'total' => &$total
             );
             $taxesForTotals = array();
             foreach ($results as $result) {
@@ -273,14 +274,9 @@ class Pay_Controller_Payment extends Controller
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
 
-        $transactionId = $this->request->get['orderId'];
+        $orderStatusId = $this->request->get['orderStatusId'];
 
-        $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-        try {
-            $status = $this->$modelName->processTransaction($transactionId);
-        } catch (Exception $e) {
-            // we doen er niks mee, want redirecten moeten we sowieso.
-        }
+        $status = Pay_Helper::getStatus($orderStatusId);
 
         if (isset($status) && ($status == Pay_Model::STATUS_COMPLETE || $status == Pay_Model::STATUS_PENDING)) {
             header("Location: " . $this->url->link('checkout/success'));
@@ -306,16 +302,21 @@ class Pay_Controller_Payment extends Controller
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
 
-        $transactionId = $_REQUEST['order_id'];
+        $transactionId = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : null;
+        $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
+
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-        if ($_REQUEST['action'] == 'pending') {
+        if ($action == 'pending') {
             $message = 'ignoring PENDING';
             die("TRUE|" . $message);
-        } elseif (substr($_REQUEST['action'], 0, 6) == 'refund') {
+        } elseif (empty($transactionId)) {
+            die("TRUE|ignoring, invalid arguments");
+        } elseif (substr($action, 0, 6) == 'refund') {
             $message = 'ignoring REFUND';
             die("TRUE|" . $message);
         } else {
             try {
+                $this->$modelName->log('Exchange: ' . $action . ' transactionId: ' . $transactionId);
                 $status = $this->$modelName->processTransaction($transactionId);
                 $message = "Status updated to $status";
                 die("TRUE|" . $message);

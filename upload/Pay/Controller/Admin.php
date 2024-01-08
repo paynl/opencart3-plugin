@@ -79,6 +79,7 @@ class Pay_Controller_Admin extends Controller
                   'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style'],
                   'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
                   'payment_paynl_general_test_ip' => $settings['payment_paynl_general_test_ip'],
+                  'payment_paynl_general_logging' => $settings['payment_paynl_general_logging'],
                 );
                 $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
@@ -110,6 +111,7 @@ class Pay_Controller_Admin extends Controller
         $data['icon_style'] = $this->configGet('icon_style');
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['test_ip'] = $this->configGet('test_ip');
+        $data['logging'] = $this->configGet('logging');
         $data['display_icon'] = $this->configGet('display_icon');
         $data['text_edit'] = 'Pay. - ' . $this->_defaultLabel;
         $data['error_warning'] = '';
@@ -270,7 +272,8 @@ class Pay_Controller_Admin extends Controller
                 'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
                 'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style'),
                 'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url'),
-                'payment_paynl_general_test_ip' => $this->config->get('payment_paynl_general_test_ip')
+                'payment_paynl_general_test_ip' => $this->config->get('payment_paynl_general_test_ip'),
+                'payment_paynl_general_logging' => $this->config->get('payment_paynl_general_logging')
             );
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
