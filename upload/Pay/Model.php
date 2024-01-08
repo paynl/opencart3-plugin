@@ -143,7 +143,7 @@ class Pay_Model extends Model
      */
     public function log($text)
     {
-        if ($this->config->get('payment_paynl_general_logging')) {
+        if ($this->config->get('payment_paynl_general_logging') !== '0') {
             $log = new Log('pay.log');
             $log->write($text);
         }
