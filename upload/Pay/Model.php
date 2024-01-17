@@ -5,6 +5,7 @@ class Pay_Model extends Model
     const STATUS_PENDING = 'PENDING'; // phpcs:ignore
     const STATUS_CANCELED = 'CANCELED'; // phpcs:ignore
     const STATUS_COMPLETE = 'COMPLETE'; // phpcs:ignore
+    const STATUS_REFUNDED = 'REFUNDED'; // phpcs:ignore
 
     protected $_paymentOptionId;
 
@@ -242,7 +243,7 @@ class Pay_Model extends Model
      */
     public function updateTransactionStatus($transactionId, $status)
     {
-        if (!in_array($status, array(self::STATUS_CANCELED, self::STATUS_COMPLETE, self::STATUS_PENDING))) {
+        if (!in_array($status, array(self::STATUS_CANCELED, self::STATUS_COMPLETE, self::STATUS_PENDING, self::STATUS_REFUNDED))) {
             throw new Pay_Exception('Invalid transaction status');
         }
         //safety so processed orders cannot go to canceled
@@ -256,7 +257,10 @@ class Pay_Model extends Model
         $orderStatusses = self::getStatussesOfOrder($transaction['orderId']);
 
         if (in_array(self::STATUS_COMPLETE, $orderStatusses) && $status != self::STATUS_COMPLETE) {
-            throw new Pay_Exception('Order already complete');
+            if ($status != self::STATUS_REFUNDED) {
+                var_dump($status);
+                throw new Pay_Exception('Order already complete');
+            }
         }
 
 

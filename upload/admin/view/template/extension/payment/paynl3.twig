@@ -111,6 +111,25 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="payment_paynl_general_refund_processing">
+                            <span data-toggle="tooltip" title="{{ text_refund_processing_tooltip }}">
+                                {{ text_refund_processing }}
+                            </span></label>
+                        <div class="col-sm-10">
+                            <select name="payment_paynl_general_refund_processing"
+                                    id="payment_paynl_general_refund_processing" class="form-control">
+                                {% if refund_processing %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_display_icon">
                             <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">{{ text_display_icon }}</span>
                         </label>
@@ -349,6 +368,21 @@
                                 {% for order_status in order_statuses %}
                                     <option value="{{ order_status.order_status_id }}"
                                             {{ order_status.order_status_id == canceled_status?'selected="selected"':'' }}>
+                                        {{ order_status.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="{{ payment_method_name }}_refunded_status"><span
+                                    data-toggle="tooltip"
+                                    title="{{ text_status_refunded_tooltip }}">{{ text_status_refunded }}</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_refunded_status">
+                                {% for order_status in order_statuses %}
+                                    <option value="{{ order_status.order_status_id }}"
+                                            {{ order_status.order_status_id == refunded_status?'selected="selected"':'' }}>
                                         {{ order_status.name }}
                                     </option>
                                 {% endfor %}

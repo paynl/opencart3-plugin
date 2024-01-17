@@ -106,6 +106,8 @@ class Pay_Helper
         $status = Pay_Model::STATUS_PENDING;
         if ($payState == 100) {
             $status = Pay_Model::STATUS_COMPLETE;
+        } elseif ($payState == -81) {
+            $status = Pay_Model::STATUS_REFUNDED;
         } elseif ($payState < 0) {
             $status = Pay_Model::STATUS_CANCELED;
         }

@@ -313,6 +313,11 @@ class Pay_Controller_Payment extends Controller
             die("TRUE|ignoring, invalid arguments");
         } elseif (substr($action, 0, 6) == 'refund') {
             $message = 'ignoring REFUND';
+
+            if ($this->config->get('payment_paynl_general_refund_processing')){
+                $status = $this->$modelName->processTransaction($transactionId);
+                $message = "Status updated to $status";
+            }
             die("TRUE|" . $message);
         } else {
             try {
