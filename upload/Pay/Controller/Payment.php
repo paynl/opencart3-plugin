@@ -314,7 +314,7 @@ class Pay_Controller_Payment extends Controller
         } elseif (substr($action, 0, 6) == 'refund') {
             $message = 'ignoring REFUND';
 
-            if ($this->config->get('payment_paynl_general_refund_processing')){
+            if ($this->config->get('payment_paynl_general_refund_processing')) {
                 $status = $this->$modelName->processTransaction($transactionId);
                 $message = "Status updated to $status";
             }
