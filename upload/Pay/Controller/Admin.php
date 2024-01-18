@@ -79,6 +79,7 @@ class Pay_Controller_Admin extends Controller
                   'payment_paynl_general_testmode' => $settings['payment_paynl_general_testmode'],
                   'payment_paynl_general_gateway' => trim($settings['payment_paynl_general_gateway']),
                   'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
+                  'payment_paynl_general_refund_processing' => $settings['payment_paynl_general_refund_processing'],
                   'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
                   'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style'],
                   'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
@@ -112,6 +113,7 @@ class Pay_Controller_Admin extends Controller
         $data['testmode'] = $this->configGet('testmode');
         $data['gateway'] = $this->configGet('gateway');
         $data['prefix'] = $this->configGet('prefix');
+        $data['refund_processing'] = $this->configGet('refund_processing');
         $data['icon_style'] = $this->configGet('icon_style');
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['test_ip'] = $this->configGet('test_ip');
@@ -152,6 +154,7 @@ class Pay_Controller_Admin extends Controller
         $data['send_status_updates'] = !isset($data['send_status_updates']) ? '1' : $data['send_status_updates'];
         $data['completed_status'] = empty($data['completed_status']) ? 2 : $data['completed_status'];
         $data['canceled_status'] = empty($data['canceled_status']) ? 7 : $data['canceled_status'];
+        $data['refunded_status'] = empty($data['refunded_status']) ? 11 : $data['refunded_status'];
         $data['pending_status'] = empty($data['pending_status']) ? 1 : $data['pending_status'];
         $data['heading_title'] = $this->document->getTitle();
 
@@ -273,6 +276,7 @@ class Pay_Controller_Admin extends Controller
                 'payment_paynl_general_testmode' => $this->config->get('payment_paynl_general_testmode'),
                 'payment_paynl_general_gateway' => $this->config->get('payment_paynl_general_gateway'),
                 'payment_paynl_general_prefix' => 'Order ',
+                'payment_paynl_general_refund_processing' => $this->config->get('payment_paynl_general_refund_processing'),
                 'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
                 'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style'),
                 'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url'),
