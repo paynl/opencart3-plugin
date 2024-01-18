@@ -57,6 +57,10 @@ class Pay_Controller_Admin extends Controller
         $settings = array_merge($settings, $this->request->post);
         $reqMethod = $this->request->server['REQUEST_METHOD'];
 
+        if ((!empty($this->request->get['downloadlogs']) ? $this->request->get['downloadlogs'] : false)) {
+            $this->downloadLogs();
+        }
+
         if ($reqMethod == 'POST') {
             $generalValid = $this->validateGeneral();
 
@@ -75,10 +79,12 @@ class Pay_Controller_Admin extends Controller
                   'payment_paynl_general_testmode' => $settings['payment_paynl_general_testmode'],
                   'payment_paynl_general_gateway' => trim($settings['payment_paynl_general_gateway']),
                   'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
+                  'payment_paynl_general_refund_processing' => $settings['payment_paynl_general_refund_processing'],
                   'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
                   'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style'],
                   'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
                   'payment_paynl_general_test_ip' => $settings['payment_paynl_general_test_ip'],
+                  'payment_paynl_general_logging' => $settings['payment_paynl_general_logging'],
                 );
                 $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
@@ -107,9 +113,11 @@ class Pay_Controller_Admin extends Controller
         $data['testmode'] = $this->configGet('testmode');
         $data['gateway'] = $this->configGet('gateway');
         $data['prefix'] = $this->configGet('prefix');
+        $data['refund_processing'] = $this->configGet('refund_processing');
         $data['icon_style'] = $this->configGet('icon_style');
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['test_ip'] = $this->configGet('test_ip');
+        $data['logging'] = $this->configGet('logging');
         $data['display_icon'] = $this->configGet('display_icon');
         $data['text_edit'] = 'Pay. - ' . $this->_defaultLabel;
         $data['error_warning'] = '';
@@ -146,6 +154,7 @@ class Pay_Controller_Admin extends Controller
         $data['send_status_updates'] = !isset($data['send_status_updates']) ? '1' : $data['send_status_updates'];
         $data['completed_status'] = empty($data['completed_status']) ? 2 : $data['completed_status'];
         $data['canceled_status'] = empty($data['canceled_status']) ? 7 : $data['canceled_status'];
+        $data['refunded_status'] = empty($data['refunded_status']) ? 11 : $data['refunded_status'];
         $data['pending_status'] = empty($data['pending_status']) ? 1 : $data['pending_status'];
         $data['heading_title'] = $this->document->getTitle();
 
@@ -267,10 +276,12 @@ class Pay_Controller_Admin extends Controller
                 'payment_paynl_general_testmode' => $this->config->get('payment_paynl_general_testmode'),
                 'payment_paynl_general_gateway' => $this->config->get('payment_paynl_general_gateway'),
                 'payment_paynl_general_prefix' => 'Order ',
+                'payment_paynl_general_refund_processing' => $this->config->get('payment_paynl_general_refund_processing'),
                 'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
                 'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style'),
                 'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url'),
-                'payment_paynl_general_test_ip' => $this->config->get('payment_paynl_general_test_ip')
+                'payment_paynl_general_test_ip' => $this->config->get('payment_paynl_general_test_ip'),
+                'payment_paynl_general_logging' => $this->config->get('payment_paynl_general_logging')
             );
             $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
@@ -372,5 +383,40 @@ class Pay_Controller_Admin extends Controller
             'version' => $response,
         );
         die(json_encode($returnarray));
+    }
+
+    /**
+     * @return void
+     */
+    private function downloadLogs()
+    {
+        if (file_exists(DIR_LOGS)) {
+            if (class_exists('ZipArchive') && is_writable(DIR_LOGS)) {
+                $file = DIR_LOGS . '/logs.zip';
+                $zipArchive = new ZipArchive();
+                $zipArchive->open($file, (ZipArchive::CREATE | ZipArchive::OVERWRITE));
+                if (file_exists(DIR_LOGS . 'error.log')) {
+                    $zipArchive->addFile(DIR_LOGS . 'error.log', 'error.log');
+                }
+                if (file_exists(DIR_LOGS . 'pay.log')) {
+                    $zipArchive->addFile(DIR_LOGS . 'pay.log', 'pay.log');
+                }
+                $zipArchive->close();
+            } else {
+                $file = DIR_LOGS . '/pay.log';
+            }
+            if (file_exists($file)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($file));
+                readfile($file);
+                unlink(DIR_LOGS . '/logs.zip');
+                exit;
+            }
+        }
     }
 }

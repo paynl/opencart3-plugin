@@ -98,6 +98,47 @@ class Pay_Helper
     }
 
     /**
+     * @param $payState
+     * @return string
+     */
+    public static function getStatus($payState)
+    {
+        $status = Pay_Model::STATUS_PENDING;
+        if ($payState == 100) {
+            $status = Pay_Model::STATUS_COMPLETE;
+        } elseif ($payState == -81) {
+            $status = Pay_Model::STATUS_REFUNDED;
+        } elseif ($payState < 0) {
+            $status = Pay_Model::STATUS_CANCELED;
+        }
+        return $status;
+    }
+
+    /**
+     * @param $payState
+     * @param $settings
+     * @param $name
+     * @return mixed
+     */
+    public static function getOrderStatusId($payState, $settings, $name)
+    {
+        $statusPending = $settings['payment_' . $name . '_pending_status'];
+        $statusComplete = $settings['payment_' . $name . '_completed_status'];
+        $statusCanceled = $settings['payment_' . $name . '_canceled_status'];
+        $statusRefunded = $settings['payment_' . $name . '_refunded_status'];
+
+        $orderStatusId = $statusPending;
+        if ($payState == 100) {
+            $orderStatusId = $statusComplete;
+        } elseif ($payState == -81) {
+            $orderStatusId = empty($statusRefunded) ? 11 : $statusRefunded;
+        } elseif ($payState < 0) {
+            $orderStatusId = $statusCanceled;
+        }
+        return $orderStatusId;
+    }
+
+    /**
      * Determine the tax class to send to Pay.
      *
      * @param integer|float $amountInclTax

@@ -39,8 +39,7 @@
                 </p>
             </div>
             <div class="panel-body">
-                <form action="{{ action }}" method="post" class="form-horizontal"
-                      enctype="multipart/form-data" id="form-pay">
+                <form action="{{ action }}" method="post" class="form-horizontal" enctype="multipart/form-data" id="form-pay">
                     <input id="ajax_url" type="hidden" class="form-control" name="ajax_url" value="{{ action }}"/>
                     <div class="form-group">
                         <div class="panel-heading" style="border-top: 1px solid #dcdcdc;">
@@ -64,33 +63,27 @@
                     <div class="form-group required">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_apitoken">{{ text_apitoken }}</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" name="payment_paynl_general_apitoken"
-                                   value="{{ apitoken }}"/>
+                            <input type="password" class="form-control" name="payment_paynl_general_apitoken" value="{{ apitoken }}"/>
                             {% if error_apitoken %}
                                 <div class="text-danger">{{ error_apitoken }}</div>
                             {% endif %}
                         </div>
                     </div>
                     <div class="form-group required">
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_serviceid">{{ text_serviceid }}</label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_serviceid">{{ text_serviceid }}</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_serviceid"
-                                   value="{{ serviceid }}"/>
+                            <input type="text" class="form-control" name="payment_paynl_general_serviceid" value="{{ serviceid }}"/>
                             {% if error_apitoken %}
                                 <div class="text-danger">{{ error_apitoken }}</div>
                             {% endif %}
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_testmode">
-                            <span data-toggle="tooltip" title="{{ text_testmode_tooltip }}">
-                                {{ text_testmode }}
-                            </span></label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_testmode">
+                            <span data-toggle="tooltip" title="{{ text_testmode_tooltip }}">{{ text_testmode }}</span>
+                        </label>
                         <div class="col-sm-10">
-                            <select name="payment_paynl_general_testmode"
-                                    id="payment_paynl_general_testmode" class="form-control">
+                            <select name="payment_paynl_general_testmode" id="payment_paynl_general_testmode" class="form-control">
                                 {% if testmode %}
                                     <option value="1" selected="selected">{{ text_enabled }}</option>
                                     <option value="0">{{ text_disabled }}</option>
@@ -102,33 +95,44 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_gateway">
-                            <span data-toggle="tooltip" title="{{ text_gateway_tooltip }}">
-                                {{ text_gateway }}
-                            </span></label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_gateway">
+                            <span data-toggle="tooltip" title="{{ text_gateway_tooltip }}">{{ text_gateway }}</span>
+                        </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_gateway"
-                                   value="{{ gateway }}"/>
+                            <input type="text" class="form-control" name="payment_paynl_general_gateway" value="{{ gateway }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_prefix">
+                            <span data-toggle="tooltip" title="{{ text_prefix_tooltip }}">{{ text_prefix }}</span>
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="payment_paynl_general_prefix" value="{{ prefix }}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_prefix">
-                            <span data-toggle="tooltip" title="{{ text_prefix_tooltip }}">
-                                {{ text_prefix }}
+                               for="payment_paynl_general_refund_processing">
+                            <span data-toggle="tooltip" title="{{ text_refund_processing_tooltip }}">
+                                {{ text_refund_processing }}
                             </span></label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_prefix"
-                                   value="{{ prefix }}"/>
+                            <select name="payment_paynl_general_refund_processing"
+                                    id="payment_paynl_general_refund_processing" class="form-control">
+                                {% if refund_processing %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_display_icon">
-                            <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">
-                                {{ text_display_icon }}
-                            </span></label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_display_icon">
+                            <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">{{ text_display_icon }}</span>
+                        </label>
                         <div class="col-sm-10">
                             <select class="form-control" name="payment_paynl_general_display_icon">
                                 <option value="" {{ display_icon == '' ? 'selected="selected"': '' }}>{{ text_disabled }}</option>
@@ -141,11 +145,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_icon_style">
-                            <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">
-                                {{ text_icon_style }}
-                            </span></label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_icon_style">
+                            <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">{{ text_icon_style }}</span>
+                        </label>
                         <div class="col-sm-10">
                             <select class="form-control" name="payment_paynl_general_icon_style">
                                 <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
@@ -154,28 +156,44 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_custom_exchange_url">
-                            <span data-toggle="tooltip" title="{{ text_custom_exchange_url_tooltip }}">
-                                {{ text_custom_exchange_url }}
-                            </span></label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
+                            <span data-toggle="tooltip" title="{{ text_custom_exchange_url_tooltip }}">{{ text_custom_exchange_url }}</span>
+                        </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_custom_exchange_url"
-                                   value="{{ custom_exchange_url }}"/>
+                            <input type="text" class="form-control" name="payment_paynl_general_custom_exchange_url" value="{{ custom_exchange_url }}"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-10 col-sm-offset-2">
-                            {{ text_current_ip }}{{ current_IP }}
-                        </div>
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_test_ip">
-                            <span data-toggle="tooltip" title="{{ text_test_ip_tooltip }}">
-                                {{ text_test_ip }}
-                            </span></label>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
+                            <span data-toggle="tooltip" title="{{ text_logging_tooltip }}">{{ text_logging }}</span>
+                        </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_test_ip"
-                                   value="{{ test_ip }}"/>
+                            <select name="payment_paynl_general_logging" id="payment_paynl_general_logging" class="form-control">
+                                {% if logging == 0 %}
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>                                    
+                                {% else %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="payment_paynl_logs">Download logs</label>
+                        <div class="col-sm-10">
+                            <div class="version">                                
+                                <a id="download_logs" class="btn btn-primary" href="{{ action }}&downloadlogs=1" target="_BLANK">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">{{ text_current_ip }}{{ current_IP }}</div>
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_test_ip">
+                            <span data-toggle="tooltip" title="{{ text_test_ip_tooltip }}">{{ text_test_ip }}</span>
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="payment_paynl_general_test_ip" value="{{ test_ip }}"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -350,6 +368,21 @@
                                 {% for order_status in order_statuses %}
                                     <option value="{{ order_status.order_status_id }}"
                                             {{ order_status.order_status_id == canceled_status?'selected="selected"':'' }}>
+                                        {{ order_status.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="{{ payment_method_name }}_refunded_status"><span
+                                    data-toggle="tooltip"
+                                    title="{{ text_status_refunded_tooltip }}">{{ text_status_refunded }}</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_refunded_status">
+                                {% for order_status in order_statuses %}
+                                    <option value="{{ order_status.order_status_id }}"
+                                            {{ order_status.order_status_id == refunded_status?'selected="selected"':'' }}>
                                         {{ order_status.name }}
                                     </option>
                                 {% endfor %}

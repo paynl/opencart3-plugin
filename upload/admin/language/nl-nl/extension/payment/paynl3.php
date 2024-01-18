@@ -41,6 +41,9 @@ $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van Pay. een gate
 $_['text_prefix'] = 'Order omschrijving prefix';
 $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit leeg is, zal de omschrijving het ordernummer zijn.';
 
+$_['text_refund_processing'] = 'Verwerking terugbetaling';
+$_['text_refund_processing_tooltip'] = 'Verwerk terugbetalingen die gestart zijn vanuit Pay.';
+
 $_['text_coc'] = 'Toon KVK nummer veld';
 $_['text_coc_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun KVK nummer in te voeren voordat ze de transactie afmaken';
 $_['text_coc_disabled'] = 'nee';
@@ -75,6 +78,9 @@ $_['text_current_ip'] = 'IP-adres van huidige gebruiker: ';
 $_['text_test_ip'] = 'Test IP Adressen';
 $_['text_test_ip_tooltip'] = "Forceer testmode voor de ingevulde IP adressen, scheid IP's met komma's voor meerdere IP's";
 
+$_['text_logging'] = 'Logging';
+$_['text_logging_tooltip'] = "Schakel logging in";
+
 $_['text_testmode'] = 'Testmode';
 $_['text_testmode_tooltip'] = 'Zet de testmode aan of uit om de exchanges te testen tussen Pay. en uw webshop';
 
@@ -84,6 +90,8 @@ $_['text_status_complete'] = 'Order status betaling voltooid';
 $_['text_status_complete_tooltip'] = 'De status die het order moet krijgen nadat de betaling succesvol is ontvangen';
 $_['text_status_canceled'] = 'Order status geannuleerd';
 $_['text_status_canceled_tooltip'] = 'De status die het order moet krijgen nadat de betaling is geannuleerd';
+$_['text_status_refunded'] = 'Order status terugbetaald';
+$_['text_status_refunded_tooltip'] = 'De status die het order moet krijgen nadat de betaling is terugbetaald';
 $_['text_minimum_amount'] = 'Minimaal order bedrag';
 $_['text_maximum_amount'] = 'Maximaal order bedrag';
 $_['text_payment_instructions'] = 'Instructies';
