@@ -125,10 +125,13 @@ class Pay_Helper
         $statusPending = $settings['payment_' . $name . '_pending_status'];
         $statusComplete = $settings['payment_' . $name . '_completed_status'];
         $statusCanceled = $settings['payment_' . $name . '_canceled_status'];
+        $statusRefunded = $settings['payment_' . $name . '_refunded_status'];
 
         $orderStatusId = $statusPending;
         if ($payState == 100) {
             $orderStatusId = $statusComplete;
+        } elseif ($payState == -81) {
+            $orderStatusId = $statusRefunded;
         } elseif ($payState < 0) {
             $orderStatusId = $statusCanceled;
         }

@@ -154,6 +154,7 @@ class Pay_Controller_Admin extends Controller
         $data['send_status_updates'] = !isset($data['send_status_updates']) ? '1' : $data['send_status_updates'];
         $data['completed_status'] = empty($data['completed_status']) ? 2 : $data['completed_status'];
         $data['canceled_status'] = empty($data['canceled_status']) ? 7 : $data['canceled_status'];
+        $data['refunded_status'] = empty($data['canceled_status']) ? 7 : $data['refunded_status'];
         $data['pending_status'] = empty($data['pending_status']) ? 1 : $data['pending_status'];
         $data['heading_title'] = $this->document->getTitle();
 
