@@ -258,7 +258,6 @@ class Pay_Model extends Model
 
         if (in_array(self::STATUS_COMPLETE, $orderStatusses) && $status != self::STATUS_COMPLETE) {
             if ($status != self::STATUS_REFUNDED) {
-                var_dump($status);
                 throw new Pay_Exception('Order already complete');
             }
         }
