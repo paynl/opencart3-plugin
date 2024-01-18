@@ -131,7 +131,7 @@ class Pay_Helper
         if ($payState == 100) {
             $orderStatusId = $statusComplete;
         } elseif ($payState == -81) {
-            $orderStatusId = $statusRefunded;
+            $orderStatusId = empty($statusRefunded) ? 11 : $statusRefunded;
         } elseif ($payState < 0) {
             $orderStatusId = $statusCanceled;
         }
