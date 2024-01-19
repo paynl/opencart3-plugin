@@ -5,7 +5,7 @@
 
 # Description
 
-With the Pay. plugin you can easily add different payment methods to your OpenCart 3 webshop. You can go to https://www.pay.nl (Dutch) for an overview of all our features and services, you can also visit https://docs.pay.nl/plugins#opencart-three for more documentation of our plugin.
+The Pay. plugin provides a large number of payment methods for your OpenCart 3 webshop. Go to https://www.pay.nl (Dutch) for an overview of all our features and services, or visit https://docs.pay.nl/plugins#opencart-three for more documentation of our plugin.
 
 - [Description](#description)
 - [Available payment methods](#available-payment-methods)
