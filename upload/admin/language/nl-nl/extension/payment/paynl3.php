@@ -127,7 +127,7 @@ $_['text_suggestions_submit'] = 'Verstuur';
 $_['text_suggestions_success_modal'] = 'Verstuurd! Bedankt voor het delen van jouw input.';
 $_['text_suggestions_fail_modal'] = 'E-mail kon niet worden verzonden. Probeer het later opnieuw.';
 
-$version = '1.8.2';
+$version = '1.9.0';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
