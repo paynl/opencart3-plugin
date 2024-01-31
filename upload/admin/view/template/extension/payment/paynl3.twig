@@ -95,14 +95,6 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_gateway">
-                            <span data-toggle="tooltip" title="{{ text_gateway_tooltip }}">{{ text_gateway }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_gateway" value="{{ gateway }}"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_prefix">
                             <span data-toggle="tooltip" title="{{ text_prefix_tooltip }}">{{ text_prefix }}</span>
                         </label>
@@ -111,6 +103,18 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2" id="show_advanced_settings">{{ text_advanced_settings }} <span class="advanced_button">[+]</span></label>
+                        <div class="col-sm-10"></div>
+                    </div>
+                    <div class="form-group advanced_settings">
+                        <label class="col-sm-2 control-label" for="payment_paynl_general_gateway">
+                            <span data-toggle="tooltip" title="{{ text_gateway_tooltip }}">{{ text_gateway }}</span>
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="payment_paynl_general_gateway" value="{{ gateway }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label"
                                for="payment_paynl_general_refund_processing">
                             <span data-toggle="tooltip" title="{{ text_refund_processing_tooltip }}">
@@ -129,7 +133,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_display_icon">
                             <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">{{ text_display_icon }}</span>
                         </label>
@@ -144,7 +148,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_icon_style">
                             <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">{{ text_icon_style }}</span>
                         </label>
@@ -155,7 +159,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
                             <span data-toggle="tooltip" title="{{ text_custom_exchange_url_tooltip }}">{{ text_custom_exchange_url }}</span>
                         </label>
@@ -163,7 +167,7 @@
                             <input type="text" class="form-control" name="payment_paynl_general_custom_exchange_url" value="{{ custom_exchange_url }}"/>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
                             <span data-toggle="tooltip" title="{{ text_logging_tooltip }}">{{ text_logging }}</span>
                         </label>
@@ -179,7 +183,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label" for="payment_paynl_logs">Download logs</label>
                         <div class="col-sm-10">
                             <div class="version">                                
@@ -187,7 +191,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group advanced_settings">
                         <div class="col-sm-10 col-sm-offset-2">{{ text_current_ip }}{{ current_IP }}</div>
                         <label class="col-sm-2 control-label" for="payment_paynl_general_test_ip">
                             <span data-toggle="tooltip" title="{{ text_test_ip_tooltip }}">{{ text_test_ip }}</span>

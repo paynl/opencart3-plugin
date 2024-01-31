@@ -28,3 +28,8 @@
 .payHide {
     display: none;
 }
+
+#show_advanced_settings{
+    cursor: pointer;
+    text-align: right;
+}

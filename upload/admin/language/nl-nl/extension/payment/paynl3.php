@@ -41,6 +41,8 @@ $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van Pay. een gate
 $_['text_prefix'] = 'Order omschrijving prefix';
 $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit leeg is, zal de omschrijving het ordernummer zijn.';
 
+$_['text_advanced_settings'] = 'Toon geavanceerde instellingen';
+
 $_['text_refund_processing'] = 'Verwerking terugbetaling';
 $_['text_refund_processing_tooltip'] = 'Verwerk terugbetalingen die gestart zijn vanuit Pay.';
 

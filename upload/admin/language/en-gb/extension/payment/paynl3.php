@@ -41,6 +41,8 @@ $_['text_gateway_tooltip'] = 'Only fill this in when we at Pay. provide you with
 $_['text_prefix'] = 'Order description prefix';
 $_['text_prefix_tooltip'] = 'Change the order description prefix here. If left empty the order description will just be the order number.';
 
+$_['text_advanced_settings'] = 'Show advanced settings';
+
 $_['text_refund_processing'] = 'Refund processing';
 $_['text_refund_processing_tooltip'] = 'Process refunds that are initiated in My.pay';
 

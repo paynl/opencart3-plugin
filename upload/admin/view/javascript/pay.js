@@ -88,4 +88,11 @@ jQuery(document).ready(function () {
             });
         }, 750);
     });
+
+    jQuery(".advanced_settings").hide();
+    jQuery("#show_advanced_settings").click(function (){
+        jQuery(".advanced_settings").toggle();
+        var buttonText = $(".advanced_settings").is(":visible") ? "[-]" : "[+]";
+        jQuery(".advanced_button").text(buttonText);
+    });
 });
