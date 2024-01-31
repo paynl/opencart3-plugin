@@ -1,7 +1,7 @@
 <?php
 
 $_['text_apitoken'] = 'jeton API';
-$_['text_serviceid'] = 'SL-code';
+$_['text_serviceid'] = 'Service';
 
 // Text
 $_['text_payment'] = 'Paiement';

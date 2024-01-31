@@ -1,7 +1,7 @@
 <?php
 
 $_['text_apitoken'] = 'API token';
-$_['text_serviceid'] = 'SL-code';
+$_['text_serviceid'] = 'Sales location';
 
 // Text
 $_['text_payment'] = 'Zahlung';
@@ -69,8 +69,8 @@ $_['text_icon_style_tooltip'] = 'Wählen Sie hier aus, ob Sie die klassischen od
 $_['text_classic'] = 'Klassisch';
 $_['text_newest'] = 'Neueste';
 
-$_['text_testmode'] = 'Testmodus';
-$_['text_testmode_tooltip'] = 'Schalten Sie den Testmodus ein oder aus, um den Austausch zwischen Pay. und Ihrem Webshop zu testen';
+$_['text_testmode'] = 'Test modus';
+$_['text_testmode_tooltip'] = 'Schalten Sie den Test modus ein oder aus, um den Austausch zwischen Pay. und Ihrem Webshop zu testen';
 
 $_['text_status_pending'] = 'Bestellstatus wartet auf Zahlung';
 $_['text_status_pending_tooltip'] = 'Der Status der Bestellung, wenn die Zahlung begonnen, aber noch nicht abgeschlossen ist';

@@ -95,16 +95,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2" id="show_advanced_settings"><span class="btn btn-advanced">{{ text_advanced_settings }} <span class="advanced_button">[+]</span></span></label>
+                        <div class="col-sm-10"></div>
+                    </div>
+                    <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_prefix">
                             <span data-toggle="tooltip" title="{{ text_prefix_tooltip }}">{{ text_prefix }}</span>
                         </label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="payment_paynl_general_prefix" value="{{ prefix }}"/>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2" id="show_advanced_settings">{{ text_advanced_settings }} <span class="advanced_button">[+]</span></label>
-                        <div class="col-sm-10"></div>
                     </div>
                     <div class="form-group advanced_settings">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_gateway">

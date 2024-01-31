@@ -1,7 +1,7 @@
 <?php
 
 $_['text_apitoken'] = 'API token';
-$_['text_serviceid'] = 'SL-code';
+$_['text_serviceid'] = 'Sales location';
 
 // Text
 $_['text_payment'] = 'Payment';
@@ -78,12 +78,12 @@ $_['text_custom_exchange_url_tooltip'] = 'Use your own exchange-handler. Request
 
 $_['text_current_ip'] = 'Current user IP address: ';
 $_['text_test_ip'] = 'Test IP Address';
-$_['text_test_ip_tooltip'] = 'Forces testmode on these IP addresses, separate IPs by commas for multiple IPs';
+$_['text_test_ip_tooltip'] = 'Forces test mode on these IP addresses, separate IPs by commas for multiple IPs';
 
 $_['text_logging'] = 'Logging';
 $_['text_logging_tooltip'] = "Enable logging";
 
-$_['text_testmode'] = 'Testmode';
+$_['text_testmode'] = 'Test mode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between Pay. and your webshop';
 
 $_['text_status_pending'] = 'Order status pending payment';
