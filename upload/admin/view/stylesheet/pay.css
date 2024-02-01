@@ -31,7 +31,6 @@
 
 #show_advanced_settings{
     cursor: pointer;
-    text-align: right;
 }
 
 .btn-advanced {
@@ -42,4 +41,9 @@
 
 .btn-advanced:hover {
     color: black;
+}
+
+#advanced_settings_icon{
+    margin-left: 5px;
+    display: inline-block;
 }

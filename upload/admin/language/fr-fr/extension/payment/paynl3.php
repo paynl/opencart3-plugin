@@ -41,7 +41,7 @@ $_['text_gateway_tooltip'] = 'Ne remplissez ceci que lorsque Pay. vous fournit u
 $_['text_prefix'] = 'Préfixe de description de la commande';
 $_['text_prefix_tooltip'] = 'Modifiez le préfixe de description de la commande ici. Si elle est laissée vide, la description de la commande sera simplement le numéro de commande.';
 
-$_['text_advanced_settings'] = 'Afficher les paramètres avancés';
+$_['text_advanced_settings'] = 'Réglages avancés';
 
 $_['text_coc'] = 'Afficher le champ du numéro de la Chambre de Commerce';
 $_['text_coc_tooltip'] = 'Lorsqu\'il est activé, le client aura la possibilité de saisir son numéro de chambre de commerce avant de terminer la transaction.';

@@ -95,110 +95,112 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2" id="show_advanced_settings"><span
-                                    class="btn btn-advanced">{{ text_advanced_settings }} <span class="advanced_button">[+]</span></span></label>
-                        <div class="col-sm-10"></div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_prefix">
-                            <span data-toggle="tooltip" title="{{ text_prefix_tooltip }}">{{ text_prefix }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_prefix" value="{{ prefix }}"/>
+                        <div class="panel-heading" id="show_advanced_settings" style="border-top: 1px solid #dcdcdc;">
+                            <h3 class="panel-title"><i class="fa fa-gear"></i> {{ text_advanced_settings }} <i id="advanced_settings_icon" class="fa fa-chevron-down"></i></h3>
                         </div>
                     </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_gateway">
-                            <span data-toggle="tooltip" title="{{ text_gateway_tooltip }}">{{ text_gateway }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_gateway" value="{{ gateway }}"/>
+                    <div class="advanced_settings">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="payment_paynl_general_prefix">
+                                <span data-toggle="tooltip" title="{{ text_prefix_tooltip }}">{{ text_prefix }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="payment_paynl_general_prefix" value="{{ prefix }}"/>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label"
-                               for="payment_paynl_general_refund_processing">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="payment_paynl_general_gateway">
+                                <span data-toggle="tooltip" title="{{ text_gateway_tooltip }}">{{ text_gateway }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="payment_paynl_general_gateway" value="{{ gateway }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"
+                                   for="payment_paynl_general_refund_processing">
                             <span data-toggle="tooltip" title="{{ text_refund_processing_tooltip }}">
                                 {{ text_refund_processing }}
                             </span></label>
-                        <div class="col-sm-10">
-                            <select name="payment_paynl_general_refund_processing"
-                                    id="payment_paynl_general_refund_processing" class="form-control">
-                                {% if refund_processing %}
-                                    <option value="1" selected="selected">{{ text_enabled }}</option>
-                                    <option value="0">{{ text_disabled }}</option>
-                                {% else %}
-                                    <option value="1">{{ text_enabled }}</option>
-                                    <option value="0" selected="selected">{{ text_disabled }}</option>
-                                {% endif %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_display_icon">
-                            <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">{{ text_display_icon }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <select class="form-control" name="payment_paynl_general_display_icon">
-                                <option value="" {{ display_icon == '' ? 'selected="selected"': '' }}>{{ text_disabled }}</option>
-                                <option value="20x20" {{ display_icon == '20x20' ? 'selected="selected"': '' }}>20 x 20</option>
-                                <option value="25x25" {{ display_icon == '25x25' ? 'selected="selected"': '' }}>25 x 25</option>
-                                <option value="50x50" {{ display_icon == '50x50' ? 'selected="selected"': '' }}>50 x 50</option>
-                                <option value="75x75" {{ display_icon == '75x75' ? 'selected="selected"': '' }}>75 x 75</option>
-                                <option value="100x100" {{ display_icon == '100x100' ? 'selected="selected"': '' }}>100 x 100</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_icon_style">
-                            <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">{{ text_icon_style }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <select class="form-control" name="payment_paynl_general_icon_style">
-                                <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
-                                <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
-                            <span data-toggle="tooltip" title="{{ text_custom_exchange_url_tooltip }}">{{ text_custom_exchange_url }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_custom_exchange_url" value="{{ custom_exchange_url }}"/>
-                        </div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
-                            <span data-toggle="tooltip" title="{{ text_logging_tooltip }}">{{ text_logging }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <select name="payment_paynl_general_logging" id="payment_paynl_general_logging" class="form-control">
-                                {% if logging == 0 %}
-                                    <option value="1">{{ text_enabled }}</option>
-                                    <option value="0" selected="selected">{{ text_disabled }}</option>                                    
-                                {% else %}
-                                    <option value="1" selected="selected">{{ text_enabled }}</option>
-                                    <option value="0">{{ text_disabled }}</option>
-                                {% endif %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <label class="col-sm-2 control-label" for="payment_paynl_logs">Download logs</label>
-                        <div class="col-sm-10">
-                            <div class="version">                                
-                                <a id="download_logs" class="btn btn-primary" href="{{ action }}&downloadlogs=1" target="_BLANK">Download</a>
+                            <div class="col-sm-10">
+                                <select name="payment_paynl_general_refund_processing"
+                                        id="payment_paynl_general_refund_processing" class="form-control">
+                                    {% if refund_processing %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                    {% else %}
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{ text_disabled }}</option>
+                                    {% endif %}
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group advanced_settings">
-                        <div class="col-sm-10 col-sm-offset-2">{{ text_current_ip }}{{ current_IP }}</div>
-                        <label class="col-sm-2 control-label" for="payment_paynl_general_test_ip">
-                            <span data-toggle="tooltip" title="{{ text_test_ip_tooltip }}">{{ text_test_ip }}</span>
-                        </label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="payment_paynl_general_test_ip" value="{{ test_ip }}"/>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="payment_paynl_general_display_icon">
+                                <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">{{ text_display_icon }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_paynl_general_display_icon">
+                                    <option value="" {{ display_icon == '' ? 'selected="selected"': '' }}>{{ text_disabled }}</option>
+                                    <option value="20x20" {{ display_icon == '20x20' ? 'selected="selected"': '' }}>20 x 20</option>
+                                    <option value="25x25" {{ display_icon == '25x25' ? 'selected="selected"': '' }}>25 x 25</option>
+                                    <option value="50x50" {{ display_icon == '50x50' ? 'selected="selected"': '' }}>50 x 50</option>
+                                    <option value="75x75" {{ display_icon == '75x75' ? 'selected="selected"': '' }}>75 x 75</option>
+                                    <option value="100x100" {{ display_icon == '100x100' ? 'selected="selected"': '' }}>100 x 100</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="payment_paynl_general_icon_style">
+                                <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">{{ text_icon_style }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_paynl_general_icon_style">
+                                    <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
+                                    <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
+                                <span data-toggle="tooltip" title="{{ text_custom_exchange_url_tooltip }}">{{ text_custom_exchange_url }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="payment_paynl_general_custom_exchange_url" value="{{ custom_exchange_url }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="payment_paynl_general_custom_exchange_url">
+                                <span data-toggle="tooltip" title="{{ text_logging_tooltip }}">{{ text_logging }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <select name="payment_paynl_general_logging" id="payment_paynl_general_logging" class="form-control">
+                                    {% if logging == 0 %}
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{ text_disabled }}</option>
+                                    {% else %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="payment_paynl_logs">Download logs</label>
+                            <div class="col-sm-10">
+                                <div class="version">
+                                    <a id="download_logs" class="btn btn-primary" href="{{ action }}&downloadlogs=1" target="_BLANK">Download</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-10 col-sm-offset-2">{{ text_current_ip }}{{ current_IP }}</div>
+                            <label class="col-sm-2 control-label" for="payment_paynl_general_test_ip">
+                                <span data-toggle="tooltip" title="{{ text_test_ip_tooltip }}">{{ text_test_ip }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="payment_paynl_general_test_ip" value="{{ test_ip }}"/>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">

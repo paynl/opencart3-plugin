@@ -92,7 +92,11 @@ jQuery(document).ready(function () {
     jQuery(".advanced_settings").hide();
     jQuery("#show_advanced_settings").click(function () {
         jQuery(".advanced_settings").toggle();
-        var buttonText = $(".advanced_settings").is(":visible") ? "[-]" : "[+]";
-        jQuery(".advanced_button").text(buttonText);
+
+        if ($(".advanced_settings").is(":visible")) {
+            $("#advanced_settings_icon").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+        } else {
+            $("#advanced_settings_icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+        }
     });
 });
