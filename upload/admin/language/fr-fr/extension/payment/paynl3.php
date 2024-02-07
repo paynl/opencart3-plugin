@@ -62,11 +62,6 @@ $_['text_dob_required'] = 'Oui, au besoin';
 $_['text_display_icon'] = 'Icône d\'affichage';
 $_['text_display_icon_tooltip'] = 'Sélectionnez si vous souhaitez afficher une icône et la taille';
 
-$_['text_icon_style'] = 'Style d\'icône';
-$_['text_icon_style_tooltip'] = 'Choisissez si vous souhaitez utiliser les images classiques ou les plus récentes lors du paiement.';
-$_['text_classic'] = 'Classique';
-$_['text_newest'] = 'Le plus récent';
-
 $_['text_custom_exchange_url'] = 'URL d\'échange alternative';
 $_['text_custom_exchange_url_tooltip'] = 'Utilisez votre propre gestionnaire d\'échange. Les demandes seront envoyées sous forme de GET.<br/>
     Exemple: https://www.yourdomain.nl/exchange_handler?action=#action#&order_id=#order_id#';

@@ -81,7 +81,6 @@ class Pay_Controller_Admin extends Controller
                   'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
                   'payment_paynl_general_refund_processing' => $settings['payment_paynl_general_refund_processing'],
                   'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
-                  'payment_paynl_general_icon_style' => $settings['payment_paynl_general_icon_style'],
                   'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
                   'payment_paynl_general_test_ip' => $settings['payment_paynl_general_test_ip'],
                   'payment_paynl_general_logging' => $settings['payment_paynl_general_logging'],
@@ -114,7 +113,6 @@ class Pay_Controller_Admin extends Controller
         $data['gateway'] = $this->configGet('gateway');
         $data['prefix'] = $this->configGet('prefix');
         $data['refund_processing'] = $this->configGet('refund_processing');
-        $data['icon_style'] = $this->configGet('icon_style');
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['test_ip'] = $this->configGet('test_ip');
         $data['logging'] = $this->configGet('logging');
@@ -278,7 +276,6 @@ class Pay_Controller_Admin extends Controller
                 'payment_paynl_general_prefix' => 'Order ',
                 'payment_paynl_general_refund_processing' => $this->config->get('payment_paynl_general_refund_processing'),
                 'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
-                'payment_paynl_general_icon_style' => $this->config->get('payment_paynl_general_icon_style'),
                 'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url'),
                 'payment_paynl_general_test_ip' => $this->config->get('payment_paynl_general_test_ip'),
                 'payment_paynl_general_logging' => $this->config->get('payment_paynl_general_logging')

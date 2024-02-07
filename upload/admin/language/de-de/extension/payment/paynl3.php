@@ -62,11 +62,6 @@ $_['text_dob_required'] = 'Ja, als Pflichtfeld';
 $_['text_display_icon'] = 'Symbol anzeigen';
 $_['text_display_icon_tooltip'] = 'Wählen Sie hier aus, ob und in welcher Größe ein Symbol angezeigt werden soll.';
 
-$_['text_icon_style'] = 'Symbolstil';
-$_['text_icon_style_tooltip'] = 'Wählen Sie hier aus, ob Sie die klassischen oder die neuesten Bilder verwenden möchten.';
-$_['text_classic'] = 'Klassisch';
-$_['text_newest'] = 'Neueste';
-
 $_['text_testmode'] = 'Testmodus';
 $_['text_testmode_tooltip'] = 'Schalten Sie den Testmodus ein oder aus, um den Austausch zwischen Pay. und Ihrem Webshop zu testen';
 

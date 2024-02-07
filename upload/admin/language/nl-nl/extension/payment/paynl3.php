@@ -65,11 +65,6 @@ $_['text_dob_required'] = 'Ja, als verplicht veld';
 $_['text_display_icon'] = 'Icoon weergeven';
 $_['text_display_icon_tooltip'] = 'Selecteer hier of je een icoon wilt weergeven en welke grootte.';
 
-$_['text_icon_style'] = 'Icoon stijl';
-$_['text_icon_style_tooltip'] = 'Selecteer hier of u de klassieke of de nieuwste afbeeldingen wilt gebruiken.';
-$_['text_classic'] = 'Klassiek';
-$_['text_newest'] = 'Nieuwste';
-
 $_['text_custom_exchange_url'] = 'Alternatieve Exchange URL';
 $_['text_custom_exchange_url_tooltip'] = 'Gebruik je eigen exchange-handler. Requests zullen verzonden worden al een GET.<br/>
     Voorbeeld: https://www.yourdomain.nl/exchange_handler?action=#action#&order_id=#order_id#';
