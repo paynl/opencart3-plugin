@@ -332,10 +332,8 @@ class Pay_Model extends Model
         $icon = "";
         if ($this->config->get('payment_paynl_general_display_icon') != '') {
             $iconSize = $this->config->get('payment_paynl_general_display_icon') ;
-            $iconStyle = $this->config->get('payment_paynl_general_icon_style') ;
-            $icon = "<img class='paynl_icon' src=\"https://static.pay.nl/payment_profiles/$iconSize/$this->_paymentOptionId.png\"> ";
 
-            if ($iconStyle == 'newest' && !empty($paymentOptions['brand_id'])) {
+            if (!empty($paymentOptions['brand_id'])) {
                 $style = ' style="width:50px; height:50px;"';
                 switch ($iconSize) {
                     case '20x20':

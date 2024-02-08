@@ -65,11 +65,6 @@ $_['text_dob_required'] = 'Yes, as required';
 $_['text_display_icon'] = 'Display icon';
 $_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
 
-$_['text_icon_style'] = 'Icon style';
-$_['text_icon_style_tooltip'] = 'Select whether you want to use the classic or newest images during checkout.';
-$_['text_classic'] = 'Classic';
-$_['text_newest'] = 'Newest';
-
 $_['text_custom_exchange_url'] = 'Alternatieve Exchange URL';
 $_['text_custom_exchange_url_tooltip'] = 'Use your own exchange-handler. Requests will be send as GET.<br/>
     Example: https://www.yourdomain.nl/exchange_handler?action=#action#&order_id=#order_id#';
