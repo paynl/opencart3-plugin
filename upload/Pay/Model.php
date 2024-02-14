@@ -273,6 +273,10 @@ class Pay_Model extends Model
         return $this->db->query($sql);
     }
 
+    /**
+     * @param $orderId
+     * @return string
+     */
     private function getCustomerId($orderId)
     {
         $sql = "SELECT `customer_group_id` FROM `" . DB_PREFIX . "order` WHERE order_Id = '" . $this->db->escape($orderId) . "';";
