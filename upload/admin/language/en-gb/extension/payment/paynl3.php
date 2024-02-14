@@ -45,7 +45,7 @@ $_['text_refund_processing'] = 'Refund processing';
 $_['text_refund_processing_tooltip'] = 'Process refunds that are initiated in My.pay';
 
 $_['text_follow_payment_method'] = 'Follow payment method';
-$_['text_follow_payment_method_tooltip'] = 'This will ensure the order is updated with the actual payment method used to complete the order. This can differ from the payment method initially selected';
+$_['text_follow_payment_method_tooltip'] = 'This will ensure the order is updated with the actual payment method used to complete the order. This can differ from the payment method initially selected'; // phpcs:ignore
 
 $_['text_coc'] = 'Show COC number field';
 $_['text_coc_tooltip'] = 'When enabled the customer can additionally enter their COC number before finishing the transaction';
