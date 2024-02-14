@@ -44,6 +44,9 @@ $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit
 $_['text_refund_processing'] = 'Verwerking terugbetaling';
 $_['text_refund_processing_tooltip'] = 'Verwerk terugbetalingen die gestart zijn vanuit Pay.';
 
+$_['text_follow_payment_method'] = 'Follow payment method';
+$_['text_follow_payment_method_tooltip'] = 'Dit zorgt ervoor dat de bestelling wordt bijgewerkt met de daadwerkelijke betaalmethode die is gebruikt om de bestelling te voltooien. Dit kan afwijken van de aanvankelijk gekozen betaalmethode';
+
 $_['text_coc'] = 'Toon KVK nummer veld';
 $_['text_coc_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun KVK nummer in te voeren voordat ze de transactie afmaken';
 $_['text_coc_disabled'] = 'nee';

@@ -273,6 +273,20 @@ class Pay_Model extends Model
         return $this->db->query($sql);
     }
 
+    private function getCustomerId($orderId)
+    {
+        $sql = "SELECT `customer_group_id` FROM `" . DB_PREFIX . "order` WHERE order_Id = '" . $this->db->escape($orderId) . "';";
+        $result = $this->db->query($sql);
+
+        $rows = $result->rows;
+
+        $result = '';
+        foreach ($rows as $row) {
+            $result = $row['customer_group_id'];
+        }
+        return $result;
+    }
+
     /**
      * @param string $key
      * @param string $pm
@@ -422,6 +436,21 @@ class Pay_Model extends Model
 
         # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
+
+        if ($this->_paymentOptionId != $result['paymentDetails']['paymentOptionId'] && $this->config->get('payment_paynl_general_follow_payment_method') !== '0') {
+            $newPaymentMethod = $result['paymentDetails']['payment_profile_name'];
+            $oldPaymentMethod = $order_info['payment_method'];
+            $orderId = $transaction['orderId'];
+            $followPaymentMessage = "Pay. Updated payment method from " . $oldPaymentMethod . " to " . $newPaymentMethod . ".";
+
+            $order_info['customer_group_id'] = $this->getCustomerId($orderId);
+            $order_info['payment_method'] = $newPaymentMethod;
+
+            $this->model_checkout_order->editOrder($orderId, $order_info);
+
+            $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $followPaymentMessage, false), true));
+            $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $followPaymentMessage, false);
+        }
 
         if ($order_info['payment_code'] != $this->_paymentMethodName && $status == self::STATUS_CANCELED) {
             return 'Not cancelling because the last used method is not this method';

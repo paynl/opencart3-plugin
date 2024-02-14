@@ -41,6 +41,9 @@ $_['text_gateway_tooltip'] = 'Nur ändern, wenn sie von Pay dazu aufgefordert we
 $_['text_prefix'] = 'Präfix der Bestellbeschreibung';
 $_['text_prefix_tooltip'] = 'Ändern Sie hier das Präfix der Bestellbeschreibung. Wenn dieses Feld leer ist, ist die Beschreibung die Bestellnummer.';
 
+$_['text_follow_payment_method'] = 'Follow payment method';
+$_['text_follow_payment_method_tooltip'] = 'Dadurch wird sichergestellt, dass die Bestellung mit der tatsächlichen Zahlungsmethode aktualisiert wird, die zum Abschluss der Bestellung verwendet wurde. Diese kann von der ursprünglich gewählten Zahlungsart abweichen';
+
 $_['text_coc'] = 'Feld mit der Nummer der Handelskammer anzeigen';
 $_['text_coc_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, seine Handelskammernummer einzugeben im Checkout';
 $_['text_coc_disabled'] = 'nein';
