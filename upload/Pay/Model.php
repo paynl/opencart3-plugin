@@ -277,7 +277,7 @@ class Pay_Model extends Model
      * @param $orderId
      * @return string
      */
-    private function getCustomerId($orderId)
+    private function getCustomerGroupId($orderId)
     {
         $sql = "SELECT `customer_group_id` FROM `" . DB_PREFIX . "order` WHERE order_Id = '" . $this->db->escape($orderId) . "';";
         $result = $this->db->query($sql);
@@ -447,13 +447,14 @@ class Pay_Model extends Model
             $orderId = $transaction['orderId'];
             $followPaymentMessage = "Pay. Updated payment method from " . $oldPaymentMethod . " to " . $newPaymentMethod . ".";
 
-            $order_info['customer_group_id'] = $this->getCustomerId($orderId);
+            $order_info['customer_group_id'] = $this->getCustomerGroupId($orderId);
             $order_info['payment_method'] = $newPaymentMethod;
 
-            $this->model_checkout_order->editOrder($orderId, $order_info);
-
-            $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $followPaymentMessage, false), true));
-            $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $followPaymentMessage, false);
+            if(!empty($order_info['customer_group_id'])) {
+                $this->model_checkout_order->editOrder($orderId, $order_info);
+                $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $followPaymentMessage), true));
+                $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $followPaymentMessage, false);
+            }
         }
 
         if ($order_info['payment_code'] != $this->_paymentMethodName && $status == self::STATUS_CANCELED) {
