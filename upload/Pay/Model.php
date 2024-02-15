@@ -450,7 +450,7 @@ class Pay_Model extends Model
             $order_info['customer_group_id'] = $this->getCustomerGroupId($orderId);
             $order_info['payment_method'] = $newPaymentMethod;
 
-            if(!empty($order_info['customer_group_id'])) {
+            if (!empty($order_info['customer_group_id'])) {
                 $this->model_checkout_order->editOrder($orderId, $order_info);
                 $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $followPaymentMessage), true));
                 $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $followPaymentMessage, false);
