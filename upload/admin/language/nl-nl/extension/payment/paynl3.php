@@ -46,6 +46,9 @@ $_['text_advanced_settings'] = 'Geavanceerde instellingen';
 $_['text_refund_processing'] = 'Verwerking terugbetaling';
 $_['text_refund_processing_tooltip'] = 'Verwerk terugbetalingen die gestart zijn vanuit Pay.';
 
+$_['text_follow_payment_method'] = 'Follow payment method';
+$_['text_follow_payment_method_tooltip'] = 'Dit zorgt ervoor dat de bestelling wordt bijgewerkt met de daadwerkelijke betaalmethode die is gebruikt om de bestelling te voltooien. Dit kan afwijken van de aanvankelijk gekozen betaalmethode'; // phpcs:ignore
+
 $_['text_coc'] = 'Toon KVK nummer veld';
 $_['text_coc_tooltip'] = 'Wanneer dit aan staat zal de klant een optie hebben om hun KVK nummer in te voeren voordat ze de transactie afmaken';
 $_['text_coc_disabled'] = 'nee';
@@ -66,11 +69,6 @@ $_['text_dob_required'] = 'Ja, als verplicht veld';
 
 $_['text_display_icon'] = 'Icoon weergeven';
 $_['text_display_icon_tooltip'] = 'Selecteer hier of je een icoon wilt weergeven en welke grootte.';
-
-$_['text_icon_style'] = 'Icoon stijl';
-$_['text_icon_style_tooltip'] = 'Selecteer hier of u de klassieke of de nieuwste afbeeldingen wilt gebruiken.';
-$_['text_classic'] = 'Klassiek';
-$_['text_newest'] = 'Nieuwste';
 
 $_['text_custom_exchange_url'] = 'Alternatieve Exchange URL';
 $_['text_custom_exchange_url_tooltip'] = 'Gebruik je eigen exchange-handler. Requests zullen verzonden worden al een GET.<br/>
@@ -129,7 +127,7 @@ $_['text_suggestions_submit'] = 'Verstuur';
 $_['text_suggestions_success_modal'] = 'Verstuurd! Bedankt voor het delen van jouw input.';
 $_['text_suggestions_fail_modal'] = 'E-mail kon niet worden verzonden. Probeer het later opnieuw.';
 
-$version = '1.9.0';
+$version = '1.9.1';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 

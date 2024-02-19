@@ -136,6 +136,25 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label"
+                                   for="payment_paynl_general_follow_payment_method">
+                            <span data-toggle="tooltip" title="{{ text_follow_payment_method_tooltip }}">
+                                {{ text_follow_payment_method }}
+                            </span></label>
+                            <div class="col-sm-10">
+                                <select name="payment_paynl_general_follow_payment_method"
+                                        id="payment_paynl_general_follow_payment_method" class="form-control">
+                                    {% if follow_payment_method %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                    {% else %}
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{ text_disabled }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label" for="payment_paynl_general_display_icon">
                                 <span data-toggle="tooltip" title="{{ text_display_icon_tooltip }}">{{ text_display_icon }}</span>
                             </label>
@@ -147,17 +166,6 @@
                                     <option value="50x50" {{ display_icon == '50x50' ? 'selected="selected"': '' }}>50 x 50</option>
                                     <option value="75x75" {{ display_icon == '75x75' ? 'selected="selected"': '' }}>75 x 75</option>
                                     <option value="100x100" {{ display_icon == '100x100' ? 'selected="selected"': '' }}>100 x 100</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="payment_paynl_general_icon_style">
-                                <span data-toggle="tooltip" title="{{ text_icon_style_tooltip }}">{{ text_icon_style }}</span>
-                            </label>
-                            <div class="col-sm-10">
-                                <select class="form-control" name="payment_paynl_general_icon_style">
-                                    <option value="classic" {{ icon_style == 'classic' ? 'selected="selected"': '' }}>{{ text_classic }}</option>
-                                    <option value="newest" {{ icon_style == 'newest' ? 'selected="selected"': '' }}>{{ text_newest }}</option>
                                 </select>
                             </div>
                         </div>

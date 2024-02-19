@@ -46,6 +46,9 @@ $_['text_advanced_settings'] = 'Advanced settings';
 $_['text_refund_processing'] = 'Refund processing';
 $_['text_refund_processing_tooltip'] = 'Process refunds that are initiated in My.pay';
 
+$_['text_follow_payment_method'] = 'Follow payment method';
+$_['text_follow_payment_method_tooltip'] = 'This will ensure the order is updated with the actual payment method used to complete the order. This can differ from the payment method initially selected'; // phpcs:ignore
+
 $_['text_coc'] = 'Show COC number field';
 $_['text_coc_tooltip'] = 'When enabled the customer can additionally enter their COC number before finishing the transaction';
 $_['text_coc_disabled'] = 'No';
@@ -66,11 +69,6 @@ $_['text_dob_required'] = 'Yes, as required';
 
 $_['text_display_icon'] = 'Display icon';
 $_['text_display_icon_tooltip'] = 'Select if you want to display an icon and the size';
-
-$_['text_icon_style'] = 'Icon style';
-$_['text_icon_style_tooltip'] = 'Select whether you want to use the classic or newest images during checkout.';
-$_['text_classic'] = 'Classic';
-$_['text_newest'] = 'Newest';
 
 $_['text_custom_exchange_url'] = 'Alternatieve Exchange URL';
 $_['text_custom_exchange_url_tooltip'] = 'Use your own exchange-handler. Requests will be send as GET.<br/>
@@ -129,7 +127,7 @@ $_['text_suggestions_submit'] = 'Submit';
 $_['text_suggestions_success_modal'] = 'Sent! Thank you for your contribution.';
 $_['text_suggestions_fail_modal'] = 'E-mail could not be sent, please try again later.';
 
-$version = '1.9.0';
+$version = '1.9.1';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 

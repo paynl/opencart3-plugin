@@ -41,6 +41,8 @@ $_['text_gateway_tooltip'] = 'Ne remplissez ceci que lorsque Pay. vous fournit u
 $_['text_prefix'] = 'Préfixe de description de la commande';
 $_['text_prefix_tooltip'] = 'Modifiez le préfixe de description de la commande ici. Si elle est laissée vide, la description de la commande sera simplement le numéro de commande.';
 
+$_['text_follow_payment_method'] = 'Follow payment method';
+$_['text_follow_payment_method_tooltip'] = 'Cela garantira que la commande est mise à jour avec le mode de paiement réel utilisé pour finaliser la commande. Celui-ci peut différer du mode de paiement initialement sélectionné'; // phpcs:ignore
 $_['text_advanced_settings'] = 'Réglages avancés';
 
 $_['text_coc'] = 'Afficher le champ du numéro de la Chambre de Commerce';
@@ -63,11 +65,6 @@ $_['text_dob_required'] = 'Oui, au besoin';
 
 $_['text_display_icon'] = 'Icône d\'affichage';
 $_['text_display_icon_tooltip'] = 'Sélectionnez si vous souhaitez afficher une icône et la taille';
-
-$_['text_icon_style'] = 'Style d\'icône';
-$_['text_icon_style_tooltip'] = 'Choisissez si vous souhaitez utiliser les images classiques ou les plus récentes lors du paiement.';
-$_['text_classic'] = 'Classique';
-$_['text_newest'] = 'Le plus récent';
 
 $_['text_custom_exchange_url'] = 'URL d\'échange alternative';
 $_['text_custom_exchange_url_tooltip'] = 'Utilisez votre propre gestionnaire d\'échange. Les demandes seront envoyées sous forme de GET.<br/>
