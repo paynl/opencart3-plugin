@@ -1,7 +1,7 @@
 <?php
 
 $_['text_apitoken'] = 'API token';
-$_['text_serviceid'] = 'SL-code';
+$_['text_serviceid'] = 'Sales location';
 
 // Text
 $_['text_payment'] = 'Payment';
@@ -41,6 +41,8 @@ $_['text_gateway_tooltip'] = 'Only fill this in when we at Pay. provide you with
 $_['text_prefix'] = 'Order description prefix';
 $_['text_prefix_tooltip'] = 'Change the order description prefix here. If left empty the order description will just be the order number.';
 
+$_['text_advanced_settings'] = 'Advanced settings';
+
 $_['text_refund_processing'] = 'Refund processing';
 $_['text_refund_processing_tooltip'] = 'Process refunds that are initiated in My.pay';
 
@@ -74,12 +76,12 @@ $_['text_custom_exchange_url_tooltip'] = 'Use your own exchange-handler. Request
 
 $_['text_current_ip'] = 'Current user IP address: ';
 $_['text_test_ip'] = 'Test IP Address';
-$_['text_test_ip_tooltip'] = 'Forces testmode on these IP addresses, separate IPs by commas for multiple IPs';
+$_['text_test_ip_tooltip'] = 'Forces test mode on these IP addresses, separate IPs by commas for multiple IPs';
 
 $_['text_logging'] = 'Logging';
 $_['text_logging_tooltip'] = "Enable logging";
 
-$_['text_testmode'] = 'Testmode';
+$_['text_testmode'] = 'Test mode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between Pay. and your webshop';
 
 $_['text_status_pending'] = 'Order status pending payment';

@@ -1,7 +1,7 @@
 <?php
 
 $_['text_apitoken'] = 'API token';
-$_['text_serviceid'] = 'SL-code';
+$_['text_serviceid'] = 'Verkooplocatie';
 
 // Text
 $_['text_payment'] = 'Betaling';
@@ -41,6 +41,8 @@ $_['text_gateway_tooltip'] = 'Voer hier alleen iets in als wij van Pay. een gate
 $_['text_prefix'] = 'Order omschrijving prefix';
 $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit leeg is, zal de omschrijving het ordernummer zijn.';
 
+$_['text_advanced_settings'] = 'Geavanceerde instellingen';
+
 $_['text_refund_processing'] = 'Verwerking terugbetaling';
 $_['text_refund_processing_tooltip'] = 'Verwerk terugbetalingen die gestart zijn vanuit Pay.';
 
@@ -74,13 +76,13 @@ $_['text_custom_exchange_url_tooltip'] = 'Gebruik je eigen exchange-handler. Req
 
 $_['text_current_ip'] = 'IP-adres van huidige gebruiker: ';
 $_['text_test_ip'] = 'Test IP Adressen';
-$_['text_test_ip_tooltip'] = "Forceer testmode voor de ingevulde IP adressen, scheid IP's met komma's voor meerdere IP's";
+$_['text_test_ip_tooltip'] = "Forceer test mode voor de ingevulde IP adressen, scheid IP's met komma's voor meerdere IP's";
 
 $_['text_logging'] = 'Logging';
 $_['text_logging_tooltip'] = "Schakel logging in";
 
-$_['text_testmode'] = 'Testmode';
-$_['text_testmode_tooltip'] = 'Zet de testmode aan of uit om de exchanges te testen tussen Pay. en uw webshop';
+$_['text_testmode'] = 'Test mode';
+$_['text_testmode_tooltip'] = 'Zet de test mode aan of uit om de exchanges te testen tussen Pay. en uw webshop';
 
 $_['text_status_pending'] = 'Order status wacht op betaling';
 $_['text_status_pending_tooltip'] = 'De status van de order wanneer de betaling is gestart, maar nog niet afgerond';

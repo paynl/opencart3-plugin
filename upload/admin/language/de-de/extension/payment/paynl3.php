@@ -1,7 +1,7 @@
 <?php
 
 $_['text_apitoken'] = 'API token';
-$_['text_serviceid'] = 'SL-code';
+$_['text_serviceid'] = 'Sales location';
 
 // Text
 $_['text_payment'] = 'Zahlung';
@@ -43,6 +43,7 @@ $_['text_prefix_tooltip'] = 'Ändern Sie hier das Präfix der Bestellbeschreibun
 
 $_['text_follow_payment_method'] = 'Follow payment method';
 $_['text_follow_payment_method_tooltip'] = 'Dadurch wird sichergestellt, dass die Bestellung mit der tatsächlichen Zahlungsmethode aktualisiert wird, die zum Abschluss der Bestellung verwendet wurde. Diese kann von der ursprünglich gewählten Zahlungsart abweichen'; // phpcs:ignore
+$_['text_advanced_settings'] = 'Erweiterte Einstellungen';
 
 $_['text_coc'] = 'Feld mit der Nummer der Handelskammer anzeigen';
 $_['text_coc_tooltip'] = 'Wenn diese Option aktiviert ist, hat der Kunde die Möglichkeit, seine Handelskammernummer einzugeben im Checkout';
@@ -65,8 +66,13 @@ $_['text_dob_required'] = 'Ja, als Pflichtfeld';
 $_['text_display_icon'] = 'Symbol anzeigen';
 $_['text_display_icon_tooltip'] = 'Wählen Sie hier aus, ob und in welcher Größe ein Symbol angezeigt werden soll.';
 
-$_['text_testmode'] = 'Testmodus';
-$_['text_testmode_tooltip'] = 'Schalten Sie den Testmodus ein oder aus, um den Austausch zwischen Pay. und Ihrem Webshop zu testen';
+$_['text_icon_style'] = 'Symbolstil';
+$_['text_icon_style_tooltip'] = 'Wählen Sie hier aus, ob Sie die klassischen oder die neuesten Bilder verwenden möchten.';
+$_['text_classic'] = 'Klassisch';
+$_['text_newest'] = 'Neueste';
+
+$_['text_testmode'] = 'Test modus';
+$_['text_testmode_tooltip'] = 'Schalten Sie den Test modus ein oder aus, um den Austausch zwischen Pay. und Ihrem Webshop zu testen';
 
 $_['text_status_pending'] = 'Bestellstatus wartet auf Zahlung';
 $_['text_status_pending_tooltip'] = 'Der Status der Bestellung, wenn die Zahlung begonnen, aber noch nicht abgeschlossen ist';

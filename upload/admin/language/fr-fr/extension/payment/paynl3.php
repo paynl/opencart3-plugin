@@ -1,7 +1,7 @@
 <?php
 
 $_['text_apitoken'] = 'jeton API';
-$_['text_serviceid'] = 'SL-code';
+$_['text_serviceid'] = 'Service';
 
 // Text
 $_['text_payment'] = 'Paiement';
@@ -43,6 +43,7 @@ $_['text_prefix_tooltip'] = 'Modifiez le préfixe de description de la commande 
 
 $_['text_follow_payment_method'] = 'Follow payment method';
 $_['text_follow_payment_method_tooltip'] = 'Cela garantira que la commande est mise à jour avec le mode de paiement réel utilisé pour finaliser la commande. Celui-ci peut différer du mode de paiement initialement sélectionné'; // phpcs:ignore
+$_['text_advanced_settings'] = 'Réglages avancés';
 
 $_['text_coc'] = 'Afficher le champ du numéro de la Chambre de Commerce';
 $_['text_coc_tooltip'] = 'Lorsqu\'il est activé, le client aura la possibilité de saisir son numéro de chambre de commerce avant de terminer la transaction.';

@@ -28,3 +28,22 @@
 .payHide {
     display: none;
 }
+
+#show_advanced_settings{
+    cursor: pointer;
+}
+
+.btn-advanced {
+    color: black;
+    background-color: #dcdcdc;
+    font-weight: 600;
+}
+
+.btn-advanced:hover {
+    color: black;
+}
+
+#advanced_settings_icon{
+    margin-left: 5px;
+    display: inline-block;
+}

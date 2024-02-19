@@ -88,4 +88,15 @@ jQuery(document).ready(function () {
             });
         }, 750);
     });
+
+    jQuery(".advanced_settings").hide();
+    jQuery("#show_advanced_settings").click(function () {
+        jQuery(".advanced_settings").toggle();
+
+        if ($(".advanced_settings").is(":visible")) {
+            $("#advanced_settings_icon").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+        } else {
+            $("#advanced_settings_icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+        }
+    });
 });
