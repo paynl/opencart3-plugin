@@ -258,7 +258,8 @@ class Pay_Controller_Payment extends Controller
 
             $response['success'] = $result['transaction']['paymentURL'];
         } catch (Pay_Api_Exception $e) {
-            $response['error'] = "De Pay. api gaf de volgende fout: " . $e->getMessage();
+            $message = $this->getErrorMessage($e->getMessage());
+            $response['error'] = "De Pay. api gaf de volgende fout: " . $message;
         } catch (Pay_Exception $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
         } catch (Exception $e) {
@@ -358,5 +359,21 @@ class Pay_Controller_Payment extends Controller
             }
         }
         return $this->config->get('payment_paynl_general_testmode');
+    }
+
+    public function getErrorMessage($message)
+    {
+        $errorCode = strtok($message, " ");
+
+        if ($errorCode == "PAY-0") {
+            $errorMessage = str_replace("PAY-0 - An exception occurred: ", "", $message);
+        } else {
+            $message = explode(' ', $message);
+            $message = array_slice($message, 2);
+            $message = implode(' ', $message);
+            $errorMessage = $message;
+        }
+
+        return $errorMessage;
     }
 }
