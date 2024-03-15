@@ -361,6 +361,10 @@ class Pay_Controller_Payment extends Controller
         return $this->config->get('payment_paynl_general_testmode');
     }
 
+    /**
+     * @param $message
+     * @return string
+     */
     public function getErrorMessage($message)
     {
         $errorCode = strtok($message, " ");
