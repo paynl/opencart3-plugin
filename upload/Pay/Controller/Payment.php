@@ -370,9 +370,11 @@ class Pay_Controller_Payment extends Controller
     {
         $message = strtolower(trim($message));
 
-        if (stripos($message, 'minimum amount') !== false
+        if (
+            stripos($message, 'minimum amount') !== false
             || stripos($message, 'maximum amount') !== false
-            || stripos($message, 'Amount is not allowed') !== false) {
+            || stripos($message, 'Amount is not allowed') !== false
+        ) {
             $errorMessage = 'text_pay_api_error_amount';
         } elseif (stripos($message, 'is not activated for this sales location') !== false) {
             $errorMessage = 'text_pay_api_error_activated';
