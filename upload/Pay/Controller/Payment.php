@@ -58,6 +58,7 @@ class Pay_Controller_Payment extends Controller
      */
     public function startTransaction()
     {
+        $this->load->language('extension/payment/paynl3');
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $this->load->model('checkout/order');
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
@@ -259,7 +260,7 @@ class Pay_Controller_Payment extends Controller
             $response['success'] = $result['transaction']['paymentURL'];
         } catch (Pay_Api_Exception $e) {
             $message = $this->getErrorMessage($e->getMessage());
-            $response['error'] = "De Pay. api gaf de volgende fout: " . $message;
+            $response['error'] = $this->language->get('text_pay_api_error') . " " . $this->language->get($message);
         } catch (Pay_Exception $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
         } catch (Exception $e) {
@@ -367,15 +368,18 @@ class Pay_Controller_Payment extends Controller
      */
     public function getErrorMessage($message)
     {
-        $errorCode = strtok($message, " ");
+        $message = strtolower(trim($message));
 
-        if ($errorCode == "PAY-0") {
-            $errorMessage = str_replace("PAY-0 - An exception occurred: ", "", $message);
+        if (stripos($message, 'minimum amount') !== false
+            || stripos($message, 'maximum amount') !== false
+            || stripos($message, 'Amount is not allowed') !== false) {
+            $errorMessage = 'text_pay_api_error_amount';
+        } elseif (stripos($message, 'is not activated for this sales location') !== false) {
+            $errorMessage = 'text_pay_api_error_activated';
+        } elseif (stripos($message, 'not allowed in country') !== false) {
+            $errorMessage = 'text_pay_api_error_country';
         } else {
-            $message = explode(' ', $message);
-            $message = array_slice($message, 2);
-            $message = implode(' ', $message);
-            $errorMessage = $message;
+            $errorMessage = 'text_pay_api_error_general';
         }
 
         return $errorMessage;
