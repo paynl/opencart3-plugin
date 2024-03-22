@@ -260,7 +260,7 @@ class Pay_Controller_Payment extends Controller
             $response['success'] = $result['transaction']['paymentURL'];
         } catch (Pay_Api_Exception $e) {
             $message = $this->getErrorMessage($e->getMessage());
-            $response['error'] = $this->language->get('text_pay_api_error') . " " . $this->language->get($message);
+            $response['error'] = $this->language->get($message);
         } catch (Pay_Exception $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
         } catch (Exception $e) {
