@@ -58,6 +58,7 @@ class Pay_Controller_Payment extends Controller
      */
     public function startTransaction()
     {
+        $this->load->language('extension/payment/paynl3');
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $this->load->model('checkout/order');
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
@@ -258,7 +259,8 @@ class Pay_Controller_Payment extends Controller
 
             $response['success'] = $result['transaction']['paymentURL'];
         } catch (Pay_Api_Exception $e) {
-            $response['error'] = "De Pay. api gaf de volgende fout: " . $e->getMessage();
+            $message = $this->getErrorMessage($e->getMessage());
+            $response['error'] = $this->language->get($message);
         } catch (Pay_Exception $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
         } catch (Exception $e) {
@@ -358,5 +360,30 @@ class Pay_Controller_Payment extends Controller
             }
         }
         return $this->config->get('payment_paynl_general_testmode');
+    }
+
+    /**
+     * @param $message
+     * @return string
+     */
+    public function getErrorMessage($message)
+    {
+        $message = strtolower(trim($message));
+
+        if (
+            stripos($message, 'minimum amount') !== false
+            || stripos($message, 'maximum amount') !== false
+            || stripos($message, 'Amount is not allowed') !== false
+        ) {
+            $errorMessage = 'text_pay_api_error_amount';
+        } elseif (stripos($message, 'is not activated for this sales location') !== false) {
+            $errorMessage = 'text_pay_api_error_activated';
+        } elseif (stripos($message, 'not allowed in country') !== false) {
+            $errorMessage = 'text_pay_api_error_country';
+        } else {
+            $errorMessage = 'text_pay_api_error_general';
+        }
+
+        return $errorMessage;
     }
 }
