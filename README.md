@@ -22,7 +22,7 @@ Bank Payments | Creditcards | Gift cards & Vouchers | Pay by invoice | Others |
 iDEAL + QR |Visa | VVV Cadeaukaart | Riverty | PayPal |
 Bancontact + QR |  Mastercard | Webshop Giftcard | Achteraf betalen via Billink | WeChatPay | 
 Giropay |American Express | FashionCheque | Biller | AmazonPay |
-SOFORT | Carte Bancaire | Podium Cadeaukaart | in3 keer betalen, 0% rente | Cashly | Alipay |
+SOFORT | Carte Bancaire | Podium Cadeaukaart | iDEAL in3 | Cashly | Alipay |
 Maestro | PostePay | Gezondheidsbon | Klarna | Pay Fixed Price (phone) |
 Bank Transfer | Dankort | Fashion Giftcard | SprayPay | Instore Payments (POS) |
 EPS | Nexi | GivaCard | Creditclick | Przelewy24 |
