@@ -163,7 +163,8 @@ class Pay_Controller_Payment extends Controller
                 'company' => array(
                     'name' => $order_info['payment_company'],
                     'cocNumber' => (!empty($_POST['coc'])) ? $_POST['coc'] : null,
-                    'vatNumber' => (!empty($_POST['vat'])) ? $_POST['vat'] : null
+                    'vatNumber' => (!empty($_POST['vat'])) ? $_POST['vat'] : null,
+                    'countryCode' => $order_info['payment_iso_code_2'],
                 ),
                 'dob' => !empty($dob) ? str_replace("/", "-", $dob) : null,
             );
