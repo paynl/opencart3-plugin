@@ -43,6 +43,9 @@ $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit
 
 $_['text_advanced_settings'] = 'Geavanceerde instellingen';
 
+$_['text_auto_void'] = 'Auto void';
+$_['text_auto_void_tooltip'] = 'Geautoriseerde transacties automatisch vrijgeven (void) bij het annuleren van een bestelling.';
+
 $_['text_refund_processing'] = 'Verwerking terugbetaling';
 $_['text_refund_processing_tooltip'] = 'Verwerk terugbetalingen die gestart zijn vanuit Pay.';
 

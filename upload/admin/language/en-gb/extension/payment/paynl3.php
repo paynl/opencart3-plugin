@@ -46,6 +46,9 @@ $_['text_advanced_settings'] = 'Advanced settings';
 $_['text_refund_processing'] = 'Refund processing';
 $_['text_refund_processing_tooltip'] = 'Process refunds that are initiated in My.pay';
 
+$_['text_auto_void'] = 'Auto void';
+$_['text_auto_void_tooltip'] = 'Automatically void transactions in the state AUTHORIZE when cancelling an order.';
+
 $_['text_follow_payment_method'] = 'Follow payment method';
 $_['text_follow_payment_method_tooltip'] = 'This will ensure the order is updated with the actual payment method used to complete the order. This can differ from the payment method initially selected'; // phpcs:ignore
 

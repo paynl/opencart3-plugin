@@ -137,6 +137,25 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label"
+                                   for="payment_paynl_general_auto_void">
+                            <span data-toggle="tooltip" title="{{ text_auto_void_tooltip }}">
+                                {{ text_auto_void }}
+                            </span></label>
+                            <div class="col-sm-10">
+                                <select name="payment_paynl_general_auto_void"
+                                        id="payment_paynl_general_auto_void" class="form-control">
+                                    {% if auto_void %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                    {% else %}
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{ text_disabled }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"
                                    for="payment_paynl_general_follow_payment_method">
                             <span data-toggle="tooltip" title="{{ text_follow_payment_method_tooltip }}">
                                 {{ text_follow_payment_method }}
