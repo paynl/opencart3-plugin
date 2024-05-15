@@ -2,7 +2,6 @@
 
 class Pay_Api_Void extends Pay_Api
 {
-
     protected $_version = 'v3';
     protected $_controller = 'transaction';
     protected $_action = 'voidAuthorization';

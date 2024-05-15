@@ -5,5 +5,6 @@ $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
 
-class ModelExtensionPaymentPaynl3 extends Pay_Model {
+class ModelExtensionPaymentPaynl3 extends Pay_Model
+{
 }
