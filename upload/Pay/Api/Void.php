@@ -7,12 +7,20 @@ class Pay_Api_Void extends Pay_Api
     protected $_controller = 'transaction';
     protected $_action = 'voidAuthorization';
 
+    /**
+     * @param $transactionId
+     * @return void
+     */
     public function setTransactionId($transactionId)
     {
         $this->_postData['transactionId'] = $transactionId;
     }
 
-    protected function _getPostData()
+    /**
+     * @return array|mixed
+     * @throws Pay_Exception
+     */
+    protected function _getPostData() // phpcs:ignore
     {
         $data = parent::_getPostData();
         if ($this->_apiToken == '') {

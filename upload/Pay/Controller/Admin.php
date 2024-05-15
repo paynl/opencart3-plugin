@@ -293,7 +293,8 @@ class Pay_Controller_Admin extends Controller
         $this->model_setting_event->addEvent(
             'paynl_on_order_status_change',
             'catalog/controller/api/order/history/after',
-            'extension/payment/paynl/paynlOnOrderStatusChange');
+            'extension/payment/paynl/paynlOnOrderStatusChange'
+        );
     }
 
     /**

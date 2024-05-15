@@ -217,7 +217,7 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param string $transactionId
+     * @param string $orderId
      * @return array
      */
     public function getTransactionFromOrderId($orderId)
@@ -454,7 +454,7 @@ class Pay_Model extends Model
         # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
 
-        if ($this->_paymentOptionId != $result['paymentDetails']['paymentOptionId'] && $this->config->get('payment_paynl_general_follow_payment_method') !== '0' && $status !== Pay_Model::STATUS_CANCELED) {
+        if ($this->_paymentOptionId != $result['paymentDetails']['paymentOptionId'] && $this->config->get('payment_paynl_general_follow_payment_method') !== '0' && $status !== Pay_Model::STATUS_CANCELED) { // phpcs:ignore
             $newPaymentMethod = $result['paymentDetails']['payment_profile_name'];
             $oldPaymentMethod = $order_info['payment_method'];
             $orderId = $transaction['orderId'];

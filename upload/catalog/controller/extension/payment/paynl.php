@@ -1,4 +1,5 @@
 <?php
+
 $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 $autoload = $dir . '/Pay/Autoload.php';
 
@@ -6,6 +7,10 @@ require_once $autoload;
 
 class ControllerExtensionPaymentPaynl extends Controller
 {
+    /**
+     * @return void
+     * @throws Pay_Api_Exception
+     */
     public function paynlOnOrderStatusChange()
     {
         $orderId = $_REQUEST['order_id'];
