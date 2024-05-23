@@ -41,7 +41,7 @@ class ControllerExtensionPaymentPaynl extends Controller
             $autoVoid
         ) {
             $this->paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
-        } else if (
+        } elseif (
             $orderStatusId == 5 &&
             $transactionState == 'AUTHORIZE' &&
             $autoCapture
@@ -50,6 +50,15 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
+    /**
+     * @param $apiToken
+     * @param $serviceId
+     * @param $transactionId
+     * @param $orderId
+     * @param $orderStatusId
+     * @return void
+     * @throws Pay_Api_Exception
+     */
     public function paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
     {
         $apiVoid = new Pay_Api_Void();
@@ -68,6 +77,15 @@ class ControllerExtensionPaymentPaynl extends Controller
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
     }
 
+    /**
+     * @param $apiToken
+     * @param $serviceId
+     * @param $transactionId
+     * @param $orderId
+     * @param $orderStatusId
+     * @return void
+     * @throws Pay_Api_Exception
+     */
     public function paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
     {
         $apiCapture = new Pay_Api_Capture();
