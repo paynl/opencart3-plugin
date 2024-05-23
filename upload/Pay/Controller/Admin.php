@@ -81,6 +81,7 @@ class Pay_Controller_Admin extends Controller
                   'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
                   'payment_paynl_general_refund_processing' => $settings['payment_paynl_general_refund_processing'],
                   'payment_paynl_general_auto_void' => $settings['payment_paynl_general_auto_void'],
+                  'payment_paynl_general_auto_capture' => $settings['payment_paynl_general_auto_capture'],
                   'payment_paynl_general_follow_payment_method' => $settings['payment_paynl_general_follow_payment_method'],
                   'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
                   'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
@@ -116,6 +117,7 @@ class Pay_Controller_Admin extends Controller
         $data['prefix'] = $this->configGet('prefix');
         $data['refund_processing'] = $this->configGet('refund_processing');
         $data['auto_void'] = $this->configGet('auto_void');
+        $data['auto_capture'] = $this->configGet('auto_capture');
         $data['follow_payment_method'] = $this->configGet('follow_payment_method');
         $data['custom_exchange_url'] = $this->configGet('custom_exchange_url');
         $data['test_ip'] = $this->configGet('test_ip');
@@ -280,6 +282,7 @@ class Pay_Controller_Admin extends Controller
                 'payment_paynl_general_prefix' => 'Order ',
                 'payment_paynl_general_refund_processing' => $this->config->get('payment_paynl_general_refund_processing'),
                 'payment_paynl_general_auto_void' => $this->config->get('payment_paynl_general_auto_void'),
+                'payment_paynl_general_auto_capture' => $this->config->get('payment_paynl_general_auto_capture'),
                 'payment_paynl_general_follow_payment_method' => 1,
                 'payment_paynl_general_display_icon' => $this->config->get('payment_paynl_general_display_icon'),
                 'payment_paynl_general_custom_exchange_url' => $this->config->get('payment_paynl_general_custom_exchange_url'),

@@ -323,6 +323,12 @@ class Pay_Controller_Payment extends Controller
                 $message = "Status updated to $status";
             }
             die("TRUE|" . $message);
+        } elseif ($action == 'capture') {
+            $message = 'ignoring COMPLETE';
+            die("TRUE|" . $message);
+        } elseif ($action == 'cancel') {
+            $message = 'ignoring CANCELED';
+            die("TRUE|" . $message);
         } else {
             try {
                 $this->$modelName->log('Exchange: ' . $action . ' transactionId: ' . $transactionId);

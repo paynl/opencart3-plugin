@@ -21,6 +21,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
 
         $autoVoid = $this->config->get('payment_paynl_general_auto_void');
+        $autoCapture = $this->config->get('payment_paynl_general_auto_capture');
 
         $this->load->model('extension/payment/paynl3');
         $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($orderId);
@@ -39,20 +40,49 @@ class ControllerExtensionPaymentPaynl extends Controller
             $transactionState == 'AUTHORIZE' &&
             $autoVoid
         ) {
-            $apiVoid = new Pay_Api_Void();
-            $apiVoid->setApiToken($apiToken);
-            $apiVoid->setServiceId($serviceId);
-            $apiVoid->setTransactionId($transactionId);
-
-            $result = $apiVoid->doRequest();
-
-            if (!$result['request']['errorMessage']) {
-                $autoVoidMessage = 'Auto-Void completed';
-            } else {
-                $autoVoidMessage = 'Auto-Void: something went wrong. ' . $result['request']['errorMessage'];
-            }
-
-            $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
+            $this->paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
+        } else if (
+            $orderStatusId == 5 &&
+            $transactionState == 'AUTHORIZE' &&
+            $autoCapture
+        ) {
+            $this->paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
         }
+    }
+
+    public function paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
+    {
+        $apiVoid = new Pay_Api_Void();
+        $apiVoid->setApiToken($apiToken);
+        $apiVoid->setServiceId($serviceId);
+        $apiVoid->setTransactionId($transactionId);
+
+        $result = $apiVoid->doRequest();
+
+        if (!$result['request']['errorMessage']) {
+            $autoVoidMessage = 'Auto-Void completed';
+        } else {
+            $autoVoidMessage = 'Auto-Void: something went wrong. ' . $result['request']['errorMessage'];
+        }
+
+        $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
+    }
+
+    public function paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
+    {
+        $apiCapture = new Pay_Api_Capture();
+        $apiCapture->setApiToken($apiToken);
+        $apiCapture->setServiceId($serviceId);
+        $apiCapture->setTransactionId($transactionId);
+
+        $result = $apiCapture->doRequest();
+
+        if (!$result['request']['errorMessage']) {
+            $autoVoidMessage = 'Auto-Capture completed';
+        } else {
+            $autoVoidMessage = 'Auto-Capture: something went wrong. ' . $result['request']['errorMessage'];
+        }
+
+        $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
     }
 }
