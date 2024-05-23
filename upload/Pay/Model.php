@@ -6,7 +6,6 @@ class Pay_Model extends Model
     const STATUS_CANCELED = 'CANCELED'; // phpcs:ignore
     const STATUS_COMPLETE = 'COMPLETE'; // phpcs:ignore
     const STATUS_REFUNDED = 'REFUNDED'; // phpcs:ignore
-    const STATUS_AUTHORIZED = 'AUTHORIZED'; // phpcs:ignore
 
     protected $_paymentOptionId;
 
