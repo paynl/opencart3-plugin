@@ -9,6 +9,5 @@ class ControllerExtensionPaymentPaynlAlipayplus extends Pay_Controller_Admin
 {
     protected $_paymentOptionId = 2907;
     protected $_paymentMethodName = 'paynl_alipayplus';
-    protected $_postPayment = true;
     protected $_defaultLabel = 'Alipay Plus';
 }
