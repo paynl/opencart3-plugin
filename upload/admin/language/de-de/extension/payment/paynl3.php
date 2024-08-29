@@ -110,6 +110,8 @@ $arrPaymentMethods = array(
     'afterpay',
     'afterpayint',
     'alipay',
+    'alipayplus',
+    'alma',
     'amazonpay',
     'amex',
     'applepay',
