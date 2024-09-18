@@ -135,6 +135,7 @@ $arrPaymentMethods = array(
     'fashioncheque',
     'fashiongiftcard',
     'festivalcadeau',
+    'flyingblueplus',
     'gezondheidsbon',
     'giropay',
     'givacard',
