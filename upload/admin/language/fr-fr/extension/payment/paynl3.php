@@ -144,6 +144,7 @@ $arrPaymentMethods = array(
     'ideal',
     'in3business',
     'incasso',
+    'kidsorteen',
     'klarnakp',
     'maestro',
     'monizze',
