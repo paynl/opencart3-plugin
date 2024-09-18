@@ -168,6 +168,7 @@ $arrPaymentMethods = array(
     'sofortbankingds',
     'sofortbankinghr',
     'spraypay',
+    'stadspasamsterdam',
     'trustly',
     'visamastercard',
     'vvvgiftcard',
