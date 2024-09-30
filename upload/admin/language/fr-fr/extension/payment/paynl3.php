@@ -145,6 +145,7 @@ $arrPaymentMethods = array(
     'in3business',
     'incasso',
     'klarnakp',
+    'kunstencultuurkaart',
     'maestro',
     'monizze',
     'mooigiftcard',
