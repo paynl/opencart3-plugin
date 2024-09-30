@@ -178,6 +178,7 @@ $arrPaymentMethods = array(
     'ideal',
     'in3business',
     'incasso',
+    'kidsorteen',
     'klarnakp',
     'kunstencultuurkaart',
     'maestro',
