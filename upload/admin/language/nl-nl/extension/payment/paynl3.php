@@ -200,6 +200,7 @@ $arrPaymentMethods = array(
     'postepay',
     'przelewy24',
     'shoesandsneakers',
+    'rotterdamcitycard',
     'sodexo',
     'sofortbanking',
     'sofortbankingds',
