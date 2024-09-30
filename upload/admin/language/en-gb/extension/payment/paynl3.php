@@ -213,6 +213,7 @@ $arrPaymentMethods = array(
     'wechatpay',
     'wijncadeau',
     'winkelcheque',
+    'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
 );
