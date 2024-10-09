@@ -130,7 +130,7 @@ $_['text_suggestions_submit'] = 'Submit';
 $_['text_suggestions_success_modal'] = 'Sent! Thank you for your contribution.';
 $_['text_suggestions_fail_modal'] = 'E-mail could not be sent, please try again later.';
 
-$version = '1.9.2';
+$version = '1.9.3';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
@@ -140,6 +140,8 @@ $arrPaymentMethods = array(
     'afterpay',
     'afterpayint',
     'alipay',
+    'alipayplus',
+    'alma',
     'amazonpay',
     'amex',
     'applepay',
@@ -163,6 +165,7 @@ $arrPaymentMethods = array(
     'fashioncheque',
     'fashiongiftcard',
     'festivalcadeau',
+    'flyingblueplus',
     'gezondheidsbon',
     'giropay',
     'givacard',
@@ -173,7 +176,9 @@ $arrPaymentMethods = array(
     'ideal',
     'in3business',
     'incasso',
+    'kidsorteen',
     'klarnakp',
+    'kunstencultuurkaart',
     'maestro',
     'monizze',
     'mooigiftcard',
@@ -191,12 +196,14 @@ $arrPaymentMethods = array(
     'podiumcadeaukaart',
     'postepay',
     'przelewy24',
+    'rotterdamcitycard',
     'shoesandsneakers',
     'sodexo',
     'sofortbanking',
     'sofortbankingds',
     'sofortbankinghr',
     'spraypay',
+    'stadspasamsterdam',
     'trustly',
     'visamastercard',
     'vvvgiftcard',
@@ -204,6 +211,7 @@ $arrPaymentMethods = array(
     'wechatpay',
     'wijncadeau',
     'winkelcheque',
+    'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
 );
