@@ -122,7 +122,7 @@ class Pay_Controller_Payment extends Controller
 
             $apiStart->setDescription($description);
             $apiStart->setExtra1($order_info['order_id']);
-            $apiStart->setObject('opencart3 1.9.3');
+            $apiStart->setObject('opencart3 1.9.2');
 
 
             # Collect customer data
@@ -322,12 +322,6 @@ class Pay_Controller_Payment extends Controller
                 $status = $this->$modelName->processTransaction($transactionId);
                 $message = "Status updated to $status";
             }
-            die("TRUE|" . $message);
-        } elseif ($action == 'capture') {
-            $message = 'ignoring COMPLETE';
-            die("TRUE|" . $message);
-        } elseif ($action == 'cancel') {
-            $message = 'ignoring CANCELED';
             die("TRUE|" . $message);
         } else {
             try {

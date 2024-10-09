@@ -216,18 +216,6 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param string $orderId
-     * @return array
-     */
-    public function getTransactionFromOrderId($orderId)
-    {
-        $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE orderId = '" . $this->db->escape($orderId) . "' LIMIT 1;";
-        $result = $this->db->query($sql);
-
-        return $result->row;
-    }
-
-    /**
      * Get The statusses of the order.
      * Because the order can have multiple transactions,
      * We have to check here if the order hasn't already been completed

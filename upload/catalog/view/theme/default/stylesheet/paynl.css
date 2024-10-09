@@ -1,0 +1,24 @@
+.fast-checkout-button {
+    background-color: #a52a5c;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 7.5px 12px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.fast-checkout-button img.checkout-logo {
+    margin-right: 10px;
+    width: 30px;
+}
+
+.fast-checkout-button:hover {
+    background-color: #93214e;
+    text-decoration: none;
+}
+
+.fast-checkout-btn {
+    margin-right: 4px;
+}

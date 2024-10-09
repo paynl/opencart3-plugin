@@ -46,12 +46,6 @@ $_['text_advanced_settings'] = 'Advanced settings';
 $_['text_refund_processing'] = 'Refund processing';
 $_['text_refund_processing_tooltip'] = 'Process refunds that are initiated in My.pay';
 
-$_['text_auto_void'] = 'Auto void';
-$_['text_auto_void_tooltip'] = 'Automatically void transactions in the state AUTHORIZE when cancelling an order.';
-
-$_['text_auto_capture'] = 'Auto capture';
-$_['text_auto_capture_tooltip'] = 'Enable auto capture for authorized transactions. Captures will be initiated when an order is set to Completed.';
-
 $_['text_follow_payment_method'] = 'Follow payment method';
 $_['text_follow_payment_method_tooltip'] = 'This will ensure the order is updated with the actual payment method used to complete the order. This can differ from the payment method initially selected'; // phpcs:ignore
 
@@ -89,6 +83,9 @@ $_['text_logging_tooltip'] = "Enable logging";
 
 $_['text_testmode'] = 'Test mode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between Pay. and your webshop';
+
+$_['text_display_fast_checkout'] = 'Display fast checkout button';
+$_['text_display_fast_checkout_tooltip'] = 'Enable or disable the Fast Checkout button in the cart.';
 
 $_['text_status_pending'] = 'Order status pending payment';
 $_['text_status_pending_tooltip'] = 'The status of the order when the payment is started, but not yet completed';
@@ -133,7 +130,7 @@ $_['text_suggestions_submit'] = 'Submit';
 $_['text_suggestions_success_modal'] = 'Sent! Thank you for your contribution.';
 $_['text_suggestions_fail_modal'] = 'E-mail could not be sent, please try again later.';
 
-$version = '1.9.3';
+$version = '1.9.2';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
@@ -143,8 +140,6 @@ $arrPaymentMethods = array(
     'afterpay',
     'afterpayint',
     'alipay',
-    'alipayplus',
-    'alma',
     'amazonpay',
     'amex',
     'applepay',
@@ -168,7 +163,6 @@ $arrPaymentMethods = array(
     'fashioncheque',
     'fashiongiftcard',
     'festivalcadeau',
-    'flyingblueplus',
     'gezondheidsbon',
     'giropay',
     'givacard',
@@ -179,9 +173,7 @@ $arrPaymentMethods = array(
     'ideal',
     'in3business',
     'incasso',
-    'kidsorteen',
     'klarnakp',
-    'kunstencultuurkaart',
     'maestro',
     'monizze',
     'mooigiftcard',
@@ -199,14 +191,12 @@ $arrPaymentMethods = array(
     'podiumcadeaukaart',
     'postepay',
     'przelewy24',
-    'rotterdamcitycard',
     'shoesandsneakers',
     'sodexo',
     'sofortbanking',
     'sofortbankingds',
     'sofortbankinghr',
     'spraypay',
-    'stadspasamsterdam',
     'trustly',
     'visamastercard',
     'vvvgiftcard',
@@ -214,7 +204,6 @@ $arrPaymentMethods = array(
     'wechatpay',
     'wijncadeau',
     'winkelcheque',
-    'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
 );

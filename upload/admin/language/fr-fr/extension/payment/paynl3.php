@@ -73,6 +73,9 @@ $_['text_custom_exchange_url_tooltip'] = 'Utilisez votre propre gestionnaire d\'
 $_['text_testmode'] = 'Mode d\'essai';
 $_['text_testmode_tooltip'] = 'Activez ou désactivez le mode test pour tester les échanges entre Pay. et votre boutique en ligne';
 
+$_['text_display_fast_checkout'] = 'Afficher le bouton de paiement rapide';
+$_['text_display_fast_checkout_tooltip'] = 'Activer ou désactiver le bouton de paiement rapide dans le panier.';
+
 $_['text_status_pending'] = 'Statut de la commande en attente de paiement';
 $_['text_status_pending_tooltip'] = 'Le statut de la commande lorsque le paiement est commencé, mais pas encore terminé';
 $_['text_status_complete'] = 'Statut de la commande, paiement réussi';
@@ -109,8 +112,6 @@ $arrPaymentMethods = array(
     'afterpay',
     'afterpayint',
     'alipay',
-    'alipayplus',
-    'alma',
     'amazonpay',
     'amex',
     'applepay',
@@ -134,7 +135,6 @@ $arrPaymentMethods = array(
     'fashioncheque',
     'fashiongiftcard',
     'festivalcadeau',
-    'flyingblueplus',
     'gezondheidsbon',
     'giropay',
     'givacard',
@@ -145,9 +145,7 @@ $arrPaymentMethods = array(
     'ideal',
     'in3business',
     'incasso',
-    'kidsorteen',
     'klarnakp',
-    'kunstencultuurkaart',
     'maestro',
     'monizze',
     'mooigiftcard',
@@ -165,14 +163,12 @@ $arrPaymentMethods = array(
     'podiumcadeaukaart',
     'postepay',
     'przelewy24',
-    'rotterdamcitycard',
     'shoesandsneakers',
     'sodexo',
     'sofortbanking',
     'sofortbankingds',
     'sofortbankinghr',
     'spraypay',
-    'stadspasamsterdam',
     'trustly',
     'visamastercard',
     'vvvgiftcard',
@@ -180,7 +176,6 @@ $arrPaymentMethods = array(
     'wechatpay',
     'wijncadeau',
     'winkelcheque',
-    'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
 );

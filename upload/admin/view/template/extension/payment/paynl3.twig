@@ -94,6 +94,24 @@
                             </select>
                         </div>
                     </div>
+                    {% if availability_fast_checkout %}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="{{ fast_checkout }}">
+                                <span data-toggle="tooltip" title="{{ text_display_fast_checkout_tooltip }}">{{ text_display_fast_checkout }}</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <select name="{{ fast_checkout }}" id="{{ fast_checkout }}" class="form-control">
+                                    {% if display_fast_checkout %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                    {% else %}
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{ text_disabled }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="form-group">
                         <div class="panel-heading" id="show_advanced_settings" style="border-top: 1px solid #dcdcdc;">
                             <h3 class="panel-title"><i class="fa fa-gear"></i> {{ text_advanced_settings }} <i id="advanced_settings_icon" class="fa fa-chevron-down"></i></h3>
@@ -126,44 +144,6 @@
                                 <select name="payment_paynl_general_refund_processing"
                                         id="payment_paynl_general_refund_processing" class="form-control">
                                     {% if refund_processing %}
-                                        <option value="1" selected="selected">{{ text_enabled }}</option>
-                                        <option value="0">{{ text_disabled }}</option>
-                                    {% else %}
-                                        <option value="1">{{ text_enabled }}</option>
-                                        <option value="0" selected="selected">{{ text_disabled }}</option>
-                                    {% endif %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"
-                                   for="payment_paynl_general_auto_capture">
-                            <span data-toggle="tooltip" title="{{ text_auto_capture_tooltip }}">
-                                {{ text_auto_capture }}
-                            </span></label>
-                            <div class="col-sm-10">
-                                <select name="payment_paynl_general_auto_capture"
-                                        id="payment_paynl_general_auto_capture" class="form-control">
-                                    {% if auto_capture %}
-                                        <option value="1" selected="selected">{{ text_enabled }}</option>
-                                        <option value="0">{{ text_disabled }}</option>
-                                    {% else %}
-                                        <option value="1">{{ text_enabled }}</option>
-                                        <option value="0" selected="selected">{{ text_disabled }}</option>
-                                    {% endif %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"
-                                   for="payment_paynl_general_auto_void">
-                            <span data-toggle="tooltip" title="{{ text_auto_void_tooltip }}">
-                                {{ text_auto_void }}
-                            </span></label>
-                            <div class="col-sm-10">
-                                <select name="payment_paynl_general_auto_void"
-                                        id="payment_paynl_general_auto_void" class="form-control">
-                                    {% if auto_void %}
                                         <option value="1" selected="selected">{{ text_enabled }}</option>
                                         <option value="0">{{ text_disabled }}</option>
                                     {% else %}

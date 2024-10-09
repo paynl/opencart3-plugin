@@ -43,12 +43,6 @@ $_['text_prefix_tooltip'] = 'Verander de order omschrijving prefix hier. Als dit
 
 $_['text_advanced_settings'] = 'Geavanceerde instellingen';
 
-$_['text_auto_void'] = 'Auto void';
-$_['text_auto_void_tooltip'] = 'Geautoriseerde transacties automatisch vrijgeven (void) bij het annuleren van een bestelling.';
-
-$_['text_auto_capture'] = 'Auto capture';
-$_['text_auto_capture_tooltip'] = 'Schakel auto capture in voor gereserveerde transacties met status AUTHORIZE. De capture wordt uitgevoerd wanneer een bestelstatus wijzigt naar Completed.';
-
 $_['text_refund_processing'] = 'Verwerking terugbetaling';
 $_['text_refund_processing_tooltip'] = 'Verwerk terugbetalingen die gestart zijn vanuit Pay.';
 
@@ -89,6 +83,9 @@ $_['text_logging_tooltip'] = "Schakel logging in";
 
 $_['text_testmode'] = 'Test mode';
 $_['text_testmode_tooltip'] = 'Zet de test mode aan of uit om de exchanges te testen tussen Pay. en uw webshop';
+
+$_['text_display_fast_checkout'] = 'Toon de Fast Checkout-knop';
+$_['text_display_fast_checkout_tooltip'] = 'Schakel de Fast Checkout-knop in of uit in de winkelwagen.';
 
 $_['text_status_pending'] = 'Order status wacht op betaling';
 $_['text_status_pending_tooltip'] = 'De status van de order wanneer de betaling is gestart, maar nog niet afgerond';
@@ -133,7 +130,7 @@ $_['text_suggestions_submit'] = 'Verstuur';
 $_['text_suggestions_success_modal'] = 'Verstuurd! Bedankt voor het delen van jouw input.';
 $_['text_suggestions_fail_modal'] = 'E-mail kon niet worden verzonden. Probeer het later opnieuw.';
 
-$version = '1.9.3';
+$version = '1.9.2';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
@@ -143,8 +140,6 @@ $arrPaymentMethods = array(
     'afterpay',
     'afterpayint',
     'alipay',
-    'alipayplus',
-    'alma',
     'amazonpay',
     'amex',
     'applepay',
@@ -168,7 +163,6 @@ $arrPaymentMethods = array(
     'fashioncheque',
     'fashiongiftcard',
     'festivalcadeau',
-    'flyingblueplus',
     'gezondheidsbon',
     'giropay',
     'givacard',
@@ -179,9 +173,7 @@ $arrPaymentMethods = array(
     'ideal',
     'in3business',
     'incasso',
-    'kidsorteen',
     'klarnakp',
-    'kunstencultuurkaart',
     'maestro',
     'monizze',
     'mooigiftcard',
@@ -200,13 +192,11 @@ $arrPaymentMethods = array(
     'postepay',
     'przelewy24',
     'shoesandsneakers',
-    'rotterdamcitycard',
     'sodexo',
     'sofortbanking',
     'sofortbankingds',
     'sofortbankinghr',
     'spraypay',
-    'stadspasamsterdam',
     'trustly',
     'visamastercard',
     'vvvgiftcard',
@@ -214,7 +204,6 @@ $arrPaymentMethods = array(
     'wechatpay',
     'wijncadeau',
     'winkelcheque',
-    'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
 );
