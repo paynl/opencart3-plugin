@@ -38,12 +38,31 @@ class Pay_Controller_Admin extends Controller
         $data = array();
 
         $stringsToTranslate = array(
-            'entry_status', 'button_save', 'button_cancel', 'text_enabled', 'text_disabled', 'text_yes', 'text_no',
-            'entry_geo_zone', 'text_confirm_start_tooltip', 'text_confirm_start', 'text_send_statusupdates_tooltip',
-            'text_send_statusupdates', 'entry_sort_order', 'text_status_pending', 'text_status_pending_tooltip',
-            'text_status_complete', 'text_status_complete_tooltip', 'text_status_canceled', 'text_status_canceled_tooltip',
-            'text_minimum_amount', 'text_maximum_amount', 'text_payment_instructions', 'text_payment_instructions_tooltip',
-            'text_display_icon', 'text_display_icon_tooltip'
+            'entry_status',
+            'button_save',
+            'button_cancel',
+            'text_enabled',
+            'text_disabled',
+            'text_yes',
+            'text_no',
+            'entry_geo_zone',
+            'text_confirm_start_tooltip',
+            'text_confirm_start',
+            'text_send_statusupdates_tooltip',
+            'text_send_statusupdates',
+            'entry_sort_order',
+            'text_status_pending',
+            'text_status_pending_tooltip',
+            'text_status_complete',
+            'text_status_complete_tooltip',
+            'text_status_canceled',
+            'text_status_canceled_tooltip',
+            'text_minimum_amount',
+            'text_maximum_amount',
+            'text_payment_instructions',
+            'text_payment_instructions_tooltip',
+            'text_display_icon',
+            'text_display_icon_tooltip'
         );
 
         foreach ($stringsToTranslate as $string) {
@@ -61,6 +80,12 @@ class Pay_Controller_Admin extends Controller
             $this->downloadLogs();
         }
 
+        $data['availability_fast_checkout'] = false;
+        if (property_exists($this, '_fastCheckout')) {
+            $data['availability_fast_checkout'] = true;
+            $data['fast_checkout'] = 'payment_' . $this->_paymentMethodName . '_display_fast_checkout';
+        }
+
         if ($reqMethod == 'POST') {
             $generalValid = $this->validateGeneral();
 
@@ -74,19 +99,19 @@ class Pay_Controller_Admin extends Controller
 
             if ($generalValid) {
                 $settingsGeneral = array(
-                  'payment_paynl_general_apitoken' => $settings['payment_paynl_general_apitoken'],
-                  'payment_paynl_general_serviceid' => $settings['payment_paynl_general_serviceid'],
-                  'payment_paynl_general_testmode' => $settings['payment_paynl_general_testmode'],
-                  'payment_paynl_general_gateway' => trim($settings['payment_paynl_general_gateway']),
-                  'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
-                  'payment_paynl_general_refund_processing' => $settings['payment_paynl_general_refund_processing'],
-                  'payment_paynl_general_auto_void' => $settings['payment_paynl_general_auto_void'],
-                  'payment_paynl_general_auto_capture' => $settings['payment_paynl_general_auto_capture'],
-                  'payment_paynl_general_follow_payment_method' => $settings['payment_paynl_general_follow_payment_method'],
-                  'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
-                  'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
-                  'payment_paynl_general_test_ip' => $settings['payment_paynl_general_test_ip'],
-                  'payment_paynl_general_logging' => $settings['payment_paynl_general_logging'],
+                    'payment_paynl_general_apitoken' => $settings['payment_paynl_general_apitoken'],
+                    'payment_paynl_general_serviceid' => $settings['payment_paynl_general_serviceid'],
+                    'payment_paynl_general_testmode' => $settings['payment_paynl_general_testmode'],
+                    'payment_paynl_general_gateway' => trim($settings['payment_paynl_general_gateway']),
+                    'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
+                    'payment_paynl_general_refund_processing' => $settings['payment_paynl_general_refund_processing'],
+                    'payment_paynl_general_auto_void' => $settings['payment_paynl_general_auto_void'],
+                    'payment_paynl_general_auto_capture' => $settings['payment_paynl_general_auto_capture'],
+                    'payment_paynl_general_follow_payment_method' => $settings['payment_paynl_general_follow_payment_method'],
+                    'payment_paynl_general_display_icon' => $settings['payment_paynl_general_display_icon'],
+                    'payment_paynl_general_custom_exchange_url' => $settings['payment_paynl_general_custom_exchange_url'],
+                    'payment_paynl_general_test_ip' => $settings['payment_paynl_general_test_ip'],
+                    'payment_paynl_general_logging' => $settings['payment_paynl_general_logging'],
                 );
                 $this->model_setting_setting->editSetting('payment_paynl_general', $settingsGeneral);
 
@@ -102,6 +127,14 @@ class Pay_Controller_Admin extends Controller
 
             if ($generalValid && $bMethodValidate) {
                 $data['success_message'] = $this->language->get('text_success');
+            }
+        } else {
+            if ($this->request->get['action'] == 'refund') {
+                $returnarray = $this->refund();
+                die(json_encode($returnarray));
+
+                //$this->response->addHeader('Content-Type: application/json');
+                //$this->response->setOutput(json_encode($json));
             }
         }
 
@@ -298,6 +331,12 @@ class Pay_Controller_Admin extends Controller
             'catalog/controller/api/order/history/after',
             'extension/payment/paynl/paynlOnOrderStatusChange'
         );
+
+        $this->model_setting_event->addEvent(
+            'paynl_set_order_tab',
+            'admin/view/sale/order_info/before',
+            'extension/payment/paynl/paynlOrderInforBefore'
+        );
     }
 
     /**
@@ -373,7 +412,9 @@ class Pay_Controller_Admin extends Controller
         $options = array(
             'http' => array(
                 'method' => 'GET',
-                'header' => 'User-Agent:' . $_SERVER['HTTP_USER_AGENT']));
+                'header' => 'User-Agent:' . $_SERVER['HTTP_USER_AGENT']
+            )
+        );
 
         $context = stream_context_create($options);
 
@@ -430,5 +471,50 @@ class Pay_Controller_Admin extends Controller
                 exit;
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function refund()
+    {
+        $json = array();
+        $apiToken = $this->configGet('apitoken');
+        $serviceId = $this->configGet('serviceid');
+        $transactionId = $this->request->get['transaction_id'] ?? null;
+        $amount = (float) $this->request->get['amount'] * 100 ?? null;
+        $currency = $this->request->get['currency'] ?? null;
+        try {
+            $refund = new Pay_Api_Refund();
+            $refund->setApiToken($apiToken);
+            $refund->setServiceId($serviceId);
+            $refund->setTransactionId($transactionId);
+            $refund->setAmount($amount);
+            $refund->setCurrency($currency);
+            $refund->doRequest();
+            $json['success'] = 'Pay. refunded ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
+        } catch (\Exception $e) {
+            $json['error'] = 'Pay. couldn\'t refund, please try again later.';
+        }
+        return $json;
+    }
+
+    /**
+     * @return void
+     */
+    private function capture()
+    {
+        $transactionId = $this->request->get['transaction_id'] ?? null;
+        $amount = $this->request->get['amount'] ?? null;
+        $currency = $this->request->get['currency'] ?? null;
+        try {
+            $this->payTransaction->capture($transactionId, $amount);
+            $json['success'] = 'Pay. captured ' . $currency . ' ' . $amount . ' successfully!';
+        } catch (\Exception $e) {
+            $this->helper->logCritical('Admin Refund: ' . $e->getMessage(), ['transactionId' => $transactionId, 'amount' => $amount, 'currency' => $currency]);
+            $json['error'] = 'Pay. couldn\'t capture, please try again later.';
+        }
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 }

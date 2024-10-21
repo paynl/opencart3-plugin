@@ -51,6 +51,39 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
+     * @return void
+     * @throws Pay_Api_Exception
+     */
+    public function paynlOrderInforBefore(&$route, &$args)
+    {
+        $orderId = $_REQUEST['order_id'];
+        $orderStatusId = $_REQUEST['order_status_id'];
+
+        var_dump($orderId);
+        exit;
+
+        $this->load->model('setting/setting');
+        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
+        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
+
+        $autoVoid = $this->config->get('payment_paynl_general_auto_void');
+        $autoCapture = $this->config->get('payment_paynl_general_auto_capture');
+
+        $this->load->model('extension/payment/paynl3');
+        $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($orderId);
+        $transactionId = $transaction['id'];
+
+        $apiInfo = new Pay_Api_Info();
+        $apiInfo->setApiToken($apiToken);
+        $apiInfo->setServiceId($serviceId);
+        $apiInfo->setTransactionId($transactionId);
+        $infoResult = $apiInfo->doRequest();
+
+        $transactionState = $infoResult['paymentDetails']['stateName'];
+      
+    }
+
+    /**
      * @param $apiToken
      * @param $serviceId
      * @param $transactionId
