@@ -103,4 +103,91 @@ class ControllerExtensionPaymentPaynl extends Controller
 
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
     }
+
+    public function addFastCheckoutButtons(&$route, &$data, &$output) {
+        $this->prepareOutput($output);
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
+
+        if (!empty($payMethodsWithFastCheckout)) {
+            $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
+            $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_buttons', $data);
+
+            $checkoutButtonUrl = $data['checkout'];
+            $checkoutButtonText = $data['button_checkout'];
+
+            $checkoutButtonHtml = '<a href="' . $checkoutButtonUrl . '" class="btn btn-primary">' . $checkoutButtonText . '</a>';
+
+            $output = str_replace($checkoutButtonHtml, $checkoutButtonHtml . $fastCheckoutButtonsHtml, $output);
+        }
+    }
+
+    public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
+        $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
+        $output = str_replace('<div id="cart" class="btn-group btn-block">', $styleTag . '<div id="cart" class="btn-group btn-block">', $output);
+
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
+
+        if (!empty($payMethodsWithFastCheckout)) {
+            $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
+            $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_mini_cart_buttons', $data);
+            $searchString = '</div>
+    </li>
+      </ul>';
+
+            $output = str_replace($searchString, $fastCheckoutButtonsHtml . $searchString, $output);
+        }
+    }
+
+    public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
+        $this->prepareOutput($output);
+        $scriptTag = '<script src="catalog/view/theme/default/javascript/paynl.js"></script>';
+        $output = str_replace('</head>', $scriptTag . '</head>', $output);
+
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
+
+        if (!empty($payMethodsWithFastCheckout)) {
+            $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
+            $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_product_buttons', $data);
+
+            $searchString = '</div>
+            </div>
+                    <div class="rating">';
+            $output = str_replace($searchString, $fastCheckoutButtonsHtml . $searchString, $output);
+        }
+    }
+
+    private function prepareOutput(&$output) {
+        $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
+        $output = str_replace('</head>', $styleTag . '</head>', $output);
+    }
+
+    private function getFastCheckoutButtons() {
+        $this->load->model('setting/extension');
+        $results = $this->model_setting_extension->getExtensions('payment');
+        $payMethodsWithFastCheckout = array();
+
+        foreach ($results as $result) {
+            if ($this->config->get('payment_' . $result['code'] . '_status')) {
+                $fastCheckout = (bool) $this->config->get('payment_' . $result['code'] . '_display_fast_checkout');
+                if ($fastCheckout === true) {
+                    $payMethodsWithFastCheckout[] = $this->getFastCheckoutButtonLayout($result['code']);
+                }
+            }
+        }
+
+        return $payMethodsWithFastCheckout;
+    }
+
+    private function getFastCheckoutButtonLayout($methodCode) {
+        switch ($methodCode) {
+            case 'paynl_ideal':
+                $url = 'index.php?route=extension/payment/' . $methodCode . '/initFastCheckout';
+
+                return '<a href="' . $url . '" data-method="' . $methodCode . '" class="btn btn-lg btn-block fast-checkout-button" style="width: 100%">
+                <img src="image/Pay/1fc.png" alt="iDEAL" class="checkout-logo ">
+                Fast Checkout
+                </a>';
+            default: null;
+        }
+    }
 }

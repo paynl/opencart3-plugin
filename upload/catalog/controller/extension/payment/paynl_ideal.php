@@ -159,7 +159,11 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
 
         $response = $this->sendRequest($order_data);
 
-        die(json_encode($response));
+        if ($this->isAjax()) {
+            die(json_encode($response));
+        }
+
+        header("Location: " . $response['data']['links']['redirect']);
     }
 
     private function sendRequest($orderData)
@@ -271,39 +275,61 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
     public function exchangeFastCheckout() {
         $webhookData = $this->request->post;
 
+        $order_id = $webhookData['object']['reference'];
+
         $status = Pay_Helper::getStatus($webhookData['object']['status']['code']);
+
+        $this->load->model('extension/payment/' . $this->_paymentMethodName);
+        $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
+
+        $this->load->model('checkout/order');
+
         if ($status === Pay_Model::STATUS_COMPLETE) {
-            $order_id = $webhookData['object']['reference'];
+            $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
+            $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
+            $customer = $webhookData['object']['checkoutData']['customer'];
 
             $paymentData = [
-                'firstname' => $webhookData['object']['checkoutData']['customer']['firstName'],
-                'lastname' => $webhookData['object']['checkoutData']['customer']['lastName'],
-                'address_1' => $webhookData['object']['checkoutData']['billingAddress']['streetName'],
-                'city' => $webhookData['object']['payments'][0]['checkoutData']['billingAddress']['city'],
-                'postcode' => $webhookData['object']['checkoutData']['billingAddress']['zipCode'],
-                'country' => $webhookData['object']['checkoutData']['billingAddress']['countryCode'],
+                'firstname' => $customer['firstName'],
+                'lastname' => $customer['lastName'],
+                'address_1' => $billingAddress['streetName'] . ' ' . $billingAddress['streetNumber'],
+                'city' => $billingAddress['city'],
+                'postcode' => $billingAddress['zipCode'],
+                'country' => $billingAddress['countryCode'],
                 'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
             ];
+
             $shippingData = [
-                'firstname' => $webhookData['object']['checkoutData']['customer']['firstName'],
-                'lastname' => $webhookData['object']['checkoutData']['customer']['lastName'],
-                'address_1' => $webhookData['object']['checkoutData']['shippingAddress']['streetName'],
-                'city' => $webhookData['object']['checkoutData']['shippingAddress']['city'],
-                'postcode' => $webhookData['object']['checkoutData']['shippingAddress']['zipCode'],
-                'country' => $webhookData['object']['checkoutData']['shippingAddress']['countryCode']
+                'firstname' => $customer['firstName'],
+                'lastname' => $customer['lastName'],
+                'address_1' => $shippingAddress['streetName'] . ' ' . $shippingAddress['streetNumber'],
+                'city' => $shippingAddress['city'],
+                'postcode' => $shippingAddress['zipCode'],
+                'country' => $shippingAddress['countryCode']
             ];
 
-            $this->load->model('checkout/order');
-            $this->model_checkout_order->updateOrderPaymentAndShipping($order_id, $paymentData, $shippingData);
+            $customerData = [
+                'email' => $customer['email'],
+                'phone' => $customer['phone'],
+                'lastname' => $customer['lastName'],
+                'firstname' => $customer['firstName'],
+            ];
+
+            $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+            $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
 
             $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
 
-            $this->load->model('extension/payment/' . $this->_paymentMethodName);
-            $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
 
-            $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+            $this->response->setOutput(json_encode(['status' => 'success']));
         }
 
-        $this->response->setOutput(json_encode(['status' => 'success']));
+        if ($status === Pay_Model::STATUS_CANCELED) {
+            $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
+
+            $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+
+            $this->response->setOutput(json_encode(['status' => 'cancelled']));
+        }
     }
 }
