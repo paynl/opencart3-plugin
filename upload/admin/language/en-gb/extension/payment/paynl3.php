@@ -2,6 +2,7 @@
 
 $_['text_apitoken'] = 'API token';
 $_['text_serviceid'] = 'Sales location';
+$_['text_tokencode'] = 'Token Code';
 
 // Text
 $_['text_payment'] = 'Payment';
@@ -20,6 +21,8 @@ $_['error_no_apitoken'] = 'You must enter an APItoken, you can find your APItoke
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 $_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: 
     <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
+$_['error_no_tokencode'] = 'You must enter an Token Code, you can find your AT-code on: 
+    <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 
 //texts
 $_['text_register'] = 'Not registered at Pay.? Sign up ';

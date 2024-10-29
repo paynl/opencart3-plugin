@@ -17,5 +17,7 @@ class Pay_Autoload {
         }
     }
 }
+
+require_once __DIR__ . '/vendor/autoload.php';
 //Register the autoloader
 Pay_Autoload::register();

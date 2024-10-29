@@ -101,6 +101,7 @@ class Pay_Controller_Admin extends Controller
                 $settingsGeneral = array(
                     'payment_paynl_general_apitoken' => $settings['payment_paynl_general_apitoken'],
                     'payment_paynl_general_serviceid' => $settings['payment_paynl_general_serviceid'],
+                    'payment_paynl_general_tokencode' => $settings['payment_paynl_general_tokencode'],
                     'payment_paynl_general_testmode' => $settings['payment_paynl_general_testmode'],
                     'payment_paynl_general_gateway' => trim($settings['payment_paynl_general_gateway']),
                     'payment_paynl_general_prefix' => $settings['payment_paynl_general_prefix'],
@@ -145,6 +146,7 @@ class Pay_Controller_Admin extends Controller
 
         $data['apitoken'] = $this->configGet('apitoken');
         $data['serviceid'] = $this->configGet('serviceid');
+        $data['tokencode'] = $this->configGet('tokencode');
         $data['testmode'] = $this->configGet('testmode');
         $data['gateway'] = $this->configGet('gateway');
         $data['prefix'] = $this->configGet('prefix');
@@ -171,6 +173,9 @@ class Pay_Controller_Admin extends Controller
             }
             if (!empty($this->error['serviceid'])) {
                 $data['error_serviceid'] = $this->error['serviceid'];
+            }
+            if (!empty($this->error['tokencode'])) {
+                $data['error_tokencode'] = $this->error['tokencode'];
             }
             if (!empty($this->error['status'])) {
                 $data['error_status'] = $this->error['status'];
@@ -246,6 +251,7 @@ class Pay_Controller_Admin extends Controller
     {
         $apiToken = $this->getPost('payment_paynl_general_apitoken');
         $serviceId = $this->getPost('payment_paynl_general_serviceid');
+        $tokencode = $this->getPost('payment_paynl_general_tokencode');
 
         if (!$this->user->hasPermission('modify', "extension/payment/$this->_paymentMethodName")) {
             $this->error['warning'] = $this->language->get('error_permission');
@@ -255,6 +261,8 @@ class Pay_Controller_Admin extends Controller
             $this->error['serviceid'] = $this->language->get('error_no_serviceid');
         } elseif (empty($apiToken)) {
             $this->error['apitoken'] = $this->language->get('error_no_apitoken');
+        } elseif (empty($tokencode)) {
+            $this->error['tokencode'] = $this->language->get('text_tokencode');
         } else {
             try {
                 $this->load->model('extension/payment/paynl3');
@@ -310,6 +318,7 @@ class Pay_Controller_Admin extends Controller
             $settingsGeneral = array(
                 'payment_paynl_general_apitoken' => $this->config->get('payment_paynl_general_apitoken'),
                 'payment_paynl_general_serviceid' => $this->config->get('payment_paynl_general_serviceid'),
+                'payment_paynl_general_tokencode' => $this->config->get('payment_paynl_general_tokencode'),
                 'payment_paynl_general_testmode' => $this->config->get('payment_paynl_general_testmode'),
                 'payment_paynl_general_gateway' => $this->config->get('payment_paynl_general_gateway'),
                 'payment_paynl_general_prefix' => 'Order ',

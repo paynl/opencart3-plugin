@@ -2,6 +2,7 @@
 
 $_['text_apitoken'] = 'API token';
 $_['text_serviceid'] = 'Verkooplocatie';
+$_['text_tokencode'] = 'Token Code';
 
 // Text
 $_['text_payment'] = 'Betaling';
