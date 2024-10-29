@@ -4,6 +4,11 @@ $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
+require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
+
+use PayNL\Sdk\Model\Request\OrderVoidRequest;
+use PayNL\Sdk\Model\Request\OrderCaptureRequest;
+use PayNL\Sdk\Exception\PayException;
 
 class ControllerExtensionPaymentPaynl extends Controller
 {
@@ -59,9 +64,6 @@ class ControllerExtensionPaymentPaynl extends Controller
         $orderId = $_REQUEST['order_id'];
         $orderStatusId = $_REQUEST['order_status_id'];
 
-        var_dump($orderId);
-        exit;
-
         $this->load->model('setting/setting');
         $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
         $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
@@ -94,17 +96,15 @@ class ControllerExtensionPaymentPaynl extends Controller
      */
     public function paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
     {
-        $apiVoid = new Pay_Api_Void();
-        $apiVoid->setApiToken($apiToken);
-        $apiVoid->setServiceId($serviceId);
-        $apiVoid->setTransactionId($transactionId);
+        $payConfig = new Pay_Controller_Config($this);
 
-        $result = $apiVoid->doRequest();
-
-        if (!$result['request']['errorMessage']) {
+        $orderVoidRequest = new OrderVoidRequest($transactionId);
+        $orderVoidRequest->setConfig($payConfig->getConfig());    
+        try {
+            $orderVoidRequest->start();
             $autoVoidMessage = 'Auto-Void completed';
-        } else {
-            $autoVoidMessage = 'Auto-Void: something went wrong. ' . $result['request']['errorMessage'];
+        } catch (PayException $e) {
+            $autoVoidMessage = 'Auto-Void: something went wrong. ' . $e->getMessage();
         }
 
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
@@ -121,19 +121,17 @@ class ControllerExtensionPaymentPaynl extends Controller
      */
     public function paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
     {
-        $apiCapture = new Pay_Api_Capture();
-        $apiCapture->setApiToken($apiToken);
-        $apiCapture->setServiceId($serviceId);
-        $apiCapture->setTransactionId($transactionId);
+        $payConfig = new Pay_Controller_Config($this);
 
-        $result = $apiCapture->doRequest();
+        $orderCaptureRequest = new OrderCaptureRequest($transactionId);
+        $orderCaptureRequest->setConfig($payConfig->getConfig());    
+        try {
+            $orderCaptureRequest->start();
+            $autoCaptureMessage = 'Auto-Capture completed';
+        } catch (PayException $e) {
+            $autoCaptureMessage = 'Auto-Capture: something went wrong. ' . $e->getMessage();
+        }     
 
-        if (!$result['request']['errorMessage']) {
-            $autoVoidMessage = 'Auto-Capture completed';
-        } else {
-            $autoVoidMessage = 'Auto-Capture: something went wrong. ' . $result['request']['errorMessage'];
-        }
-
-        $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
+        $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoCaptureMessage, false);
     }
 }

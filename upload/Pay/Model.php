@@ -1,5 +1,11 @@
 <?php
 
+require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
+
+use PayNL\Sdk\Model\Request\ServiceGetConfigRequest;
+use PayNL\Sdk\Config\Config;
+use PayNL\Sdk\Exception\PayException;
+
 class Pay_Model extends Model
 {
     const STATUS_PENDING = 'PENDING'; // phpcs:ignore
@@ -64,15 +70,15 @@ class Pay_Model extends Model
     public function addTransaction($transactionId, $orderId, $optionId, $amount, $startData, $optionSubId = null)
     {
         $sql = "INSERT INTO `" . DB_PREFIX . "paynl_transactions` (id, orderId, optionId, optionSubId, amount, status, created, start_data) VALUES ("
-                . "'" . $this->db->escape($transactionId) . "'"
-                . ",'" . $this->db->escape($orderId) . "'"
-                . ",'" . $this->db->escape($optionId) . "'"
-                . "," . (is_null($optionSubId) ? 'NULL' : "'" . $this->db->escape($optionSubId) . "'")
-                . ",'" . $this->db->escape($amount) . "'"
-                . ", '" . self::STATUS_PENDING . "'"
-                . ", UNIX_TIMESTAMP() "
-                . ",'" . $this->db->escape(json_encode($startData)) . "'"
-                . ")";
+            . "'" . $this->db->escape($transactionId) . "'"
+            . ",'" . $this->db->escape($orderId) . "'"
+            . ",'" . $this->db->escape($optionId) . "'"
+            . "," . (is_null($optionSubId) ? 'NULL' : "'" . $this->db->escape($optionSubId) . "'")
+            . ",'" . $this->db->escape($amount) . "'"
+            . ", '" . self::STATUS_PENDING . "'"
+            . ", UNIX_TIMESTAMP() "
+            . ",'" . $this->db->escape(json_encode($startData)) . "'"
+            . ")";
         return $this->db->query($sql);
     }
 
@@ -87,26 +93,23 @@ class Pay_Model extends Model
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
-                . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id ";
+            . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id ";
         $this->db->query($sql);
 
-        //nieuwe ophalen
-        $api = new Pay_Api_Getservice();
-        $api->setApiToken($apiToken);
-        $api->setServiceId($serviceId);
+        $payConfig = new Pay_Controller_Config($this);
 
-        if (!empty($gateway)) {
-            $api->setApiBase($gateway);
+        try {
+            $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig())->start();
+        } catch (PayException $e) {
+            exit();
         }
 
-        $result = $api->doRequest();
-
-        foreach ($result['paymentOptions'] as $paymentOption) {
-            $img = $paymentOption['img'];
+        foreach ($config->getPaymentMethods() as $method) {
+            $img = $method->getImage();
 
             //variabelen filteren
-            $optionId = $this->db->escape($paymentOption['id']);
-            $name = $this->db->escape($paymentOption['visibleName']);
+            $optionId = $this->db->escape($method->getId());
+            $name = $this->db->escape($method->getName());
             $img = $this->db->escape($img);
             $brand_id = isset($paymentOption['brand']['id']) ? $paymentOption['brand']['id'] : 0;
             $brand_id = $this->db->escape($brand_id);
@@ -115,25 +118,26 @@ class Pay_Model extends Model
             $imageJson = json_encode($imageArr);
 
             $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoptions` "
-                    . "(optionId, serviceId, name, img, update_date) VALUES "
-                    . "('$optionId', '$serviceId', '$name', '$imageJson', NOW())";
+                . "(optionId, serviceId, name, img, update_date) VALUES "
+                . "('$optionId', '$serviceId', '$name', '$imageJson', NOW())";
             $this->db->query($sql);
 
             $internalOptionId = $this->db->getLastId();
-            foreach ($paymentOption['paymentOptionSubList'] as $optionSub) {
-                $optionSubId = $optionSub['id'];
-                $name = $optionSub['visibleName'];
-                $img = $optionSub['image'];
+            if($method->hasOptions()){
+                foreach ($method->getOptions() as $optionSub) {   
+                    $optionSubId = $optionSub['id'] ?? null;
+                    $name = $optionSub['name'] ?? null;
 
-                //variabelen filteren
-                $optionSubId = $this->db->escape($optionSubId);
-                $name = $this->db->escape($name);
-                $img = $this->db->escape($img);
+                    //variabelen filteren
+                    $optionSubId = $this->db->escape($optionSubId);
+                    $name = $this->db->escape($name);
+                    $img = $this->db->escape($img);
 
-                $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
-                        . "(optionSubId, paymentOptionId, name, img, update_date) VALUES "
-                        . "('$optionSubId', $internalOptionId, '$name', '$img', NOW() )";
-                $this->db->query($sql);
+                    $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
+                        . "(optionSubId, paymentOptionId, name, update_date) VALUES "
+                        . "('$optionSubId', $internalOptionId, '$name', NOW() )";
+                    $this->db->query($sql);
+                }
             }
         }
     }
@@ -330,7 +334,7 @@ class Pay_Model extends Model
         $paymentOptions = $this->getPaymentOption($this->_paymentOptionId);
         $minOrderAmount = $this->getConfig('total', $pm);
         $maxOrderAmount = $this->getConfig('totalmax', $pm);
-        $geozone = (int)$this->getConfig('geo_zone_id', $pm);
+        $geozone = (int) $this->getConfig('geo_zone_id', $pm);
         $customerType = $this->getConfig('customer_type', $pm);
 
         if ($orderAmount >= 0) {
@@ -343,7 +347,7 @@ class Pay_Model extends Model
         }
 
         $strQuery = "SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . $geozone . "' AND country_id = '" . (int) $address['country_id'] . "' " .
-          " AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')";
+            " AND (zone_id = '" . (int) $address['zone_id'] . "' OR zone_id = '0')";
         $query = $this->db->query($strQuery);
 
         if (!empty($geozone) && $query->num_rows == 0) {
@@ -354,14 +358,14 @@ class Pay_Model extends Model
 
         if (
             ($customerType == 'private' && !empty($company)) ||
-             ($customerType == 'business' && empty($company))
+            ($customerType == 'business' && empty($company))
         ) {
             return false;
         }
 
         $icon = "";
         if ($this->config->get('payment_paynl_general_display_icon') != '') {
-            $iconSize = $this->config->get('payment_paynl_general_display_icon') ;
+            $iconSize = $this->config->get('payment_paynl_general_display_icon');
 
             if (!empty($paymentOptions['brand_id'])) {
                 $style = ' style="width:50px; height:50px;"';
@@ -387,10 +391,11 @@ class Pay_Model extends Model
         }
 
         return array(
-          'code' => $pm,
-          'title' => $icon . $this->getLabel(),
-          'terms' => '',
-          'sort_order' =>  $this->getConfig('sort_order', $pm));
+            'code' => $pm,
+            'title' => $icon . $this->getLabel(),
+            'terms' => '',
+            'sort_order' => $this->getConfig('sort_order', $pm)
+        );
     }
 
     /**
