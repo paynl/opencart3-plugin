@@ -11,7 +11,7 @@ class ControllerExtensionPaymentPaynl extends Controller
      * @return void
      * @throws Pay_Api_Exception
      */
-    public function paynlOrderInforBefore(&$route, &$data, &$template_code = null)
+    public function paynlOrderInfoBefore(&$route, &$data, &$template_code = null)
     {
         $this->load->model('sale/order');
         $order_info = $this->model_sale_order->getOrder($data['order_id']);

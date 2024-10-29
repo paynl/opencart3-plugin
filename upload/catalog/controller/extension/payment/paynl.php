@@ -9,6 +9,7 @@ require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 use PayNL\Sdk\Model\Request\OrderVoidRequest;
 use PayNL\Sdk\Model\Request\OrderCaptureRequest;
 use PayNL\Sdk\Exception\PayException;
+use PayNL\Sdk\Model\Request\OrderStatusRequest;
 
 class ControllerExtensionPaymentPaynl extends Controller
 {
@@ -32,13 +33,17 @@ class ControllerExtensionPaymentPaynl extends Controller
         $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($orderId);
         $transactionId = $transaction['id'];
 
-        $apiInfo = new Pay_Api_Info();
-        $apiInfo->setApiToken($apiToken);
-        $apiInfo->setServiceId($serviceId);
-        $apiInfo->setTransactionId($transactionId);
-        $infoResult = $apiInfo->doRequest();
+        $payConfig = new Pay_Controller_Config(openCart: $this);
+        $request = new OrderStatusRequest($transactionId ?? '');
+        $request->setConfig($payConfig->getConfig());
 
-        $transactionState = $infoResult['paymentDetails']['stateName'];
+        try {
+            $transaction = $request->start();
+        } catch (PayException $e) {        
+            exit();
+        }
+
+        $transactionState = $transaction->getStatusName();     
 
         if (
             $orderStatusId == 7 &&
@@ -56,36 +61,6 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
-     * @return void
-     * @throws Pay_Api_Exception
-     */
-    public function paynlOrderInforBefore(&$route, &$args)
-    {
-        $orderId = $_REQUEST['order_id'];
-        $orderStatusId = $_REQUEST['order_status_id'];
-
-        $this->load->model('setting/setting');
-        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
-        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
-
-        $autoVoid = $this->config->get('payment_paynl_general_auto_void');
-        $autoCapture = $this->config->get('payment_paynl_general_auto_capture');
-
-        $this->load->model('extension/payment/paynl3');
-        $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($orderId);
-        $transactionId = $transaction['id'];
-
-        $apiInfo = new Pay_Api_Info();
-        $apiInfo->setApiToken($apiToken);
-        $apiInfo->setServiceId($serviceId);
-        $apiInfo->setTransactionId($transactionId);
-        $infoResult = $apiInfo->doRequest();
-
-        $transactionState = $infoResult['paymentDetails']['stateName'];
-      
-    }
-
-    /**
      * @param $apiToken
      * @param $serviceId
      * @param $transactionId
@@ -96,7 +71,7 @@ class ControllerExtensionPaymentPaynl extends Controller
      */
     public function paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
     {
-        $payConfig = new Pay_Controller_Config($this);
+        $payConfig = new Pay_Controller_Config(openCart: $this);
 
         $orderVoidRequest = new OrderVoidRequest($transactionId);
         $orderVoidRequest->setConfig($payConfig->getConfig());    

@@ -130,7 +130,7 @@ class Pay_Controller_Admin extends Controller
                 $data['success_message'] = $this->language->get('text_success');
             }
         } else {
-            if ($this->request->get['action'] == 'refund') {
+            if ($this->request->get['action'] ?? '' == 'refund') {
                 $returnarray = $this->refund();
                 die(json_encode($returnarray));
 
@@ -344,7 +344,7 @@ class Pay_Controller_Admin extends Controller
         $this->model_setting_event->addEvent(
             'paynl_set_order_tab',
             'admin/view/sale/order_info/before',
-            'extension/payment/paynl/paynlOrderInforBefore'
+            'extension/payment/paynl/paynlOrderInfoBefore'
         );
     }
 

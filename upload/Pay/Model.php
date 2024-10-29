@@ -5,6 +5,7 @@ require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 use PayNL\Sdk\Model\Request\ServiceGetConfigRequest;
 use PayNL\Sdk\Config\Config;
 use PayNL\Sdk\Exception\PayException;
+use PayNL\Sdk\Model\Request\OrderStatusRequest;
 
 class Pay_Model extends Model
 {
@@ -90,6 +91,24 @@ class Pay_Model extends Model
      */
     public function refreshPaymentOptions($serviceId, $apiToken, $gateway)
     {
+
+
+        $payConfig = new Pay_Controller_Config($this);
+        $request = new OrderStatusRequest($transactionId ?? '');
+        $request->setConfig($payConfig->getConfig(true));
+
+        try {
+            $transaction = $request->start();
+            var_dump($transaction);
+        } catch (PayException $e) {
+            echo '<pre>';
+            echo 'Technical message: ' . $e->getMessage() . PHP_EOL;
+            echo 'Pay-code: ' . $e->getPayCode() . PHP_EOL;
+            echo 'Customer message: ' . $e->getFriendlyMessage() . PHP_EOL;
+            echo 'HTTP-code: ' . $e->getCode() . PHP_EOL;
+
+        }
+        exit();
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
@@ -123,8 +142,8 @@ class Pay_Model extends Model
             $this->db->query($sql);
 
             $internalOptionId = $this->db->getLastId();
-            if($method->hasOptions()){
-                foreach ($method->getOptions() as $optionSub) {   
+            if ($method->hasOptions()) {
+                foreach ($method->getOptions() as $optionSub) {
                     $optionSubId = $optionSub['id'] ?? null;
                     $name = $optionSub['name'] ?? null;
 
@@ -435,21 +454,22 @@ class Pay_Model extends Model
         $this->log('processTransaction ' . $transactionId . ' name: ' . $this->_paymentMethodName . print_r($settings, true));
 
         $transaction = $this->getTransaction($transactionId);
-        $apiInfo = new Pay_Api_Info();
-        $apiInfo->setApiToken($this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken'));
-        $apiInfo->setServiceId($this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid'));
 
-        if (!empty(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')))) {
-            $apiInfo->setApiBase(trim($this->model_setting_setting->getSettingValue('payment_paynl_general_gateway')));
+        $payConfig = new Pay_Controller_Config($this);
+        $request = new OrderStatusRequest($transactionId ?? '');
+        $request->setConfig($payConfig->getConfig(true));
+
+        try {
+            $result = $request->start();
+        } catch (PayException $e) {
+            $this->log('OrderStatusRequest error: ' . $e->getMessage(), true);
+            return false;
         }
 
-        $apiInfo->setTransactionId($transactionId);
-        $result = $apiInfo->doRequest();
+        $status = Pay_Helper::getStatus($result->getStatusCode());
+        $orderStatusId = Pay_Helper::getOrderStatusId($result->getStatusCode(), $settings, $this->_paymentMethodName);
 
-        $status = Pay_Helper::getStatus($result['paymentDetails']['state']);
-        $orderStatusId = Pay_Helper::getOrderStatusId($result['paymentDetails']['state'], $settings, $this->_paymentMethodName);
-
-        $this->log('pre ' . print_r(array($result['paymentDetails']['state'], $this->_paymentMethodName, $status, $orderStatusId), true));
+        $this->log('pre ' . print_r(array($result->getStatusCode(), $this->_paymentMethodName, $status, $orderStatusId), true));
 
         # Status update
         $this->updateTransactionStatus($transactionId, $status);
@@ -458,8 +478,8 @@ class Pay_Model extends Model
         # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
 
-        if ($this->_paymentOptionId != $result['paymentDetails']['paymentOptionId'] && $this->config->get('payment_paynl_general_follow_payment_method') !== '0') {
-            $newPaymentMethod = $result['paymentDetails']['payment_profile_name'];
+        if ($this->_paymentOptionId != $result->getPaymentMethod() && $this->config->get('payment_paynl_general_follow_payment_method') !== '0') {
+            $newPaymentMethod = $result->getPaymentMethod();
             $oldPaymentMethod = $order_info['payment_method'];
             $orderId = $transaction['orderId'];
             $followPaymentMessage = "Pay. Updated payment method from " . $oldPaymentMethod . " to " . $newPaymentMethod . ".";
