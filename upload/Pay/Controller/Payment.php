@@ -4,7 +4,6 @@ require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Util\Exchange;
-use PayNL\Sdk\Model\Pay\PayStatus;
 
 class Pay_Controller_Payment extends Controller
 {
@@ -37,10 +36,6 @@ class Pay_Controller_Payment extends Controller
 
         $this->data['optionSubList'] = array();
 
-        if ($this->_paymentOptionId == 10 && !empty($paymentOption['optionSubs'])) {
-            $this->data['optionSubList'] = $paymentOption['optionSubs'];
-        }
-
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_coc'))) {
             $this->data['coc'] = $this->config->get('payment_' . $this->_paymentMethodName . '_coc');
         }
@@ -70,8 +65,10 @@ class Pay_Controller_Payment extends Controller
 
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
         $response = array();
-        try {       
-            $transaction = new Pay_Controller_Transaction($this);    
+        try {
+            $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
+            $this->$modelName->log('start payment : ' . $this->_paymentMethodName);
+            $transaction = new Pay_Controller_Transaction($this);
             $response['success'] = $transaction->startTransaction($order_info, $this->_paymentOptionId, $this->_paymentMethodName);
         } catch (PayException $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
@@ -80,14 +77,12 @@ class Pay_Controller_Payment extends Controller
         }
 
         die(json_encode($response));
-    }    
-    
+    }
+
     public function finish()
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
-
-        $orderStatusId = $this->request->get['orderStatusId'];
-
+        $orderStatusId = $this->request->get['statusCode'];
         $status = Pay_Helper::getStatus($orderStatusId);
 
         if (isset($status) && ($status == Pay_Model::STATUS_COMPLETE || $status == Pay_Model::STATUS_PENDING)) {
@@ -105,7 +100,7 @@ class Pay_Controller_Payment extends Controller
             header("Location: " . $this->url->link('checkout/checkout'));
         }
         die();
-    }   
+    }
 
     /**
      * @return void
@@ -117,9 +112,9 @@ class Pay_Controller_Payment extends Controller
         $exchange = new Exchange();
 
         # Process the exchange request
-        $payOrder = $exchange->process();    
-        $transactionId = $payOrder->getReference();
-        $action = $exchange->getAction();
+        $payOrder = $exchange->process();
+        $transactionId = $payOrder->getOrderId();
+        $action = $exchange->getAction();  
 
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
         if ($action == 'pending') {
@@ -156,5 +151,5 @@ class Pay_Controller_Payment extends Controller
             }
             die("FALSE|" . $message);
         }
-    }  
+    }
 }

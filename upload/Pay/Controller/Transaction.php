@@ -21,7 +21,7 @@ class Pay_Controller_Transaction extends Controller
      * @return PayNL\Sdk\Model\Response\OrderCreateResponse
      */
     public function startTransaction($order_info, $paymentOption, $paymentMethodName)
-    {
+    {       
         $request = new OrderCreateRequest();
         $request->setConfig($this->payConfig->getConfig(true));
         $request->setServiceId($this->payConfig->getServiceId());
@@ -29,9 +29,9 @@ class Pay_Controller_Transaction extends Controller
         $request->setReference($order_info['order_id']);
         $request->setCurrency('EUR');
         $request->setPaymentMethodId((int) $paymentOption);
-        if ($_POST['optionSubId']) {
-            $request->setIssuerId((int) $_POST['optionSubId']);     
-        }        
+        if (!empty($this->openCart->request->post['optionSubId'])) {
+            $request->setIssuerId($this->openCart->request->post['optionSubId']);
+        }
 
         $returnUrl = $this->openCart->url->link('extension/payment/' . $paymentMethodName . '/finish');
         $exchangeUrl = $this->openCart->url->link('extension/payment/' . $paymentMethodName . '/exchange');
@@ -49,9 +49,9 @@ class Pay_Controller_Transaction extends Controller
 
         $customer = new \PayNL\Sdk\Model\Customer();
         $customer->setFirstName($order_info['firstname'] ?? '');
-        $customer->setLastName($order_info['lastname'] ?? '');    
-        if (!empty($_POST['dob'])) {
-            $customer->setBirthDate(preg_replace("([^0-9/])", "", htmlentities($_POST['dob'])));
+        $customer->setLastName($order_info['lastname'] ?? '');
+        if (!empty($this->openCart->request->post['dob'])) {
+            $customer->setBirthDate(preg_replace("([^0-9/])", "", htmlentities($this->openCart->request->post['dob'])));
         }
         $customer->setPhone($order_info['telephone'] ?? '');
         $customer->setEmail($order_info['email'] ?? '');
@@ -59,8 +59,8 @@ class Pay_Controller_Transaction extends Controller
 
         $company = new \PayNL\Sdk\Model\Company();
         $company->setName($order_info['payment_company'] ?? '');
-        $company->setCoc($_POST['coc'] ?? null);
-        $company->setVat($_POST['vat'] ?? null);
+        $company->setCoc($this->openCart->request->post['coc'] ?? null);
+        $company->setVat($this->openCart->request->post['vat'] ?? null);
         $company->setCountryCode($order_info['payment_iso_code_2']);
 
         $customer->setCompany($company);
@@ -92,7 +92,7 @@ class Pay_Controller_Transaction extends Controller
         $invAddress->setRegionCode($order_info['payment_zone_code']);
         $invAddress->setCountryCode($order_info['payment_iso_code_2']);
         $order->setInvoiceAddress($invAddress);
- 
+
         $products = new \PayNL\Sdk\Model\Products();
         $currency_value = $order_info['currency_value'];
 
@@ -173,11 +173,22 @@ class Pay_Controller_Transaction extends Controller
 
         $order->setProducts($products);
         $request->setOrder($order);
-        $request->setStats((new \PayNL\Sdk\Model\Stats())->setObject('object'));
+        $request->setStats((new \PayNL\Sdk\Model\Stats())->setObject($this->payConfig->getObject()));
 
         $amount = round($order_info['total'] * $currency_value);
         $request->setAmount((float) $amount);
 
-        return $request->start()->getPaymentUrl();
+        $transaction = $request->start();
+        $modelName = 'model_extension_payment_' . $paymentMethodName;
+        $this->openCart->$modelName->addTransaction(
+            $transaction->getOrderId(),
+            $order_info['order_id'],
+            $paymentOption,
+            $amount,
+            '',
+            $this->openCart->request->post['optionSubId'] ?? 0
+        );
+
+        return $transaction->getPaymentUrl();
     }
 }

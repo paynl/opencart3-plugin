@@ -183,12 +183,5 @@ class Pay_Helper
             $output = $NDat[0];
         }
         return $output;
-    }
-
-    /**
-     * @return void
-     */
-    public static function getPaymentOptions()
-    {
-    }
+    }    
 }

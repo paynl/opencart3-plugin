@@ -90,25 +90,7 @@ class Pay_Model extends Model
      * @return void
      */
     public function refreshPaymentOptions($serviceId, $apiToken, $gateway)
-    {
-
-
-        $payConfig = new Pay_Controller_Config($this);
-        $request = new OrderStatusRequest($transactionId ?? '');
-        $request->setConfig($payConfig->getConfig(true));
-
-        try {
-            $transaction = $request->start();
-            var_dump($transaction);
-        } catch (PayException $e) {
-            echo '<pre>';
-            echo 'Technical message: ' . $e->getMessage() . PHP_EOL;
-            echo 'Pay-code: ' . $e->getPayCode() . PHP_EOL;
-            echo 'Customer message: ' . $e->getFriendlyMessage() . PHP_EOL;
-            echo 'HTTP-code: ' . $e->getCode() . PHP_EOL;
-
-        }
-        exit();
+    {        
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "

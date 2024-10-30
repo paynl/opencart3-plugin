@@ -519,8 +519,7 @@ class Pay_Controller_Admin extends Controller
         try {
             $this->payTransaction->capture($transactionId, $amount);
             $json['success'] = 'Pay. captured ' . $currency . ' ' . $amount . ' successfully!';
-        } catch (\Exception $e) {
-            $this->helper->logCritical('Admin Refund: ' . $e->getMessage(), ['transactionId' => $transactionId, 'amount' => $amount, 'currency' => $currency]);
+        } catch (\Exception $e) {       
             $json['error'] = 'Pay. couldn\'t capture, please try again later.';
         }
         $this->response->addHeader('Content-Type: application/json');
