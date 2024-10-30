@@ -90,7 +90,7 @@ class Pay_Model extends Model
      * @return void
      */
     public function refreshPaymentOptions($serviceId, $apiToken, $gateway)
-    {        
+    {
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
@@ -161,7 +161,6 @@ class Pay_Model extends Model
      */
     public function getPaymentOption($paymentOptionId)
     {
-
         $paymentOptionId = $this->db->escape($paymentOptionId);
         $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_paymentoptions` WHERE optionId = '$paymentOptionId' LIMIT 1;";
         $result = $this->db->query($sql);
@@ -460,8 +459,10 @@ class Pay_Model extends Model
         # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
 
-        if ($this->_paymentOptionId != $result->getPaymentMethod() && $this->config->get('payment_paynl_general_follow_payment_method') !== '0') {
-            $newPaymentMethod = $result->getPaymentMethod();
+        $newPaymentMethodArr = $this->getPaymentOption($result->getPaymentMethod());
+
+        if (!empty($newPaymentMethodArr) && $this->_paymentOptionId != $result->getPaymentMethod() && $this->config->get('payment_paynl_general_follow_payment_method') !== '0') {
+            $newPaymentMethod = $newPaymentMethodArr['name'];
             $oldPaymentMethod = $order_info['payment_method'];
             $orderId = $transaction['orderId'];
             $followPaymentMessage = "Pay. Updated payment method from " . $oldPaymentMethod . " to " . $newPaymentMethod . ".";
