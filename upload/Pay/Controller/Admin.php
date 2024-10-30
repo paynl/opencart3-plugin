@@ -62,9 +62,29 @@ class Pay_Controller_Admin extends Controller
         }
 
         $data['availability_fast_checkout'] = false;
-        if (property_exists($this, '_fastCheckout')) {
+        if (property_exists($this, '_fastCheckout') && $this->_fastCheckout === true) {
             $data['availability_fast_checkout'] = true;
             $data['fast_checkout'] = 'payment_' . $this->_paymentMethodName . '_display_fast_checkout';
+
+            $data['fast_checkout_default_shipping_name'] = 'payment_' . $this->_paymentMethodName . '_default_shipping';
+            $data['fast_checkout_default_shipping'] = $settings['payment_' . $this->_paymentMethodName . '_default_shipping'];
+
+            $data['fast_checkout_only_guest_name'] = 'payment_' . $this->_paymentMethodName . '_only_guest';
+            $data['fast_checkout_only_guest'] = $settings['payment_' . $this->_paymentMethodName . '_only_guest'];
+
+            $this->load->model('setting/extension');
+
+            $installed_shipping_methods = $this->model_setting_extension->getInstalled('shipping');
+
+            $data['shipping_methods'] = array();
+            foreach ($installed_shipping_methods as $code) {
+                if ($this->config->get('shipping_' . $code . '_status')) {
+                    $data['shipping_methods'][] = array(
+                        'code' => $code,
+                        'title' => $this->config->get('shipping_' . $code . '_title') ?: ucfirst($code)
+                    );
+                }
+            }
         }
 
         if ($reqMethod == 'POST') {

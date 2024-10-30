@@ -169,7 +169,12 @@ class ControllerExtensionPaymentPaynl extends Controller
         foreach ($results as $result) {
             if ($this->config->get('payment_' . $result['code'] . '_status')) {
                 $fastCheckout = (bool) $this->config->get('payment_' . $result['code'] . '_display_fast_checkout');
-                if ($fastCheckout === true) {
+
+                $onlyGuests = (bool) $this->config->get('payment_' . $result['code'] . '_only_guest');
+                $customerIsLogged = $this->customer->isLogged();
+                $allowedToProceed = !($onlyGuests && $customerIsLogged);
+
+                if ($fastCheckout === true && $allowedToProceed === true) {
                     $payMethodsWithFastCheckout[] = $this->getFastCheckoutButtonLayout($result['code']);
                 }
             }

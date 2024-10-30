@@ -76,6 +76,8 @@ $_['text_testmode_tooltip'] = 'Schalten Sie den Test modus ein oder aus, um den 
 
 $_['text_display_fast_checkout'] = 'Schnellkauf-Schaltfläche anzeigen';
 $_['text_display_fast_checkout_tooltip'] = 'Aktivieren oder deaktivieren Sie die Schnellkauf-Schaltfläche im Warenkorb.';
+$_['text_default_shipping_method'] = 'Standard-Versandmethode';
+$_['text_only_guest'] = 'Nur für Gäste';
 
 $_['text_status_pending'] = 'Bestellstatus wartet auf Zahlung';
 $_['text_status_pending_tooltip'] = 'Der Status der Bestellung, wenn die Zahlung begonnen, aber noch nicht abgeschlossen ist';

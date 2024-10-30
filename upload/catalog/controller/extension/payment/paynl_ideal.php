@@ -55,7 +55,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             'shipping_country_id'   => 0,
             'shipping_zone'         => '',
             'shipping_zone_id'      => 0,
-            'shipping_method'       => '',
+            'shipping_method'       => $this->config->get('payment_paynl_ideal_default_shipping'),
             'shipping_code'         => '',
             'shipping_address_format' => ''
         );

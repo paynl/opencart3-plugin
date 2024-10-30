@@ -92,6 +92,8 @@ $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges
 
 $_['text_display_fast_checkout'] = 'Display fast checkout button';
 $_['text_display_fast_checkout_tooltip'] = 'Enable or disable the Fast Checkout button in the cart.';
+$_['text_default_shipping_method'] = 'Default Shipping Method';
+$_['text_only_guest'] = 'Only guests';
 
 $_['text_status_pending'] = 'Order status pending payment';
 $_['text_status_pending_tooltip'] = 'The status of the order when the payment is started, but not yet completed';
