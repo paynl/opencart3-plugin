@@ -9,6 +9,12 @@ class Pay_Controller_Admin extends Controller
     protected $data = array();
     protected $error;
 
+    const BUTTON_PLACES = array(
+        ['value' => 'Cart', 'key' => 'cart'],
+        ['value' => 'Mini cart', 'key' => 'mini_cart'],
+        ['value' => 'Product', 'key' => 'product']
+    );
+
     /**
      * @param $field
      * @return null
@@ -66,11 +72,19 @@ class Pay_Controller_Admin extends Controller
             $data['availability_fast_checkout'] = true;
             $data['fast_checkout'] = 'payment_' . $this->_paymentMethodName . '_display_fast_checkout';
 
-            $data['fast_checkout_default_shipping_name'] = 'payment_' . $this->_paymentMethodName . '_default_shipping';
-            $data['fast_checkout_default_shipping'] = $settings['payment_' . $this->_paymentMethodName . '_default_shipping'];
+            $defaultShipping = 'payment_' . $this->_paymentMethodName . '_default_shipping';
+            $data['fast_checkout_default_shipping_name'] = $defaultShipping;
+            $data['fast_checkout_default_shipping'] = isset($settings[$defaultShipping]) ? $settings[$defaultShipping]: '';
 
-            $data['fast_checkout_only_guest_name'] = 'payment_' . $this->_paymentMethodName . '_only_guest';
-            $data['fast_checkout_only_guest'] = $settings['payment_' . $this->_paymentMethodName . '_only_guest'];
+            $onlyGuest = 'payment_' . $this->_paymentMethodName . '_only_guest';
+            $data['fast_checkout_only_guest_name'] = $onlyGuest;
+            $data['fast_checkout_only_guest'] = isset($settings[$onlyGuest]) ? $settings[$onlyGuest] : '';
+
+            $buttonPlaces = 'payment_' . $this->_paymentMethodName . '_button_places';
+            $data['fast_checkout_button_places_name'] = $buttonPlaces;
+            $data['fast_checkout_checked_button_places'] = isset($settings[$buttonPlaces]) ? $settings[$buttonPlaces] : '';
+
+            $data['button_places_list'] = self::BUTTON_PLACES;
 
             $this->load->model('setting/extension');
 

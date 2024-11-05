@@ -105,6 +105,10 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutButtons(&$route, &$data, &$output) {
+        if (!in_array('cart', $this->config->get('payment_paynl_ideal_button_places'))) {
+            return;
+        }
+
         $this->prepareOutput($output);
         $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
 
@@ -122,6 +126,10 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
+        if (!in_array('mini_cart', $this->config->get('payment_paynl_ideal_button_places'))) {
+            return;
+        }
+
         $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
         $output = str_replace('<div id="cart" class="btn-group btn-block">', $styleTag . '<div id="cart" class="btn-group btn-block">', $output);
 
@@ -139,6 +147,10 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
+        if (!in_array('product', $this->config->get('payment_paynl_ideal_button_places'))) {
+            return;
+        }
+
         $this->prepareOutput($output);
         $scriptTag = '<script src="catalog/view/theme/default/javascript/paynl.js"></script>';
         $output = str_replace('</head>', $scriptTag . '</head>', $output);
