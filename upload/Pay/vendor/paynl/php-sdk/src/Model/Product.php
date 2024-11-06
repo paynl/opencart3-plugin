@@ -62,9 +62,9 @@ class Product implements ModelInterface, JsonSerializable
     protected string $vatCode;
 
     /**
-     * @var int
+     * @var float
      */
-    protected int $vatPercentage = 0;
+    protected float $vatPercentage = 0;
 
     /**
      * @param $id
@@ -73,18 +73,18 @@ class Product implements ModelInterface, JsonSerializable
      * @param $currency
      * @param $type
      * @param $quantity
-     * @param $vatCode
-     * @param $vatPercentage
+     * @param string $vatCode
+     * @param float $vatPercentage
      */
     public function __construct(
-      $id = null,
-      $description = null,
-      $amount = null,
-      $currency = null,
-      $type = null,
-      $quantity = null,
-      $vatCode = null,
-      $vatPercentage = null
+        $id = null,
+        $description = null,
+        $amount = null,
+        $currency = null,
+        $type = null,
+        $quantity = null,
+        string $vatCode = null,
+        float $vatPercentage = null
     )
     {
         if (!is_null($id)) {
@@ -237,8 +237,7 @@ class Product implements ModelInterface, JsonSerializable
 
     /**
      * @param string $vatCode
-     *
-     * @return Product
+     * @return $this
      */
     public function setVatCode(string $vatCode): self
     {
@@ -247,20 +246,20 @@ class Product implements ModelInterface, JsonSerializable
     }
 
     /**
-     * @return string
+     * @return null|float
      */
-    public function getVatPercentage(): string
+    public function getVatPercentage()
     {
-        return (string)$this->vatPercentage;
+        return $this->vatPercentage;
     }
 
     /**
-     * @param int $vatPercentage
+     * @param float $vatPercentage
      * @return $this
      */
-    public function setVatPercentage(int $vatPercentage): self
+    public function setVatPercentage(float $vatPercentage): self
     {
-        $this->vatPercentage = (int) $vatPercentage;
+        $this->vatPercentage = $vatPercentage;
         return $this;
     }
 }

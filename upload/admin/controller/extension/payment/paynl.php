@@ -51,14 +51,14 @@ class ControllerExtensionPaymentPaynl extends Controller
             $data['paynl_status_name'] = $payTransaction['paymentDetails']['stateName'];
             $data['paynl_currency'] = $payTransaction['paymentDetails']['currency'];
             $data['paynl_amount'] = number_format((float) $payTransaction['paymentDetails']['amount'] / 100, 2, '.', '');
-            $data['paynl_amount_captured'] = number_format($payTransaction['paymentDetails']['paidAmount'] / 100, 2, '.', '');
-            $data['paynl_amount_refunded'] = number_format($payTransaction['paymentDetails']['refundAmount'] / 100, 2, '.', '');
+            $data['paynl_amount_captured'] = number_format((float) $payTransaction['paymentDetails']['paidAmount'] / 100, 2, '.', '');            
+            $data['paynl_amount_refunded'] = number_format((float) $payTransaction['paymentDetails']['refundAmount'] / 100, 2, '.', '');
 
             $data['cart_amount'] = number_format((float) $order_info['total'], 2, '.', '');
             $data['cart_currency'] = $order_info['currency_code'];
 
             $data['show_refund'] = ($payTransaction['paymentDetails']['state'] == 100 || $payTransaction['paymentDetails']['state'] == -82);
-            $data['show_capture'] = ($payTransaction['paymentDetails']['state'] == 97);
+            $data['show_capture'] = ($payTransaction['paymentDetails']['state'] == 97 || $payTransaction['paymentDetails']['state'] == 95);
 
             if ($data['show_refund']) {
                 $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund');
@@ -66,12 +66,16 @@ class ControllerExtensionPaymentPaynl extends Controller
                 $data['text_button'] = 'Refund';
                 $data['text_description'] = 'Amount to refund';
                 $data['text_confirm'] = 'Are you sure want to refund this amount: %amount% ?';
+                $data['paynl_amount_field'] = $data['paynl_amount_refunded'];
+                $data['amount_field_text'] = 'Refunded';
+                $data['show_refunded_field'] = true;
             } elseif ($data['show_capture']) {
                 $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=capture');
-                $data['paynl_amount_value'] = number_format((float) ($payTransaction->getAmountConverted() - $payTransaction->getAmountPaid()), 2, '.', '');
-                $data['text_button'] = $this->language->get('text_capture');
-                $data['text_description'] = $this->language->get('text_capture_desc');
-                $data['text_confirm'] = $this->language->get('text_capture_confirm');
+                $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount']), 2, '.', '');
+                $data['text_button'] = 'Capture';
+                $data['text_description'] = 'Amount to capture';
+                $data['text_confirm'] = 'Are you sure want to capture this amount: %amount% ?';     
+                $data['show_refunded_field'] = false;              
             }
 
             return null;

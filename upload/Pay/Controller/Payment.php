@@ -107,14 +107,17 @@ class Pay_Controller_Payment extends Controller
      */
     public function exchange()
     {
-        $this->load->model('extension/payment/' . $this->_paymentMethodName);
+        $this->load->model('extension/payment/' . $this->_paymentMethodName);        
 
-        $exchange = new Exchange();
+        $transactionId = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : null;
+        $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
 
-        # Process the exchange request
-        $payOrder = $exchange->process();
-        $transactionId = $payOrder->getOrderId();
-        $action = $exchange->getAction();  
+        if(empty($action)){     
+            $exchange = new Exchange();       
+            $payOrder = $exchange->process();
+            $transactionId = $payOrder->getOrderId();
+            $action = $exchange->getAction();  
+        }
 
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
         if ($action == 'pending') {

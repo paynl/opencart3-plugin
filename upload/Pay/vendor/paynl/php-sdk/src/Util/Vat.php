@@ -18,10 +18,7 @@ class Vat
     public const CLASS_LOW  = 'L';
     public const CLASS_HIGH = 'H';
 
-    /**
-     * @var array
-     */
-    protected $vatClasses = [
+    protected array $vatClasses = [
         self::CLASS_NONE => 0,
         self::CLASS_LOW  => 9,
         self::CLASS_HIGH => 21,
@@ -33,6 +30,15 @@ class Vat
     public function getVatClasses(): array
     {
         return $this->vatClasses;
+    }
+
+    /**
+     * @param string $className
+     * @return mixed|null
+     */
+    public function getPercentageByClass(string $className)
+    {
+        return $this->vatClasses[$className] ?? null;
     }
 
     /**

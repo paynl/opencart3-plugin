@@ -76,7 +76,7 @@ class Pay_Controller_Config extends Controller
     {
         return $this->openCart->config->get('payment_paynl_general_serviceid');
     }  
-    
+
     /**
      * @return string
      */
@@ -84,4 +84,19 @@ class Pay_Controller_Config extends Controller
     {
         return trim($this->openCart->config->get('payment_paynl_general_custom_exchange_url'));
     }    
+
+    /**
+     * @return string
+     */
+    public function getObject()
+    {
+        $object_string = 'opencart 3 ';
+        $object_string .= '1.7.1';
+        $object_string .= ' | ';
+        $object_string .= VERSION ?? '-';
+        $object_string .= ' | ';
+        $object_string .= substr(phpversion(), 0, 3);
+
+        return $object_string;
+    }
 }

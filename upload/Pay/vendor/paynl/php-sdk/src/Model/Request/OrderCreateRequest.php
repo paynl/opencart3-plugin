@@ -11,6 +11,7 @@ use PayNL\Sdk\Model\Stats;
 use PayNL\Sdk\Model\Response\OrderCreateResponse;
 use PayNL\Sdk\Request\RequestData;
 use PayNL\Sdk\Request\RequestInterface;
+use PayNL\Sdk\Util\Vat;
 
 /**
  * Class OrderCreateRequest
@@ -82,11 +83,16 @@ class OrderCreateRequest extends RequestData
             $product['description'] = $objProduct->getDescription();
             $product['type'] = $objProduct->getType();
             $product['price'] = [
-              'value' => $objProduct->getPrice()->getValue(),
-              'currency' => $objProduct->getPrice()->getCurrency(),
+                'value' => $objProduct->getPrice()->getValue(),
+                'currency' => $objProduct->getPrice()->getCurrency(),
             ];
             $product['quantity'] = $objProduct->getQuantity();
             $product['vatPercentage'] = $objProduct->getVatPercentage();
+
+            if (is_null($product['vatPercentage']) && !empty($objProduct->getVatCode())) {
+                $product['vatPercentage'] = (new Vat())->getPercentageByClass($objProduct->getVatCode());
+            }
+
             $products[] = $product;
         }
 
@@ -296,11 +302,11 @@ class OrderCreateRequest extends RequestData
 
         # Required parameters
         $parameters = [
-          'serviceId' => $this->serviceId,
-          'amount' => [
-            'value' => $this->amount,
-            'currency' => $this->currency,
-          ],
+            'serviceId' => $this->serviceId,
+            'amount' => [
+                'value' => $this->amount,
+                'currency' => $this->currency,
+            ],
         ];
 
         # Optional parameters
@@ -394,8 +400,8 @@ class OrderCreateRequest extends RequestData
 
         if (!empty($this->notificationType)) {
             $parameters['notification'] = [
-              'type' => $this->notificationType,
-              'recipient' => $this->notificationRecipient
+                'type' => $this->notificationType,
+                'recipient' => $this->notificationRecipient
             ];
         }
 

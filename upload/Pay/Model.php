@@ -102,42 +102,44 @@ class Pay_Model extends Model
         try {
             $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig())->start();
         } catch (PayException $e) {
-            exit();
+            $config = null;
         }
 
-        foreach ($config->getPaymentMethods() as $method) {
-            $img = $method->getImage();
+        if ($config) {
+            foreach ($config->getPaymentMethods() as $method) {
+                $img = $method->getImage();
 
-            //variabelen filteren
-            $optionId = $this->db->escape($method->getId());
-            $name = $this->db->escape($method->getName());
-            $img = $this->db->escape($img);
-            $brand_id = isset($paymentOption['brand']['id']) ? $paymentOption['brand']['id'] : 0;
-            $brand_id = $this->db->escape($brand_id);
+                //variabelen filteren
+                $optionId = $this->db->escape($method->getId());
+                $name = $this->db->escape($method->getName());
+                $img = $this->db->escape($img);
+                $brand_id = isset($paymentOption['brand']['id']) ? $paymentOption['brand']['id'] : 0;
+                $brand_id = $this->db->escape($brand_id);
 
-            $imageArr = array('img' => $img, 'brand_id' => $brand_id);
-            $imageJson = json_encode($imageArr);
+                $imageArr = array('img' => $img, 'brand_id' => $brand_id);
+                $imageJson = json_encode($imageArr);
 
-            $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoptions` "
-                . "(optionId, serviceId, name, img, update_date) VALUES "
-                . "('$optionId', '$serviceId', '$name', '$imageJson', NOW())";
-            $this->db->query($sql);
+                $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoptions` "
+                    . "(optionId, serviceId, name, img, update_date) VALUES "
+                    . "('$optionId', '$serviceId', '$name', '$imageJson', NOW())";
+                $this->db->query($sql);
 
-            $internalOptionId = $this->db->getLastId();
-            if ($method->hasOptions()) {
-                foreach ($method->getOptions() as $optionSub) {
-                    $optionSubId = $optionSub['id'] ?? null;
-                    $name = $optionSub['name'] ?? null;
+                $internalOptionId = $this->db->getLastId();
+                if ($method->hasOptions()) {
+                    foreach ($method->getOptions() as $optionSub) {
+                        $optionSubId = $optionSub['id'] ?? null;
+                        $name = $optionSub['name'] ?? null;
 
-                    //variabelen filteren
-                    $optionSubId = $this->db->escape($optionSubId);
-                    $name = $this->db->escape($name);
-                    $img = $this->db->escape($img);
+                        //variabelen filteren
+                        $optionSubId = $this->db->escape($optionSubId);
+                        $name = $this->db->escape($name);
+                        $img = $this->db->escape($img);
 
-                    $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
-                        . "(optionSubId, paymentOptionId, name, update_date) VALUES "
-                        . "('$optionSubId', $internalOptionId, '$name', NOW() )";
-                    $this->db->query($sql);
+                        $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
+                            . "(optionSubId, paymentOptionId, name, update_date) VALUES "
+                            . "('$optionSubId', $internalOptionId, '$name', NOW() )";
+                        $this->db->query($sql);
+                    }
                 }
             }
         }

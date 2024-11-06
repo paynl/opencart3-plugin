@@ -145,7 +145,7 @@ class Exchange
                 }
                 $paymentProfile = $ppid ?? '';
                 $payOrderId = $tguData['object']['orderId'] ?? '';
-                $internalStateId = $tguData['object']['status']['code'] ?? '';
+                $internalStateId = (int)$tguData['object']['status']['code'] ?? 0;
                 $internalStateName = $tguData['object']['status']['action'] ?? '';
                 $orderId = $tguData['object']['reference'] ?? '';
 
@@ -160,18 +160,18 @@ class Exchange
             }
 
             $this->payload = [
-              'amount' => $amount ?? null,
-              'amountCap' => $amountCap ?? null,
-              'amountAuth' => $amountAuth ?? null,
-              'reference' => $reference,
-              'action' => strtolower($action),
-              'paymentProfile' => $paymentProfile ?? null,
-              'payOrderId' => $payOrderId,
-              'orderId' => $orderId,
-              'internalStateId' => $internalStateId ?? null,
-              'internalStateName' => $internalStateName ?? null,
-              'checkoutData' => $checkoutData ?? null,
-              'fullPayload' => $tguData ?? $request
+                'amount' => $amount ?? null,
+                'amountCap' => $amountCap ?? null,
+                'amountAuth' => $amountAuth ?? null,
+                'reference' => $reference,
+                'action' => strtolower($action),
+                'paymentProfile' => $paymentProfile ?? null,
+                'payOrderId' => $payOrderId,
+                'orderId' => $orderId,
+                'internalStateId' => $internalStateId ?? 0,
+                'internalStateName' => $internalStateName ?? null,
+                'checkoutData' => $checkoutData ?? null,
+                'fullPayload' => $tguData ?? $request
             ];
         } catch (Exception $e) {
             return $e->getMessage();
@@ -193,7 +193,7 @@ class Exchange
         if (!is_array($payload)) {
             return (new PayOrder([]))->setMessage($payload);
         }
-        if(empty($config)) {
+        if (empty($config)) {
             $config = Config::getConfig();
         }
 
@@ -205,9 +205,9 @@ class Exchange
             # This was a signing exchange, and it was authorised. Returning the current payment state.
             $internalState = $payload['internalStateId'];
             dbg('This was a signing exchange, and it was authorised.' . PHP_EOL .
-              'Returning the current payment state. ' . PHP_EOL . 'Result internalstateid: ' .
-              $internalState . PHP_EOL . 'Order id: ' . $payload['payOrderId']);
-            
+                'Returning the current payment state. ' . PHP_EOL . 'Result internalstateid: ' .
+                $internalState . PHP_EOL . 'Order id: ' . $payload['payOrderId']);
+
         } else {
             # This was not a signing exchange or the signing exchange was invalid.
             if ($this->isSignExchange()) {
@@ -224,7 +224,7 @@ class Exchange
                         return $payOrder->setMessage('Missing pay order id in payload');
                     }
                     dbg('payOrderId:' . $payload['payOrderId']);
-                    
+
                     $request = new OrderStatusRequest($payload['payOrderId']);
                     if (!empty($config)) {
                         $request->setConfig($config);

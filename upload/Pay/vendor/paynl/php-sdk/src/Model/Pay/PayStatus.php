@@ -25,16 +25,16 @@ class PayStatus
     const PARTIAL_REFUND = -82;
     const PARTLY_CAPTURED = 97;
     const CONFIRMED = 75;
-    
+
     const EVENT_PAID = 'new_ppt';
     const EVENT_PENDING = 'pending';
 
     /**
-     * @param $stateId
+     * @param int $stateId
      * @return int|mixed
      * @throws Exception
      */
-    public function get($stateId)
+    public function get(int $stateId)
     {
         $mapper[-70] = self::CHARGEBACK;
         $mapper[-71] = self::CHARGEBACK;
@@ -64,6 +64,6 @@ class PayStatus
         }
         #return $mapper[$stateId] ?? throw new Exception('Unexpected status');
     }
- 
+
 
 }

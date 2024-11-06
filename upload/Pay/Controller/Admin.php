@@ -1,5 +1,12 @@
 <?php
 
+
+require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
+
+use PayNL\Sdk\Exception\PayException;
+use PayNL\Sdk\Model\Request\TransactionRefundRequest;
+use PayNL\Sdk\Model\Request\OrderCaptureRequest;
+
 class Pay_Controller_Admin extends Controller
 {
     protected $_paymentOptionId;
@@ -130,13 +137,15 @@ class Pay_Controller_Admin extends Controller
                 $data['success_message'] = $this->language->get('text_success');
             }
         } else {
-            if ($this->request->get['action'] ?? '' == 'refund') {
-                $returnarray = $this->refund();
-                die(json_encode($returnarray));
-
-                //$this->response->addHeader('Content-Type: application/json');
-                //$this->response->setOutput(json_encode($json));
-            }
+            if(!empty($this->request->get['action'])){
+                if ($this->request->get['action'] == 'refund') {
+                    $returnarray = $this->refund();
+                    die(json_encode($returnarray));
+                } elseif ($this->request->get['action'] == 'capture') {     
+                    $returnarray = $this->capture();
+                    die(json_encode($returnarray));
+                }
+            }            
         }
 
         foreach ($settings as $key => $setting) {
@@ -488,22 +497,17 @@ class Pay_Controller_Admin extends Controller
     private function refund()
     {
         $json = array();
-        $apiToken = $this->configGet('apitoken');
-        $serviceId = $this->configGet('serviceid');
         $transactionId = $this->request->get['transaction_id'] ?? null;
-        $amount = (float) $this->request->get['amount'] * 100 ?? null;
+        $amount = (float) $this->request->get['amount'] ?? null;
         $currency = $this->request->get['currency'] ?? null;
         try {
-            $refund = new Pay_Api_Refund();
-            $refund->setApiToken($apiToken);
-            $refund->setServiceId($serviceId);
-            $refund->setTransactionId($transactionId);
-            $refund->setAmount($amount);
-            $refund->setCurrency($currency);
-            $refund->doRequest();
+            $payConfig = new Pay_Controller_Config($this);   
+            $transactionRefundRequest = new TransactionRefundRequest($transactionId, $amount, $currency);
+            $transactionRefundRequest->setConfig($payConfig->getConfig());
+            $refund = $transactionRefundRequest->start();          
             $json['success'] = 'Pay. refunded ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
-            $json['error'] = 'Pay. couldn\'t refund, please try again later.';
+            $json['error'] = 'Pay. couldn\'t refund, please try again later.' . $e->getMessage();
         }
         return $json;
     }
@@ -513,16 +517,20 @@ class Pay_Controller_Admin extends Controller
      */
     private function capture()
     {
+        $json = array();
         $transactionId = $this->request->get['transaction_id'] ?? null;
-        $amount = $this->request->get['amount'] ?? null;
+        $amount = (float) $this->request->get['amount'] ?? null;
         $currency = $this->request->get['currency'] ?? null;
         try {
-            $this->payTransaction->capture($transactionId, $amount);
-            $json['success'] = 'Pay. captured ' . $currency . ' ' . $amount . ' successfully!';
-        } catch (\Exception $e) {       
-            $json['error'] = 'Pay. couldn\'t capture, please try again later.';
+            $payConfig = new Pay_Controller_Config($this);   
+            $orderCaptureRequest = new OrderCaptureRequest($transactionId);
+            $orderCaptureRequest->setAmount($amount);
+            $orderCaptureRequest->setConfig($payConfig->getConfig());            
+            $refund = $orderCaptureRequest->start();          
+            $json['success'] = 'Pay. capture ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
+        } catch (\Exception $e) {
+            $json['error'] = 'Pay. couldn\'t capture, please try again later.' . $e->getMessage();
         }
-        $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($json));
+        return $json;
     }
 }
