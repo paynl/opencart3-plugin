@@ -138,11 +138,13 @@ class ControllerExtensionPaymentPaynl extends Controller
         if (!empty($payMethodsWithFastCheckout)) {
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
             $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_mini_cart_buttons', $data);
-            $searchString = '</div>
-    </li>
-      </ul>';
 
-            $output = str_replace($searchString, $fastCheckoutButtonsHtml . $searchString, $output);
+            $checkoutButtonUrl = $data['checkout'];
+            $checkoutButtonText = $data['button_checkout'];
+
+            $searchString = '<a href="' . $checkoutButtonUrl . '"><strong><i class="fa fa-share"></i> ' . $checkoutButtonText . '</strong></a></p>';
+
+            $output = str_replace($searchString, $searchString . $fastCheckoutButtonsHtml, $output);
         }
     }
 
@@ -161,10 +163,8 @@ class ControllerExtensionPaymentPaynl extends Controller
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
             $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_product_buttons', $data);
 
-            $searchString = '</div>
-            </div>
-                    <div class="rating">';
-            $output = str_replace($searchString, $fastCheckoutButtonsHtml . $searchString, $output);
+            $searchString = '<button type="button" id="button-cart" data-loading-text="' . $data['text_loading'] . '" class="btn btn-primary btn-lg btn-block">' . $data['button_cart'] . '</button>';
+            $output = str_replace($searchString, $searchString . $fastCheckoutButtonsHtml, $output);
         }
     }
 
