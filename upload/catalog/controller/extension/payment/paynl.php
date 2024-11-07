@@ -163,7 +163,10 @@ class ControllerExtensionPaymentPaynl extends Controller
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
             $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_product_buttons', $data);
 
-            $searchString = '<button type="button" id="button-cart" data-loading-text="' . $data['text_loading'] . '" class="btn btn-primary btn-lg btn-block">' . $data['button_cart'] . '</button>';
+            $textLoading = $data['text_loading'];
+            $buttonCart = $data['button_cart'];
+
+            $searchString = '<button type="button" id="button-cart" data-loading-text="' . $textLoading . '" class="btn btn-primary btn-lg btn-block">' . $buttonCart . '</button>';
             $output = str_replace($searchString, $searchString . $fastCheckoutButtonsHtml, $output);
         }
     }
