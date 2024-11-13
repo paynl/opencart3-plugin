@@ -105,12 +105,16 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutButtons(&$route, &$data, &$output) {
+        if (!$this->cart->hasProducts()) {
+            return;
+        }
+
         if (!in_array('cart', $this->config->get('payment_paynl_ideal_button_places'))) {
             return;
         }
 
-        $this->prepareOutput($output);
-        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
+        $this->loadResources($output);
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons(['paypal_container_id' => 'paypal-button-container-2']);
 
         if (!empty($payMethodsWithFastCheckout)) {
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
@@ -130,9 +134,7 @@ class ControllerExtensionPaymentPaynl extends Controller
             return;
         }
 
-        $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
-        $output = str_replace('<div id="cart" class="btn-group btn-block">', $styleTag . '<div id="cart" class="btn-group btn-block">', $output);
-
+        $this->loadResources($output);
         $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
 
         if (!empty($payMethodsWithFastCheckout)) {
@@ -153,15 +155,14 @@ class ControllerExtensionPaymentPaynl extends Controller
             return;
         }
 
-        $this->prepareOutput($output);
-        $scriptTag = '<script src="catalog/view/theme/default/javascript/paynl.js"></script>';
-        $output = str_replace('</head>', $scriptTag . '</head>', $output);
-
-        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
+        $this->loadResources($output);
+        $paypalContainerId = $this->cart->hasProducts() ? ['paypal_container_id' => 'paypal-button-container-2'] : null;
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons($paypalContainerId);
 
         if (!empty($payMethodsWithFastCheckout)) {
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
             $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_product_buttons', $data);
+            $fastCheckoutButtonsHtml .= '<div class="fast-checkout-btn-margin" id="paypal-button-container" data-init-url="" data-total-amount="150"></div>';
 
             $textLoading = $data['text_loading'];
             $buttonCart = $data['button_cart'];
@@ -171,12 +172,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
-    private function prepareOutput(&$output) {
-        $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
-        $output = str_replace('</head>', $styleTag . '</head>', $output);
-    }
-
-    private function getFastCheckoutButtons() {
+    private function getFastCheckoutButtons($options = array()) {
         $this->load->model('setting/extension');
         $results = $this->model_setting_extension->getExtensions('payment');
         $payMethodsWithFastCheckout = array();
@@ -190,7 +186,9 @@ class ControllerExtensionPaymentPaynl extends Controller
                 $allowedToProceed = !($onlyGuests && $customerIsLogged);
 
                 if ($fastCheckout === true && $allowedToProceed === true) {
-                    $payMethodsWithFastCheckout[] = $this->getFastCheckoutButtonLayout($result['code']);
+                    $paypalContainerId = isset($options['paypal_container_id']) ?  $options['paypal_container_id'] : null;
+
+                    $payMethodsWithFastCheckout[] = $this->getFastCheckoutButtonLayout($result['code'],  $paypalContainerId);
                 }
             }
         }
@@ -198,16 +196,31 @@ class ControllerExtensionPaymentPaynl extends Controller
         return $payMethodsWithFastCheckout;
     }
 
-    private function getFastCheckoutButtonLayout($methodCode) {
+    private function getFastCheckoutButtonLayout($methodCode, $paypalContainerId) {
+        if ($paypalContainerId === null) {
+            $paypalContainerId = 'paypal-button-container';
+        }
+
+        $url = 'index.php?route=extension/payment/' . $methodCode . '/initFastCheckout';
+
         switch ($methodCode) {
             case 'paynl_ideal':
-                $url = 'index.php?route=extension/payment/' . $methodCode . '/initFastCheckout';
-
-                return '<a href="' . $url . '" data-method="' . $methodCode . '" class="btn btn-lg btn-block fast-checkout-button" style="width: 100%">
+                return '<div class="fast-checkout-btn-margin"><a href="' . $url . '" data-method="' . $methodCode . '" class="btn btn-lg btn-block fast-checkout-button" style="width: 100%">
                 <img src="image/Pay/1fc.png" alt="iDEAL" class="checkout-logo ">
                 Fast Checkout
-                </a>';
+                </a></div>';
+            case 'paynl_paypal':
+                $total_amount = $this->cart->getTotal();
+
+                return '<div class="fast-checkout-btn-margin" id="' . $paypalContainerId . '" data-init-url="' . $url . '" data-total-amount="' . $total_amount . '"></div><script src="https://sandbox.paypal.com/sdk/js?client-id=AQGA-UwfmmgYrwNAZQSUG6rcGJi3-xMv2VG-Rj-5A-eRe_Uasi16czapjawsTV76IXyi7difEPw_vRp4&components=buttons"></script>';
             default: null;
         }
+    }
+
+    private function loadResources(&$output) {
+        $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
+        $scriptTag = '<script src="catalog/view/theme/default/javascript/paynl.js"></script>';
+
+        $output = str_replace('<div id="cart" class="btn-group btn-block">', '<div id="cart" class="btn-group btn-block">' . $styleTag . $scriptTag, $output);
     }
 }

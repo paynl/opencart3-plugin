@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Pay_Api_IdealFastCheckout extends Pay_Api
+class Pay_Api_FastCheckout extends Pay_Api
 {
     protected $_version = 'v1';
     protected $_controller = 'orders';
@@ -150,15 +150,21 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
 
     protected function _getPostData()
     {
+        if (is_int($this->_paymentMethod)) {
+            $paymentMethod = [
+                'id' => $this->_paymentMethod,
+            ];
+        } else {
+            $paymentMethod = $this->_paymentMethod;
+        }
+
         $postData = [
             'serviceId' => $this->_serviceId,
             'amount' => ['value' => $this->_amount],
             'description' => $this->_description,
             'reference' => $this->_reference,
-            'paymentMethod' => [
-                'id' => $this->_paymentMethod,
-                'optimize' => $this->_optimize,
-            ],
+            'optimize' => $this->_optimize,
+            'paymentMethod' => $paymentMethod,
             'returnUrl' => $this->_returnUrl,
             'exchangeUrl' => $this->_exchangeUrl,
             'order' => ['products' => $this->_products]
