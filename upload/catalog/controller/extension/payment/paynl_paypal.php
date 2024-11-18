@@ -247,7 +247,9 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
 
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, "https://api-m.sandbox.paypal.com/v1/oauth2/token");
+        $testMode = $this->config->get('payment_paynl_general_testmode');
+        $url = $testMode ? "https://api-m.sandbox.paypal.com/v1/oauth2/token": "https://api-m.paypal.com/v1/oauth2/token";
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Accept: application/json",
             "Accept-Language: en_US"
@@ -275,7 +277,10 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.paypal.com/v2/checkout/orders/{$orderID}");
+
+        $testMode = $this->config->get('payment_paynl_general_testmode');
+        $url = $testMode ? "https://api.sandbox.paypal.com/v2/checkout/orders/{$orderID}": "https://api.paypal.com/v2/checkout/orders/{$orderID}";
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Content-Type: application/json",
             "Authorization: Bearer $accessToken"
