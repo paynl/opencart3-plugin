@@ -156,6 +156,22 @@
                                     </select>
                                 </div>
                             </div>
+                            {% if fast_checkout_client_id_name %}
+                                <div class="form-group required">
+                                    <label class="col-sm-2 control-label" for="{{ fast_checkout_client_id_name }}">Script Client ID</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="{{ fast_checkout_client_id_name }}" value="{{ fast_checkout_client_id }}"/>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if fast_checkout_client_token_name %}
+                                <div class="form-group required">
+                                    <label class="col-sm-2 control-label" for="{{ fast_checkout_client_token_name }}">Client Token</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="{{ fast_checkout_client_token_name }}" value="{{ fast_checkout_client_token }}"/>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     {% endif %}
 

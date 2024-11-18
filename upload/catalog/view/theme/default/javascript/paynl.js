@@ -1,4 +1,51 @@
 jQuery(document).ready(function () {
+    fetch('index.php?route=extension/payment/paynl_paypal/getButtonConfig')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(config => {
+            if (config && config.client_id) {
+                return loadPayPalScript(config).then(() => config);
+            } else {
+                console.error('Client ID is missing in the configuration');
+                return null;
+            }
+        })
+        .then((config) => {
+            if (!config) {
+                console.error('Config is undefined or null');
+                return;
+            }
+
+            const currentRoute = getCurrentRoute();
+
+            config.appearsIn.forEach(function (location) {
+                if (location === 'mini_cart') {
+                    waitForElement('#paypal-button-container', function () {
+                        renderPayPalButton('#paypal-button-container');
+                    });
+                }
+
+                if (location === 'product' && currentRoute === 'product/product') {
+                    waitForElement('#paypal-button-container-2', function () {
+                        renderPayPalButton('#paypal-button-container-2');
+                    });
+                }
+
+                if (location === 'cart' && currentRoute === 'checkout/cart') {
+                    waitForElement('#paypal-button-container-2', function () {
+                        renderPayPalButton('#paypal-button-container-2');
+                    });
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error loading PayPal Button:', error);
+        });
+
     $('.fast-checkout-block a').off('click').on('click', function (event) {
         event.preventDefault();
 
@@ -10,33 +57,42 @@ jQuery(document).ready(function () {
             url: 'index.php?route=extension/payment/' + method + '/initFastCheckout',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({method: method}),
+            data: JSON.stringify({ method: method }),
             success: function (response) {
                 if (typeof response === "string") {
                     response = JSON.parse(response);
                 }
 
-                window.location.href = response.data.links.redirect
+                window.location.href = response.data.links.redirect;
             },
             error: function (xhr, status, error) {
                 console.error('Error:', error.data);
             }
         });
     });
-
-    waitForElement('#paypal-button-container', function () {
-        renderPayPalButton('#paypal-button-container');
-    });
-
-    waitForElement('#paypal-button-container-2', function () {
-        renderPayPalButton('#paypal-button-container-2');
-    });
 });
 
-function renderPayPalButton(containerSelector) {
-    if (!jQuery(containerSelector).is(':empty')) return; // Avoid re-rendering
+function getCurrentRoute() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('route') || '';
+}
 
-    const buttonConfig = {
+function loadPayPalScript(config) {
+    return new Promise((resolve) => {
+        if (document.getElementById('paypal-sdk')) return resolve();
+
+        const script = document.createElement('script');
+        script.id = 'paypal-sdk';
+        script.src = `https://www.paypal.com/sdk/js?client-id=${config.client_id}&intent=${config.intent}&components=buttons&currency=${config.currency}`;
+        script.onload = resolve;
+        document.head.appendChild(script);
+    });
+}
+
+function renderPayPalButton(containerSelector) {
+    if (!window.paypal || !jQuery(containerSelector).is(':empty')) return;
+
+    paypal.Buttons({
         style: {
             layout: 'horizontal',
             color: 'blue',
@@ -56,10 +112,12 @@ function renderPayPalButton(containerSelector) {
                 .then(response => response.json())
                 .then(orderData => {
                     return actions.order.create({
+                        intent: 'CAPTURE',
                         purchase_units: [{
                             reference_id: orderData.order_id,
                             amount: {
-                                value: orderData.total_amount
+                                value: orderData.total_amount,
+                                currency_code: orderData.currency
                             }
                         }]
                     });
@@ -71,18 +129,22 @@ function renderPayPalButton(containerSelector) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({ orderID: data.orderID })
             })
                 .then(response => response.json())
                 .then(result => {
-                    console.log(result);
-                    // window.location.href = 'index.php?route=checkout/success';
+                    if (result.status === 'success' && result.redirect_url) {
+                        window.location.href = result.redirect_url;
+                    } else {
+                        console.error('Payment failed:', result.error);
+                    }
                 })
                 .catch(error => console.error('Payment failed:', error));
+        },
+        onCancel: function () {
+            window.location.href = 'index.php?route=extension/payment/paynl_paypal/cancelPayment';
         }
-    };
-
-    paypal.Buttons(buttonConfig).render(containerSelector);
+    }).render(containerSelector);
 }
 
 function waitForElement(selector, callback, interval = 200, maxAttempts = 50) {

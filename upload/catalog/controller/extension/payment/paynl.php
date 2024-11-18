@@ -109,12 +109,8 @@ class ControllerExtensionPaymentPaynl extends Controller
             return;
         }
 
-        if (!in_array('cart', $this->config->get('payment_paynl_ideal_button_places'))) {
-            return;
-        }
-
         $this->loadResources($output);
-        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons(['paypal_container_id' => 'paypal-button-container-2']);
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons(['paypal_container_id' => 'paypal-button-container-2'], 'cart');
 
         if (!empty($payMethodsWithFastCheckout)) {
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
@@ -130,12 +126,8 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
-        if (!in_array('mini_cart', $this->config->get('payment_paynl_ideal_button_places'))) {
-            return;
-        }
-
         $this->loadResources($output);
-        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons();
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons([], 'mini_cart');
 
         if (!empty($payMethodsWithFastCheckout)) {
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
@@ -151,18 +143,13 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
-        if (!in_array('product', $this->config->get('payment_paynl_ideal_button_places'))) {
-            return;
-        }
-
         $this->loadResources($output);
-        $paypalContainerId = $this->cart->hasProducts() ? ['paypal_container_id' => 'paypal-button-container-2'] : null;
-        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons($paypalContainerId);
+
+        $payMethodsWithFastCheckout = $this->getFastCheckoutButtons(['paypal_container_id' => 'paypal-button-container-2'], 'product');
 
         if (!empty($payMethodsWithFastCheckout)) {
             $data['fast_checkout_buttons'] = array_filter($payMethodsWithFastCheckout);
             $fastCheckoutButtonsHtml = $this->load->view('payment/fast_checkout_product_buttons', $data);
-            $fastCheckoutButtonsHtml .= '<div class="fast-checkout-btn-margin" id="paypal-button-container" data-init-url="" data-total-amount="150"></div>';
 
             $textLoading = $data['text_loading'];
             $buttonCart = $data['button_cart'];
@@ -172,7 +159,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
-    private function getFastCheckoutButtons($options = array()) {
+    private function getFastCheckoutButtons($options = array(), $page = null) {
         $this->load->model('setting/extension');
         $results = $this->model_setting_extension->getExtensions('payment');
         $payMethodsWithFastCheckout = array();
@@ -180,6 +167,12 @@ class ControllerExtensionPaymentPaynl extends Controller
         foreach ($results as $result) {
             if ($this->config->get('payment_' . $result['code'] . '_status')) {
                 $fastCheckout = (bool) $this->config->get('payment_' . $result['code'] . '_display_fast_checkout');
+
+                $availablePlaces = $this->config->get('payment_' . $result['code'] . '_button_places');
+
+                if ($availablePlaces == null || !in_array($page, $availablePlaces)) {
+                    continue;
+                }
 
                 $onlyGuests = (bool) $this->config->get('payment_' . $result['code'] . '_only_guest');
                 $customerIsLogged = $this->customer->isLogged();
@@ -210,9 +203,7 @@ class ControllerExtensionPaymentPaynl extends Controller
                 Fast Checkout
                 </a></div>';
             case 'paynl_paypal':
-                $total_amount = $this->cart->getTotal();
-
-                return '<div class="fast-checkout-btn-margin" id="' . $paypalContainerId . '" data-init-url="' . $url . '" data-total-amount="' . $total_amount . '"></div><script src="https://sandbox.paypal.com/sdk/js?client-id=AQGA-UwfmmgYrwNAZQSUG6rcGJi3-xMv2VG-Rj-5A-eRe_Uasi16czapjawsTV76IXyi7difEPw_vRp4&components=buttons"></script>';
+                return '<div class="fast-checkout-btn-margin" id="' . $paypalContainerId . '" data-init-url="' . $url . '"></div>';
             default: null;
         }
     }
