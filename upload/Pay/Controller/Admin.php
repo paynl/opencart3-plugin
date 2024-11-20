@@ -155,6 +155,38 @@ class Pay_Controller_Admin extends Controller
             }
         }
 
+        if (($data['availability_fast_checkout'] == true)) {
+            $paynlFastCheckoutEventCode = 'paynl_fast_checkout';
+            $paynlFastCheckout = $this->model_setting_event->getEventByCode($paynlFastCheckoutEventCode);
+            if (!$paynlFastCheckout) {
+                $this->model_setting_event->addEvent(
+                    $paynlFastCheckoutEventCode,
+                    'catalog/view/checkout/cart/after',
+                    'extension/payment/paynl/addFastCheckoutButtons'
+                );
+            }
+
+            $paynlFastCheckoutMiniCartEventCode = 'paynl_fast_checkout_minicart';
+            $paynlFastCheckout = $this->model_setting_event->getEventByCode($paynlFastCheckoutMiniCartEventCode);
+            if (!$paynlFastCheckout) {
+                $this->model_setting_event->addEvent(
+                    $paynlFastCheckoutMiniCartEventCode,
+                    'catalog/view/common/cart/after',
+                    'extension/payment/paynl/addFastCheckoutMiniCartButtons'
+                );
+            }
+
+            $paynlFastCheckoutProductPageEventCode = 'paynl_fast_checkout_product_page';
+            $paynlFastCheckoutProductPageEvent = $this->model_setting_event->getEventByCode($paynlFastCheckoutProductPageEventCode);
+            if (!$paynlFastCheckoutProductPageEvent) {
+                $this->model_setting_event->addEvent(
+                    $paynlFastCheckoutProductPageEventCode,
+                    'catalog/view/product/product/after',
+                    'extension/payment/paynl/addFastCheckoutProductPageButtons'
+                );
+            }
+        }
+
         foreach ($settings as $key => $setting) {
             $key = str_replace('payment_' . $this->_paymentMethodName . '_', '', $key);
             $data[$key] = $setting;
@@ -348,36 +380,6 @@ class Pay_Controller_Admin extends Controller
             'catalog/controller/api/order/history/after',
             'extension/payment/paynl/paynlOnOrderStatusChange'
         );
-
-        $paynlFastCheckoutEventCode = 'paynl_fast_checkout';
-        $paynlFastCheckout = $this->model_setting_event->getEventByCode($paynlFastCheckoutEventCode);
-        if (!$paynlFastCheckout) {
-            $this->model_setting_event->addEvent(
-                $paynlFastCheckoutEventCode,
-                'catalog/view/checkout/cart/after',
-                'extension/payment/paynl/addFastCheckoutButtons'
-            );
-        }
-
-        $paynlFastCheckoutMiniCartEventCode = 'paynl_fast_checkout_minicart';
-        $paynlFastCheckout = $this->model_setting_event->getEventByCode($paynlFastCheckoutMiniCartEventCode);
-        if (!$paynlFastCheckout) {
-            $this->model_setting_event->addEvent(
-                $paynlFastCheckoutMiniCartEventCode,
-                'catalog/view/common/cart/after',
-                'extension/payment/paynl/addFastCheckoutMiniCartButtons'
-            );
-        }
-
-        $paynlFastCheckoutProductPageEventCode = 'paynl_fast_checkout_product_page';
-        $paynlFastCheckoutProductPageEvent = $this->model_setting_event->getEventByCode($paynlFastCheckoutProductPageEventCode);
-        if (!$paynlFastCheckoutProductPageEvent) {
-            $this->model_setting_event->addEvent(
-                $paynlFastCheckoutProductPageEventCode,
-                'catalog/view/product/product/after',
-                'extension/payment/paynl/addFastCheckoutProductPageButtons'
-            );
-        }
     }
 
     /**
