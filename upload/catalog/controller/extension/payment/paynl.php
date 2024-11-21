@@ -106,7 +106,7 @@ class ControllerExtensionPaymentPaynl extends Controller
 
     public function addFastCheckoutButtons(&$route, &$data, &$output) {
         $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
-        if (!is_array($configButtonPlaces) || !in_array('Cart', $configButtonPlaces)) {
+        if (!is_array($configButtonPlaces) || !in_array('cart', $configButtonPlaces)) {
             return;
         }
 
