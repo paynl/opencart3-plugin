@@ -105,7 +105,8 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutButtons(&$route, &$data, &$output) {
-        if (!in_array('cart', $this->config->get('payment_paynl_ideal_button_places'))) {
+        $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
+        if (!is_array($configButtonPlaces) || !in_array('Cart', $configButtonPlaces)) {
             return;
         }
 
@@ -126,7 +127,8 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
-        if (!in_array('mini_cart', $this->config->get('payment_paynl_ideal_button_places'))) {
+        $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
+        if (!is_array($configButtonPlaces) || !in_array('mini_cart', $configButtonPlaces)) {
             return;
         }
 
@@ -149,7 +151,8 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
-        if (!in_array('product', $this->config->get('payment_paynl_ideal_button_places'))) {
+        $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
+        if (!is_array($configButtonPlaces) || !in_array('product', $configButtonPlaces)) {
             return;
         }
 

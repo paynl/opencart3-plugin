@@ -9,7 +9,8 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
     protected $_paymentOptionId = 10;
     protected $_paymentMethodName = 'paynl_ideal';
 
-    public function initFastCheckout() {
+    public function initFastCheckout()
+    {
         $this->load->model('setting/extension');
         $this->load->model('checkout/order');
 
@@ -20,58 +21,58 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         $telephone = $this->customer->isLogged() ? $this->customer->getTelephone() : '';
 
         $order_data = array(
-            'invoice_prefix'        => $this->config->get('config_invoice_prefix'),
-            'store_id'              => $this->config->get('config_store_id'),
-            'store_name'            => $this->config->get('config_name'),
-            'store_url'             => $this->config->get('config_url'),
-            'customer_id'           => $customer_id,
-            'customer_group_id'     => $this->customer->isLogged() ? $this->customer->getGroupId() : 0,
-            'firstname'             => $firstname,
-            'lastname'              => $lastname,
-            'email'                 => $email,
-            'telephone'             => $telephone,
-            'payment_firstname'     => '',
-            'payment_lastname'      => '',
-            'payment_company'       => '',
-            'payment_address_1'     => '',
-            'payment_address_2'     => '',
-            'payment_city'          => '',
-            'payment_postcode'      => '',
-            'payment_country'       => '',
-            'payment_country_id'    => 0,
-            'payment_zone'          => '',
-            'payment_zone_id'       => 0,
-            'payment_method'        => '',
-            'payment_code'          => '',
-            'payment_address_format'=> '',
-            'shipping_firstname'    => '',
-            'shipping_lastname'     => '',
-            'shipping_company'      => '',
-            'shipping_address_1'    => '',
-            'shipping_address_2'    => '',
-            'shipping_city'         => '',
-            'shipping_postcode'     => '',
-            'shipping_country'      => '',
-            'shipping_country_id'   => 0,
-            'shipping_zone'         => '',
-            'shipping_zone_id'      => 0,
-            'shipping_method'       => $this->config->get('payment_paynl_ideal_default_shipping'),
-            'shipping_code'         => '',
+            'invoice_prefix' => $this->config->get('config_invoice_prefix'),
+            'store_id' => $this->config->get('config_store_id'),
+            'store_name' => $this->config->get('config_name'),
+            'store_url' => $this->config->get('config_url'),
+            'customer_id' => $customer_id,
+            'customer_group_id' => $this->customer->isLogged() ? $this->customer->getGroupId() : 0,
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'email' => $email,
+            'telephone' => $telephone,
+            'payment_firstname' => '',
+            'payment_lastname' => '',
+            'payment_company' => '',
+            'payment_address_1' => '',
+            'payment_address_2' => '',
+            'payment_city' => '',
+            'payment_postcode' => '',
+            'payment_country' => '',
+            'payment_country_id' => 0,
+            'payment_zone' => '',
+            'payment_zone_id' => 0,
+            'payment_method' => '',
+            'payment_code' => '',
+            'payment_address_format' => '',
+            'shipping_firstname' => '',
+            'shipping_lastname' => '',
+            'shipping_company' => '',
+            'shipping_address_1' => '',
+            'shipping_address_2' => '',
+            'shipping_city' => '',
+            'shipping_postcode' => '',
+            'shipping_country' => '',
+            'shipping_country_id' => 0,
+            'shipping_zone' => '',
+            'shipping_zone_id' => 0,
+            'shipping_method' => $this->config->get('payment_paynl_ideal_default_shipping'),
+            'shipping_code' => '',
             'shipping_address_format' => ''
         );
 
         $order_data['products'] = array();
         foreach ($this->cart->getProducts() as $product) {
             $order_data['products'][] = array(
-                'product_id'   => $product['product_id'],
-                'name'         => $product['name'],
-                'model'        => $product['model'],
-                'quantity'     => $product['quantity'],
-                'price'        => $product['price'],
-                'total'        => $product['total'],
-                'tax'          => $this->tax->getTax($product['price'], $product['tax_class_id']),
-                'reward'       => $product['reward'],
-                'option'       => isset($product['option']) ? $product['option'] : array()
+                'product_id' => $product['product_id'],
+                'name' => $product['name'],
+                'model' => $product['model'],
+                'quantity' => $product['quantity'],
+                'price' => $product['price'],
+                'total' => $product['total'],
+                'tax' => $this->tax->getTax($product['price'], $product['tax_class_id']),
+                'reward' => $product['reward'],
+                'option' => isset($product['option']) ? $product['option'] : array()
             );
         }
 
@@ -80,8 +81,8 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             foreach ($this->session->data['vouchers'] as $voucher) {
                 $order_data['vouchers'][] = array(
                     'description' => $voucher['description'],
-                    'code'        => $voucher['code'],
-                    'amount'      => $voucher['amount']
+                    'code' => $voucher['code'],
+                    'amount' => $voucher['amount']
                 );
             }
         }
@@ -127,10 +128,10 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         $order_data['totals'] = array();
         foreach ($totals as $total_item) {
             $order_data['totals'][] = array(
-                'code'  => $total_item['code'],
+                'code' => $total_item['code'],
                 'title' => $total_item['title'],
                 'value' => $total_item['value'],
-                'sort_order'=> isset($total_item['sort_order']) ? $total_item['sort_order'] : 0
+                'sort_order' => isset($total_item['sort_order']) ? $total_item['sort_order'] : 0
             );
         }
 
@@ -272,8 +273,13 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         die();
     }
 
-    public function exchangeFastCheckout() {
+    public function exchangeFastCheckout()
+    {
         $webhookData = $this->request->post;
+
+        if (!isset($webhookData['object']['reference']) || !isset($webhookData['object']['status']['code'])) {
+            die("FALSE|Invalid webhook data");
+        }
 
         $order_id = $webhookData['object']['reference'];
 
@@ -284,52 +290,60 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
 
         $this->load->model('checkout/order');
 
-        if ($status === Pay_Model::STATUS_COMPLETE) {
-            $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
-            $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
-            $customer = $webhookData['object']['checkoutData']['customer'];
+        try {
+            if ($status === Pay_Model::STATUS_COMPLETE) {
+                $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
+                $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
+                $customer = $webhookData['object']['checkoutData']['customer'];
 
-            $paymentData = [
-                'firstname' => $customer['firstName'],
-                'lastname' => $customer['lastName'],
-                'address_1' => $billingAddress['streetName'] . ' ' . $billingAddress['streetNumber'],
-                'city' => $billingAddress['city'],
-                'postcode' => $billingAddress['zipCode'],
-                'country' => $billingAddress['countryCode'],
-                'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
-            ];
+                $paymentData = [
+                    'firstname' => $customer['firstName'],
+                    'lastname' => $customer['lastName'],
+                    'address_1' => $billingAddress['streetName'] . ' ' . $billingAddress['streetNumber'],
+                    'city' => $billingAddress['city'],
+                    'postcode' => $billingAddress['zipCode'],
+                    'country' => $billingAddress['countryCode'],
+                    'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
+                ];
 
-            $shippingData = [
-                'firstname' => $customer['firstName'],
-                'lastname' => $customer['lastName'],
-                'address_1' => $shippingAddress['streetName'] . ' ' . $shippingAddress['streetNumber'],
-                'city' => $shippingAddress['city'],
-                'postcode' => $shippingAddress['zipCode'],
-                'country' => $shippingAddress['countryCode']
-            ];
+                $shippingData = [
+                    'firstname' => $customer['firstName'],
+                    'lastname' => $customer['lastName'],
+                    'address_1' => $shippingAddress['streetName'] . ' ' . $shippingAddress['streetNumber'],
+                    'city' => $shippingAddress['city'],
+                    'postcode' => $shippingAddress['zipCode'],
+                    'country' => $shippingAddress['countryCode']
+                ];
 
-            $customerData = [
-                'email' => $customer['email'],
-                'phone' => $customer['phone'],
-                'lastname' => $customer['lastName'],
-                'firstname' => $customer['firstName'],
-            ];
+                $customerData = [
+                    'email' => $customer['email'],
+                    'phone' => $customer['phone'],
+                    'lastname' => $customer['lastName'],
+                    'firstname' => $customer['firstName'],
+                ];
 
-            $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
-            $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
+                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+                $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
 
-            $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
+                $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
 
 
-            $this->response->setOutput(json_encode(['status' => 'success']));
-        }
+                die("TRUE|Order processed successfully");
+            }
 
-        if ($status === Pay_Model::STATUS_CANCELED) {
-            $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
+            if ($status === Pay_Model::STATUS_CANCELED) {
+                $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
 
-            $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
 
-            $this->response->setOutput(json_encode(['status' => 'cancelled']));
+                die("TRUE|Order cancelled");
+            }
+        } catch (Pay_Api_Exception $e) {
+            die("FALSE|Api Error: " . $e->getMessage());
+        } catch (Pay_Exception $e) {
+            die("FALSE|Plugin Error: " . $e->getMessage());
+        } catch (Exception $e) {
+            die("FALSE|Unknown Error: " . $e->getMessage());
         }
     }
 }
