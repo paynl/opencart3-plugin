@@ -105,8 +105,7 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutButtons(&$route, &$data, &$output) {
-        $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
-        if (!is_array($configButtonPlaces) || !in_array('Cart', $configButtonPlaces)) {
+        if (!$this->isButtonAllowed('cart')) {
             return;
         }
 
@@ -131,8 +130,7 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
-        $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
-        if (!is_array($configButtonPlaces) || !in_array('mini_cart', $configButtonPlaces)) {
+        if (!$this->isButtonAllowed('mini_cart')) {
             return;
         }
 
@@ -153,10 +151,10 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
-        $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
-        if (!is_array($configButtonPlaces) || !in_array('product', $configButtonPlaces)) {
+        if (!$this->isButtonAllowed('product')) {
             return;
         }
+
         $this->loadResources($output);
 
         $payMethodsWithFastCheckout = $this->getFastCheckoutButtons(['paypal_container_id' => 'paypal-button-container-2'], 'product');
@@ -227,5 +225,26 @@ class ControllerExtensionPaymentPaynl extends Controller
         $scriptTag = '<script src="catalog/view/theme/default/javascript/paynl.js"></script>';
 
         $output = str_replace('<div id="cart" class="btn-group btn-block">', '<div id="cart" class="btn-group btn-block">' . $styleTag . $scriptTag, $output);
+    }
+
+    private function isButtonAllowed($placeName) {
+        $configKeys = $this->getButtonPlacesConfigKeys();
+
+        foreach ($configKeys as $configKey) {
+            $configButtonPlaces = $this->config->get($configKey);
+
+            if (is_array($configButtonPlaces) && in_array($placeName, $configButtonPlaces)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getButtonPlacesConfigKeys() {
+        return [
+            'payment_paynl_ideal_button_places',
+            'payment_paynl_paypal_button_places',
+        ];
     }
 }
