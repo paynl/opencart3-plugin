@@ -64,7 +64,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         $webhookData = $this->request->post;
 
         if (!isset($webhookData['object']['reference']) || !isset($webhookData['object']['status']['code'])) {
-            die("FALSE|Invalid webhook data");
+            die("FALSE| Invalid webhook data");
         }
 
         $order_id = $webhookData['object']['reference'];
@@ -109,12 +109,14 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                 ];
 
                 $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
-                $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
+                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
+                if ($result === false) {
+                    die("FALSE| Order not found");
+                }
 
                 $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
 
-
-                die("TRUE|Order processed successfully");
+                die("TRUE| processed successfully");
             }
 
             if ($status === Pay_Model::STATUS_CANCELED) {
@@ -125,11 +127,11 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                 die("TRUE|Order cancelled");
             }
         } catch (Pay_Api_Exception $e) {
-            die("FALSE|Api Error: " . $e->getMessage());
+            die("FALSE| Api Error: " . $e->getMessage());
         } catch (Pay_Exception $e) {
-            die("FALSE|Plugin Error: " . $e->getMessage());
+            die("FALSE| Plugin Error: " . $e->getMessage());
         } catch (Exception $e) {
-            die("FALSE|Unknown Error: " . $e->getMessage());
+            die("FALSE| Unknown Error: " . $e->getMessage());
         }
     }
 }
