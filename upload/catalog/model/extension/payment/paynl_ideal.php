@@ -43,9 +43,9 @@ class ModelExtensionPaymentPaynlIdeal extends Pay_Model
 
             $this->db->query($query);
 
-            echo "Order information updated successfully.";
+            return true;
         } else {
-            echo "Order not found.";
+            return false;
         }
     }
 }
