@@ -275,7 +275,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
 
     public function exchangeFastCheckout()
     {
-        $webhookData = $this->request->post;
+        $webhookData = $_REQUEST;
 
         if (!isset($webhookData['object']['reference']) || !isset($webhookData['object']['status']['code'])) {
             die("FALSE| Invalid webhook data");
