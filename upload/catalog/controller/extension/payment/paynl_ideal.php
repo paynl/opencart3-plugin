@@ -275,7 +275,12 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
 
     public function exchangeFastCheckout()
     {
-        $webhookData = $_REQUEST;
+        $rawData = file_get_contents('php://input');
+        $webhookData = json_decode($rawData, true);
+
+        if (empty($webhookData)) {
+            $webhookData = $this->request->post;
+        }
 
         if (!isset($webhookData['object']['reference']) || !isset($webhookData['object']['status']['code'])) {
             die("FALSE| Invalid webhook data");
@@ -348,6 +353,6 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             die("FALSE| Unknown Error: " . $e->getMessage());
         }
 
-        die("TRUE| Ignoring ' . $status");
+        die("TRUE| Ignoring $status");
     }
 }
