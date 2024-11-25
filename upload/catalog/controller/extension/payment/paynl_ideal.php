@@ -338,7 +338,11 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
 
                 $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
 
-                die("TRUE|Order cancelled");
+                die("TRUE| Order cancelled");
+            }
+
+            if ($status === Pay_Model::STATUS_PENDING) {
+                die("TRUE| Order pending");
             }
         } catch (Pay_Api_Exception $e) {
             die("FALSE| Api Error: " . $e->getMessage());
