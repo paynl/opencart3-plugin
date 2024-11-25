@@ -340,10 +340,6 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
 
                 die("TRUE| Order cancelled");
             }
-
-            if ($status === Pay_Model::STATUS_PENDING) {
-                die("TRUE| Order pending");
-            }
         } catch (Pay_Api_Exception $e) {
             die("FALSE| Api Error: " . $e->getMessage());
         } catch (Pay_Exception $e) {
@@ -351,5 +347,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         } catch (Exception $e) {
             die("FALSE| Unknown Error: " . $e->getMessage());
         }
+
+        die("TRUE| Ignoring ' . $status");
     }
 }
