@@ -9,7 +9,15 @@ class ModelExtensionPaymentPaynlIdeal extends Pay_Model
     protected $_paymentOptionId = 10;
     protected $_paymentMethodName = 'paynl_ideal';
 
-    public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data) {
+    /**
+     * @param $order_id
+     * @param $payment_data
+     * @param $shipping_data
+     * @param $customer_data
+     * @return bool
+     */
+    public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data)
+    {
         $order_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");
 
         if ($order_query->num_rows) {

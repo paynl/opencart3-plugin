@@ -104,7 +104,14 @@ class ControllerExtensionPaymentPaynl extends Controller
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
     }
 
-    public function addFastCheckoutButtons(&$route, &$data, &$output) {
+    /**
+     * @param $route
+     * @param $data
+     * @param $output
+     * @return void
+     */
+    public function addFastCheckoutButtons(&$route, &$data, &$output)
+    {
         $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
         if (!is_array($configButtonPlaces) || !in_array('cart', $configButtonPlaces)) {
             return;
@@ -126,7 +133,14 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
-    public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
+    /**
+     * @param $route
+     * @param $data
+     * @param $output
+     * @return void
+     */
+    public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output)
+    {
         $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
         if (!is_array($configButtonPlaces) || !in_array('mini_cart', $configButtonPlaces)) {
             return;
@@ -150,7 +164,14 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
-    public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
+    /**
+     * @param $route
+     * @param $data
+     * @param $output
+     * @return void
+     */
+    public function addFastCheckoutProductPageButtons(&$route, &$data, &$output)
+    {
         $configButtonPlaces = $this->config->get('payment_paynl_ideal_button_places');
         if (!is_array($configButtonPlaces) || !in_array('product', $configButtonPlaces)) {
             return;
@@ -174,12 +195,21 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
-    private function prepareOutput(&$output) {
+    /**
+     * @param $output
+     * @return void
+     */
+    private function prepareOutput(&$output)
+    {
         $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
         $output = str_replace('</head>', $styleTag . '</head>', $output);
     }
 
-    private function getFastCheckoutButtons() {
+    /**
+     * @return array
+     */
+    private function getFastCheckoutButtons()
+    {
         $this->load->model('setting/extension');
         $results = $this->model_setting_extension->getExtensions('payment');
         $payMethodsWithFastCheckout = array();
@@ -201,7 +231,12 @@ class ControllerExtensionPaymentPaynl extends Controller
         return $payMethodsWithFastCheckout;
     }
 
-    private function getFastCheckoutButtonLayout($methodCode) {
+    /**
+     * @param $methodCode
+     * @return string|void
+     */
+    private function getFastCheckoutButtonLayout($methodCode)
+    {
         switch ($methodCode) {
             case 'paynl_ideal':
                 $url = 'index.php?route=extension/payment/' . $methodCode . '/initFastCheckout';

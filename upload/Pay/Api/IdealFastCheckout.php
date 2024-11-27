@@ -9,7 +9,6 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
     protected $_action = '';
     protected $_gateway = 'https://connect.payments.nl';
     private $_testmode;
-    private $_token;
     private $_orderNumber;
     private $_amount;
     private $_description;
@@ -43,8 +42,8 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
      * Set the amount(in cents) of the transaction
      *
      * @param integer $amount
-     * @throws Pay_Exception
      * @return void
+     * @throws Pay_Exception
      */
     public function setAmount($amount)
     {
@@ -73,6 +72,12 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
         $this->_reference = $reference;
     }
 
+    /**
+     * @param $contactDetails
+     * @param $shippingAddress
+     * @param $billingAddress
+     * @return void
+     */
     public function setOptimize($contactDetails = true, $shippingAddress = true, $billingAddress = true)
     {
         $this->_optimize = [
@@ -120,8 +125,8 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
      * @param integer $quantity
      * @param integer $vatPercentage
      * @param string $type
-     * @throws Pay_Exception
      * @return void
+     * @throws Pay_Exception
      */
     public function addProduct($id, $description, $price, $quantity, $vatPercentage, $type = "ARTICLE")
     {
@@ -133,8 +138,6 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
         }
 
         $quantity = $quantity * 1;
-
-        //description mag maar 45 chars lang zijn
         $description = substr($description, 0, 45);
 
         $arrProduct = array(
@@ -189,7 +192,13 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
         return $host . '/' . $this->_version . '/' . $this->_controller;
     }
 
-    public function doRequest() {
+    /**
+     * @return array|mixed|void
+     * @throws Pay_Api_Exception
+     * @throws Pay_Exception
+     */
+    public function doRequest()
+    {
         if ($this->_getPostData()) {
 
             $url = $this->_getApiUrl();
@@ -219,9 +228,9 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
 
             $result = curl_exec($ch);
 
-            if ($result == false) {
+            if (!$result) {
                 $error = curl_error($ch);
-                throw new Pay_Api_Exception("Curl error: ".$error);
+                throw new Pay_Api_Exception("Curl error: " . $error);
             }
             curl_close($ch);
 
@@ -235,14 +244,19 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
         return [];
     }
 
+    /**
+     * @param $arrResult
+     * @return true
+     * @throws Pay_Api_Exception
+     */
     protected function validateResult($arrResult)
     {
         if (isset($arrResult['links']['redirect'])) {
             return true;
         } else {
-            if(isset($arrResult['request']['errorId']) && isset($arrResult['request']['errorMessage']) ){
+            if (isset($arrResult['request']['errorId']) && isset($arrResult['request']['errorMessage'])) {
                 throw new Pay_Api_Exception($arrResult['request']['errorId'] . ' - ' . $arrResult['request']['errorMessage']);
-            } elseif(isset($arrResult['error'])){
+            } elseif (isset($arrResult['error'])) {
                 throw new Pay_Api_Exception($arrResult['error']);
             } else {
                 throw new Pay_Api_Exception('Unexpected api result');
