@@ -90,6 +90,11 @@ $_['text_logging_tooltip'] = "Schakel logging in";
 $_['text_testmode'] = 'Test mode';
 $_['text_testmode_tooltip'] = 'Zet de test mode aan of uit om de exchanges te testen tussen Pay. en uw webshop';
 
+$_['text_display_fast_checkout'] = 'Toon de Fast Checkout-knop';
+$_['text_display_fast_checkout_tooltip'] = 'Schakel de Fast Checkout-knop in of uit in de winkelwagen.';
+$_['text_default_shipping_method'] = 'Standaard verzendmethode';
+$_['text_only_guest'] = 'Alleen voor gasten';
+
 $_['text_status_pending'] = 'Order status wacht op betaling';
 $_['text_status_pending_tooltip'] = 'De status van de order wanneer de betaling is gestart, maar nog niet afgerond';
 $_['text_status_complete'] = 'Order status betaling voltooid';

@@ -369,6 +369,10 @@ class Pay_Controller_Payment extends Controller
         return $this->config->get('payment_paynl_general_testmode');
     }
 
+    public function isAjax() {
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
+
     /**
      * @param $message
      * @return string

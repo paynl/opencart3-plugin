@@ -94,6 +94,71 @@
                             </select>
                         </div>
                     </div>
+                    {% if availability_fast_checkout %}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="{{ fast_checkout }}">
+                                <span data-toggle="tooltip" title="{{ text_display_fast_checkout_tooltip }}">{{ text_display_fast_checkout }}</span>
+                            </label>
+                            <div class="col-sm-10 fast-checkout-select-block">
+                                <select name="{{ fast_checkout }}" id="{{ fast_checkout }}" class="form-control">
+                                    {% if display_fast_checkout %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                    {% else %}
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{ text_disabled }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="dependent-fields" style="display: none;">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Show Button On</label>
+                                <div class="col-sm-10">
+                                    <div style="display: flex; gap: 10px;">
+                                        {% for place in button_places_list %}
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" name="{{ fast_checkout_button_places_name }}[]" value="{{ place.key }}" {% if place.key in fast_checkout_checked_button_places %}checked{% endif %}>
+                                                {{ place.value }}
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="{{ fast_checkout_default_shipping_name }}">
+                                    {{ text_default_shipping_method }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {% for shipping_method in shipping_methods %}
+                                        <label class="radio-inline">
+                                            <input type="radio" name="{{ fast_checkout_default_shipping_name }}" value="{{ shipping_method.code }}"
+                                                   {% if fast_checkout_default_shipping == shipping_method.code %}checked="checked"{% endif %}>
+                                            {{ shipping_method.title }}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="{{ fast_checkout_only_guest_name }}">
+                                    {{ text_only_guest }}
+                                </label>
+                                <div class="col-sm-10 fast-checkout-only-guest">
+                                    <select name="{{ fast_checkout_only_guest_name }}" class="form-control">
+                                        {% if fast_checkout_only_guest %}
+                                            <option value="1" selected="selected">{{ text_enabled }}</option>
+                                            <option value="0">{{ text_disabled }}</option>
+                                        {% else %}
+                                            <option value="1">{{ text_enabled }}</option>
+                                            <option value="0" selected="selected">{{ text_disabled }}</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
                     <div class="form-group">
                         <div class="panel-heading" id="show_advanced_settings" style="border-top: 1px solid #dcdcdc;">
                             <h3 class="panel-title"><i class="fa fa-gear"></i> {{ text_advanced_settings }} <i id="advanced_settings_icon" class="fa fa-chevron-down"></i></h3>
