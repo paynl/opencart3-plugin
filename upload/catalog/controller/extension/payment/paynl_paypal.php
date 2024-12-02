@@ -179,59 +179,72 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
 
         $this->load->model('checkout/order');
 
-        if ($status === Pay_Model::STATUS_COMPLETE) {
-            $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
-            $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
-            $customer = $webhookData['object']['checkoutData']['customer'];
+        try {
+            if ($status === Pay_Model::STATUS_COMPLETE) {
+                $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
+                $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
+                $customer = $webhookData['object']['checkoutData']['customer'];
 
-            $paymentData = [
-                'firstname' => $customer['firstName'] ?: $paypalPayer['firstname'],
-                'lastname' => $customer['lastName'] ?: $paypalPayer['lastname'],
-                'address_1' => $billingAddress['streetName'] . ' ' . $billingAddress['streetNumber'],
-                'city' => $billingAddress['city'],
-                'postcode' => $billingAddress['zipCode'],
-                'country' => $billingAddress['countryCode'] ?: $paypalPayer['countryCode'],
-                'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
-            ];
+                $paymentData = [
+                    'firstname' => $customer['firstName'] ?: $paypalPayer['firstname'],
+                    'lastname' => $customer['lastName'] ?: $paypalPayer['lastname'],
+                    'address_1' => $billingAddress['streetName'] . ' ' . $billingAddress['streetNumber'],
+                    'city' => $billingAddress['city'],
+                    'postcode' => $billingAddress['zipCode'],
+                    'country' => $billingAddress['countryCode'] ?: $paypalPayer['countryCode'],
+                    'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
+                ];
 
-            $shippingData = [
-                'firstname' => $customer['firstName'] ?: $paypalShipping['full_name'],
-                'lastname' => $customer['lastName'],
-                'address_1' => $shippingAddress['streetName'] ? $shippingAddress['streetName'] . ' ' . $shippingAddress['streetNumber'] : $paypalShipping['address_1'],
-                'city' => $shippingAddress['city'] ?: $paypalShipping['city'],
-                'postcode' => $shippingAddress['zipCode'] ?: $paypalShipping['post_code'],
-                'country' => $shippingAddress['countryCode'] ?: $paypalShipping['country']
-            ];
+                $shippingData = [
+                    'firstname' => $customer['firstName'] ?: $paypalShipping['full_name'],
+                    'lastname' => $customer['lastName'],
+                    'address_1' => $shippingAddress['streetName'] ? $shippingAddress['streetName'] . ' ' . $shippingAddress['streetNumber'] : $paypalShipping['address_1'],
+                    'city' => $shippingAddress['city'] ?: $paypalShipping['city'],
+                    'postcode' => $shippingAddress['zipCode'] ?: $paypalShipping['post_code'],
+                    'country' => $shippingAddress['countryCode'] ?: $paypalShipping['country']
+                ];
 
-            $customerData = [
-                'email' => $customer['email'] ?: $paypalOrderDetails['payer']['email_address'],
-                'phone' => $customer['phone'],
-                'lastname' => $customer['lastName'],
-                'firstname' => $customer['firstName'],
-            ];
+                $customerData = [
+                    'email' => $customer['email'] ?: $paypalOrderDetails['payer']['email_address'],
+                    'phone' => $customer['phone'],
+                    'lastname' => $customer['lastName'],
+                    'firstname' => $customer['firstName'],
+                ];
 
-            $transactionId = $webhookData['object']['id'];
+                $transactionId = $webhookData['object']['id'];
 
-            $this->$modelName->addTransaction(
-                $transactionId,
-                $order_id,
-                $this->_paymentOptionId,
-                $webhookData['object']['amount']['value'],
-                ['type' => 'paypal fast checkout'],
-            );
-            $this->$modelName->updateTransactionStatus($transactionId, $status);
-            $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
-            $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
+                $this->$modelName->addTransaction(
+                    $transactionId,
+                    $order_id,
+                    $this->_paymentOptionId,
+                    $webhookData['object']['amount']['value'],
+                    ['type' => 'paypal fast checkout'],
+                );
+                $this->$modelName->updateTransactionStatus($transactionId, $status);
 
-            $this->response->setOutput(json_encode(['status' => 'success']));
-        }
+                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
+                if ($result === false) {
+                    die("FALSE| Order not found");
+                }
 
-        if ($status === Pay_Model::STATUS_CANCELED) {
-            $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
+                $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
 
-            $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+                die("TRUE| processed successfully");
+            }
 
-            $this->response->setOutput(json_encode(['status' => 'cancelled']));
+            if ($status === Pay_Model::STATUS_CANCELED) {
+                $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
+
+                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+
+                die("TRUE|Order cancelled");
+            }
+        } catch (Pay_Api_Exception $e) {
+            die("FALSE| Api Error: " . $e->getMessage());
+        } catch (Pay_Exception $e) {
+            die("FALSE| Plugin Error: " . $e->getMessage());
+        } catch (Exception $e) {
+            die("FALSE| Unknown Error: " . $e->getMessage());
         }
     }
 
