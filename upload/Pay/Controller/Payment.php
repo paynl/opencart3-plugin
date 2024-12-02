@@ -122,7 +122,7 @@ class Pay_Controller_Payment extends Controller
 
             $apiStart->setDescription($description);
             $apiStart->setExtra1($order_info['order_id']);
-            $apiStart->setObject('opencart3 1.9.3');
+            $apiStart->setObject('opencart3 1.10.0');
 
 
             # Collect customer data
@@ -369,7 +369,11 @@ class Pay_Controller_Payment extends Controller
         return $this->config->get('payment_paynl_general_testmode');
     }
 
-    public function isAjax() {
+    /**
+     * @return bool
+     */
+    public function isAjax()
+    {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
 

@@ -59,6 +59,9 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         die();
     }
 
+    /**
+     * @return void
+     */
     public function exchangeFastCheckout()
     {
         $rawData = file_get_contents('php://input');

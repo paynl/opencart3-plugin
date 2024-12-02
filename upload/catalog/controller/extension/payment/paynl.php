@@ -104,6 +104,12 @@ class ControllerExtensionPaymentPaynl extends Controller
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
     }
 
+    /**
+     * @param $route
+     * @param $data
+     * @param $output
+     * @return void
+     */
     public function addFastCheckoutButtons(&$route, &$data, &$output) {
         if (!$this->isButtonAllowed('cart')) {
             return;
@@ -129,6 +135,12 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
+    /**
+     * @param $route
+     * @param $data
+     * @param $output
+     * @return void
+     */
     public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
         if (!$this->isButtonAllowed('mini_cart')) {
             return;
@@ -150,6 +162,12 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
+    /**
+     * @param $route
+     * @param $data
+     * @param $output
+     * @return void
+     */
     public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
         if (!$this->isButtonAllowed('product')) {
             return;
@@ -201,6 +219,10 @@ class ControllerExtensionPaymentPaynl extends Controller
         return $payMethodsWithFastCheckout;
     }
 
+    /**
+     * @param $methodCode
+     * @return string|void
+     */
     private function getFastCheckoutButtonLayout($methodCode, $paypalContainerId) {
         if ($paypalContainerId === null) {
             $paypalContainerId = 'paypal-button-container';
