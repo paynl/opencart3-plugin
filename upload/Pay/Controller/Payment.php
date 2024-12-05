@@ -570,6 +570,7 @@ class Pay_Controller_Payment extends Controller
 
             $amount = round($orderData['total'] * 100 * $orderData['currency_value']);
             $apiFastCheckout->setAmount($amount);
+            $apiFastCheckout->setCurrency($orderData['currency_code']);
 
             //Producten toevoegen
             foreach ($this->cart->getProducts() as $product) {
