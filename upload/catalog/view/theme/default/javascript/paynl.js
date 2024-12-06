@@ -59,7 +59,7 @@ jQuery(document).ready(function () {
                 url: 'index.php?route=extension/payment/' + method + '/initFastCheckout',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ method: method }),
+                data: JSON.stringify({method: method}),
                 success: function (response) {
                     if (typeof response === "string") {
                         response = JSON.parse(response);
@@ -73,6 +73,8 @@ jQuery(document).ready(function () {
             });
         }, 500);
     });
+
+    observeMiniCartChanges();
 });
 
 function getCurrentRoute() {
@@ -106,11 +108,15 @@ function renderPayPalButton(containerSelector) {
         createOrder: function (data, actions) {
             $('#button-cart').click();
 
-            return fetch('index.php?route=extension/payment/paynl_paypal/initFastCheckout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(fetch('index.php?route=extension/payment/paynl_paypal/initFastCheckout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }));
+                }, 500);
             })
                 .then(response => response.json())
                 .then(orderData => {
@@ -132,7 +138,7 @@ function renderPayPalButton(containerSelector) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ orderID: data.orderID })
+                body: JSON.stringify({orderID: data.orderID})
             })
                 .then(response => response.json())
                 .then(result => {
@@ -165,4 +171,28 @@ function waitForElement(selector, callback, interval = 200, maxAttempts = 50) {
     }
 
     checkElement();
+}
+
+function observeMiniCartChanges() {
+    const miniCart = document.querySelector('#cart');
+
+    if (!miniCart) {
+        console.error('Mini-cart element not found');
+        return;
+    }
+
+    const observer = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                if (jQuery('#paypal-button-container').is(':empty')) {
+                    renderPayPalButton('#paypal-button-container');
+                }
+            }
+        }
+    });
+
+    observer.observe(miniCart, {
+        childList: true,
+        subtree: true
+    });
 }
