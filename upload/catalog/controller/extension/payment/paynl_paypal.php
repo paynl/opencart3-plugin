@@ -136,6 +136,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $this->response->setOutput(json_encode($config));
     }
 
+    /** @throws Pay_Api_Exception */
     public function exchangeFastCheckout() {
         $rawData = file_get_contents('php://input');
         $webhookData = json_decode($rawData, true);
@@ -152,7 +153,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $paypalOrderDetails = $this->getOrderDetails($orderId, $accessToken);
 
         if (!$paypalOrderDetails) {
-            return;
+            throw new Pay_Api_Exception('Paypal order details not received');
         }
 
         $paypalPayer = [
