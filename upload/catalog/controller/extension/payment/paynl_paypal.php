@@ -214,13 +214,17 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
 
                 $transactionId = $webhookData['object']['id'];
 
-                $this->$modelName->addTransaction(
-                    $transactionId,
-                    $order_id,
-                    $this->_paymentOptionId,
-                    $webhookData['object']['amount']['value'],
-                    ['type' => 'paypal fast checkout'],
-                );
+                $transaction = $this->$modelName->getTransaction($transactionId);
+
+                if(empty($transaction)) {
+                    $this->$modelName->addTransaction(
+                        $transactionId,
+                        $order_id,
+                        $this->_paymentOptionId,
+                        $webhookData['object']['amount']['value'],
+                        ['type' => 'paypal fast checkout'],
+                    );
+                }
                 $this->$modelName->updateTransactionStatus($transactionId, $status);
 
                 $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
