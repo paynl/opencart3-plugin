@@ -153,7 +153,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $paypalOrderDetails = $this->getOrderDetails($orderId, $accessToken);
 
         if (!$paypalOrderDetails) {
-            throw new Pay_Api_Exception('Paypal order details not received');
+            die("FALSE| Paypal order details not received");
         }
 
         $paypalPayer = [
