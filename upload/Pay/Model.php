@@ -525,9 +525,9 @@ class Pay_Model extends Model
 
             $this->db->query($query);
 
-            echo "TRUE| Order information updated successfully.";
+            return true;
         } else {
-            echo "FALSE| Order not found.";
+            return false;
         }
     }
 }
