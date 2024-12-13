@@ -197,35 +197,31 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
 
         try {
             if ($status === Pay_Model::STATUS_COMPLETE) {
-                $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
-                $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
-                $customer = $webhookData['object']['checkoutData']['customer'];
-
                 $paymentData = [
-                    'firstname' => $customer['firstName'] ?: $paypalPayer['firstname'],
-                    'lastname' => $customer['lastName'] ?: $paypalPayer['lastname'],
-                    'address_1' => $billingAddress['streetName'] . ' ' . $billingAddress['streetNumber'],
-                    'city' => $billingAddress['city'],
-                    'postcode' => $billingAddress['zipCode'],
-                    'country' => $billingAddress['countryCode'] ?: $paypalPayer['countryCode'],
+                    'firstname' => $paypalPayer['firstname'],
+                    'lastname' => $paypalPayer['lastname'],
+                    'address_1' => $paypalShipping['address_1'],
+                    'city' => $paypalShipping['city'],
+                    'postcode' => $paypalShipping['post_code'],
+                    'country' => $paypalPayer['countryCode'],
                     'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
                 ];
 
                 $shippingData = [
-                    'firstname' => $customer['firstName'] ?: $paypalShipping['full_name'],
-                    'lastname' => $customer['lastName'],
-                    'address_1' => $shippingAddress['streetName'] ? $shippingAddress['streetName'] . ' ' . $shippingAddress['streetNumber'] : $paypalShipping['address_1'],
-                    'city' => $shippingAddress['city'] ?: $paypalShipping['city'],
-                    'postcode' => $shippingAddress['zipCode'] ?: $paypalShipping['post_code'],
-                    'country' => $shippingAddress['countryCode'] ?: $paypalShipping['country']
+                    'firstname' => $paypalPayer['firstname'],
+                    'lastname' => $paypalPayer['lastname'],
+                    'address_1' => $paypalShipping['address_1'],
+                    'city' => $paypalShipping['city'],
+                    'postcode' => $paypalShipping['post_code'],
+                    'country' => $paypalShipping['country']
                 ];
 
                 $customerData = [
-                    'email' => $customer['email'] ?: $paypalOrderDetails['payer']['email_address'],
-                    'phone' => $customer['phone'],
-                    'lastname' => $customer['lastName'],
-                    'firstname' => $customer['firstName'],
-                ];
+                    'email' => $paypalOrderDetails['payer']['email_address'],
+                    'phone' => '',
+                    'lastname' => $paypalPayer['lastname'],
+                    'firstname' => $paypalPayer['firstname'],
+                ]; 
 
                 $transactionId = $webhookData['object']['id'];
 
