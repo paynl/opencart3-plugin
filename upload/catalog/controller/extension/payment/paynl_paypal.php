@@ -149,6 +149,21 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
             ? $webhookData['object']['payments'][0]['paymentMethod']['input']['orderId']
             : null;
 
+        $this->load->model('setting/setting');
+        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
+        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
+        $transactionId = $webhookData['object']['orderId'];
+
+        try {
+            $apiInfo = new Pay_Api_Info();
+            $apiInfo->setApiToken($apiToken);
+            $apiInfo->setServiceId($serviceId);
+            $apiInfo->setTransactionId($transactionId);
+            $apiInfo->doRequest();
+        } catch (\Exception $e) {
+            die('FALSE| Error fetching transaction. ' . $e->getMessage());
+        }
+
         $accessToken = $this->getAccessToken();
         $paypalOrderDetails = $this->getOrderDetails($orderId, $accessToken);
 
