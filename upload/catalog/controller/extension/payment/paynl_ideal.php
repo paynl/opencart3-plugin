@@ -87,12 +87,11 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             $apiInfo->setApiToken($apiToken);
             $apiInfo->setServiceId($serviceId);
             $apiInfo->setTransactionId($transactionId);
-            $apiInfo->doRequest();
+            $infoResult = $apiInfo->doRequest();
+            $status = Pay_Helper::getStatus($infoResult['paymentDetails']['state']);          
         } catch (\Exception $e) {
             die('FALSE| Error fetching transaction. ' . $e->getMessage());     
-        } 
-
-        $status = Pay_Helper::getStatus($webhookData['object']['status']['code']);
+        }
 
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;

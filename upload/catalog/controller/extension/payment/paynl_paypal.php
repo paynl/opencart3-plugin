@@ -154,15 +154,16 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
         $transactionId = $webhookData['object']['orderId'];
 
-        try {
+        try {           
             $apiInfo = new Pay_Api_Info();
             $apiInfo->setApiToken($apiToken);
             $apiInfo->setServiceId($serviceId);
             $apiInfo->setTransactionId($transactionId);
-            $apiInfo->doRequest();
+            $infoResult = $apiInfo->doRequest();
+            $status = Pay_Helper::getStatus($infoResult['paymentDetails']['state']);          
         } catch (\Exception $e) {
-            die('FALSE| Error fetching transaction. ' . $e->getMessage());
-        }
+            die('FALSE| Error fetching transaction. ' . $e->getMessage());     
+        }  
 
         $accessToken = $this->getAccessToken();
         $paypalOrderDetails = $this->getOrderDetails($orderId, $accessToken);
@@ -187,8 +188,6 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         ];
 
         $order_id = $webhookData['object']['reference'];
-
-        $status = Pay_Helper::getStatus($webhookData['object']['status']['code']);
 
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
