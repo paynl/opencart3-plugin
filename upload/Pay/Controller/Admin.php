@@ -99,6 +99,16 @@ class Pay_Controller_Admin extends Controller
                     );
                 }
             }
+
+            if (property_exists($this, '_clientId') && $this->_clientId === true) {
+                $clientIdName = 'payment_' . $this->_paymentMethodName . '_client_id';
+                $data['fast_checkout_client_id_name'] = $clientIdName;
+                $data['fast_checkout_client_id'] = isset($settings[$clientIdName]) ? $settings[$clientIdName] : '';
+
+                $clientToken = 'payment_' . $this->_paymentMethodName . '_client_token';
+                $data['fast_checkout_client_token_name'] = $clientToken;
+                $data['fast_checkout_client_token'] = isset($settings[$clientToken]) ? $settings[$clientToken] : '';;
+            }
         }
 
         if ($reqMethod == 'POST') {

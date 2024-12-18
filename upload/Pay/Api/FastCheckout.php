@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Pay_Api_IdealFastCheckout extends Pay_Api
+class Pay_Api_FastCheckout extends Pay_Api
 {
     protected $_version = 'v1';
     protected $_controller = 'orders';
@@ -11,6 +11,7 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
     private $_testmode;
     private $_orderNumber;
     private $_amount;
+    private $_currency;
     private $_description;
     private $_reference;
     private $_optimize;
@@ -52,6 +53,17 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
         } else {
             throw new Pay_Exception('Amount is niet numeriek', 1);
         }
+    }
+
+    /**
+     * Set the currency of the transaction
+     *
+     * @param string $currency
+     * @return void
+     */
+    public function setCurrency($currency)
+    {
+        $this->_currency = $currency;
     }
 
     /**
@@ -153,15 +165,24 @@ class Pay_Api_IdealFastCheckout extends Pay_Api
 
     protected function _getPostData()
     {
+        if (is_int($this->_paymentMethod)) {
+            $paymentMethod = [
+                'id' => $this->_paymentMethod,
+            ];
+        } else {
+            $paymentMethod = $this->_paymentMethod;
+        }
+
         $postData = [
             'serviceId' => $this->_serviceId,
-            'amount' => ['value' => $this->_amount],
+            'amount' => [
+                    'value' => $this->_amount,
+                    'currency' => $this->_currency,
+                ],
             'description' => $this->_description,
             'reference' => $this->_reference,
-            'paymentMethod' => [
-                'id' => $this->_paymentMethod,
-                'optimize' => $this->_optimize,
-            ],
+            'optimize' => $this->_optimize,
+            'paymentMethod' => $paymentMethod,
             'returnUrl' => $this->_returnUrl,
             'exchangeUrl' => $this->_exchangeUrl,
             'order' => ['products' => $this->_products]

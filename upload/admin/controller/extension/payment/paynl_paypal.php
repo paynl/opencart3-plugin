@@ -10,4 +10,6 @@ class ControllerExtensionPaymentPaynlPaypal extends Pay_Controller_Admin
     protected $_paymentMethodName = 'paynl_paypal';
 
     protected $_defaultLabel = 'PayPal';
+    protected $_fastCheckout = true;
+    protected $_clientId = true;
 }
