@@ -10,4 +10,5 @@ class ControllerExtensionPaymentPaynlIdeal extends Pay_Controller_Admin
     protected $_paymentMethodName = 'paynl_ideal';
 
     protected $_defaultLabel = 'iDEAL';
+    protected $_fastCheckout = true;
 }

@@ -15,11 +15,11 @@ class Pay_Api {
     protected $_requestType = self::REQUEST_TYPE_POST;
     protected $_postData = array();
 
-    
+
     /**
      * Set the serviceid
      * The serviceid always starts with SL- and can be found on: https://admin.pay.nl/programs/programs
-     * 
+     *
      * @param string $serviceId
      */
     public function setServiceId($serviceId) {
@@ -30,7 +30,7 @@ class Pay_Api {
      * Set the API token
      * The API token is used to identify your company.
      * The API token can be found on: https://admin.pay.nl/my_merchant on the bottom
-     * 
+     *
      * @param string $apiToken
      */
     public function setApiToken($apiToken)
@@ -58,7 +58,7 @@ class Pay_Api {
      * @return string
      * @throws Pay_Exception
      */
-    private function _getApiUrl()
+    protected function _getApiUrl()
     {
         if ($this->_version == '') {
             throw new Pay_Exception('version not set', 1);
@@ -94,8 +94,8 @@ class Pay_Api {
             } else {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $strData);
             }
-           
-          
+
+
             curl_setopt($ch, CURLOPT_URL, $apiUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -124,7 +124,7 @@ class Pay_Api {
                 throw new Pay_Api_Exception($arrResult['request']['errorId'] . ' - ' . $arrResult['request']['errorMessage']);
             } elseif(isset($arrResult['error'])){
                 throw new Pay_Api_Exception($arrResult['error']);
-            } else {   
+            } else {
                 throw new Pay_Api_Exception('Unexpected api result');
             }
         }

@@ -99,4 +99,21 @@ jQuery(document).ready(function () {
             $("#advanced_settings_icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
         }
     });
+
+    var fastCheckoutSelect = $('.fast-checkout-select-block select');
+    var dependentFields = $('#dependent-fields');
+
+    toggleDependentFields(fastCheckoutSelect.val());
+
+    fastCheckoutSelect.on('change', function () {
+        toggleDependentFields($(this).val());
+    });
+
+    function toggleDependentFields(value) {
+        if (value === '1') {
+            dependentFields.show();
+        } else {
+            dependentFields.hide();
+        }
+    }
 });

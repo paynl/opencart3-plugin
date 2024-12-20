@@ -93,6 +93,11 @@ $_['text_logging_tooltip'] = "Enable logging";
 $_['text_testmode'] = 'Test mode';
 $_['text_testmode_tooltip'] = 'Enable or disable test mode to test the exchanges between Pay. and your webshop';
 
+$_['text_display_fast_checkout'] = 'Display fast checkout button';
+$_['text_display_fast_checkout_tooltip'] = 'Enable or disable the Fast Checkout button in the cart.';
+$_['text_default_shipping_method'] = 'Default Shipping Method';
+$_['text_only_guest'] = 'Only guests';
+
 $_['text_status_pending'] = 'Order status pending payment';
 $_['text_status_pending_tooltip'] = 'The status of the order when the payment is started, but not yet completed';
 $_['text_status_complete'] = 'Order status payment successful';
@@ -136,7 +141,7 @@ $_['text_suggestions_submit'] = 'Submit';
 $_['text_suggestions_success_modal'] = 'Sent! Thank you for your contribution.';
 $_['text_suggestions_fail_modal'] = 'E-mail could not be sent, please try again later.';
 
-$version = '1.9.3';
+$version = '1.11.0';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
