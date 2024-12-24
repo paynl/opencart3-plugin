@@ -53,6 +53,7 @@ class Text
     public static function getFriendlyMessage($errorMessage)
     {
         $friendlyMessages = [
+          'INVALID_TRANSACTION_STAT' => 'Transaction not ready for refund.',
           'username can not be empty' => 'Connection error. Please check your connection credentials.',
           'bestelling kon niet worden gevonden' => 'Your order could not be found',
           'Transaction cannot be aborted in this state' => 'Unfortunately the transaction cannot be aborted',

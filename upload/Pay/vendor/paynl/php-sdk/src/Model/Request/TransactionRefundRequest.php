@@ -171,7 +171,6 @@ class TransactionRefundRequest extends RequestData
     public function start(): TransactionRefundResponse
     {
         $this->config->setCore('https://rest.pay.nl');
-
         return parent::start();
     }
 }

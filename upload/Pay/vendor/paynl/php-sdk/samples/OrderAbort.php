@@ -9,7 +9,7 @@ use PayNL\Sdk\Model\Request\OrderAbortRequest;
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Config\Config;
 
-$transactionId = $_REQUEST['pay_order_id'] ?? exit('Pass transactionId');
+$transactionId = $_REQUEST['pay_order_id'] ?? exit('pay_order_id expected');
 
 $orderAbortRequest = new OrderAbortRequest($transactionId);
 
@@ -30,15 +30,14 @@ try {
     exit();
 }
 
-
 echo '<pre>';
 echo 'Success, values:' . PHP_EOL;
 echo 'getOrderId: ' . $transaction->getId() . PHP_EOL;
 echo 'getTransactionId: ' . $transaction->getOrderId() . PHP_EOL;
 echo 'getDescription: ' . $transaction->getDescription() . PHP_EOL;
 echo 'getReference: ' . $transaction->getReference() . PHP_EOL;
-echo 'getAmount getValue: ' . $transaction->getAmount()->getValue() . PHP_EOL;
-echo 'getAmount getCurrency: ' . $transaction->getAmount()->getCurrency() . PHP_EOL;
+echo 'getAmount getValue: ' . $transaction->getAmount() . PHP_EOL;
+echo 'getAmount getCurrency: ' . $transaction->getAmount() . PHP_EOL;
 echo 'getAuthorizedAmount getCurrency: ' . $transaction->getAuthorizedAmount()->getCurrency() . PHP_EOL;
 echo 'getAuthorizedAmount getValue: ' . $transaction->getAuthorizedAmount()->getValue() . PHP_EOL;
 echo 'getStatus:' . print_r($transaction->getStatus(), true) . PHP_EOL;
@@ -49,4 +48,3 @@ echo 'getCreatedAt: ' . $transaction->getCreatedAt() . PHP_EOL;
 echo 'getCreatedBy: ' . $transaction->getCreatedBy() . PHP_EOL;
 echo 'getModifiedAt: ' . $transaction->getModifiedAt() . PHP_EOL;
 echo 'getModifiedBy: ' . $transaction->getModifiedBy() . PHP_EOL;
-

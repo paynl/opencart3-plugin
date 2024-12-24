@@ -4,105 +4,258 @@ declare(strict_types=1);
 
 namespace PayNL\Sdk\Model\Pay;
 
-use PayNL\Sdk\Model\Pay\PayStatus;
+use PayNL\Sdk\Model\ModelInterface;
+use PayNL\Sdk\Model\Amount;
 
 /**
  * Class PayOrder
- * */
-class PayOrder
+ *
+ * @package PayNL\Sdk\Model
+ */
+class PayOrder implements ModelInterface
 {
-    private int $stateId = 0;
-    private array $processedPayload;
-    private string $message;
-    private array $payload = [];
 
-    private $id;
-    private $uuid;
-    private $amount;
-    private $status;
-    private $orderId;
-    private $receipt;
-    private $payments;
-    private $reference;
-    private $description;
-    private $integration;
-    private $checkoutData;
-    private $capturedAmount;
-    private $authorizedAmount;
-    private $manualTransferCode;
     /**
-     * @var mixed
+     * @var string
      */
-    private $paymentProfileId;
+    protected string $id;
 
-    public function __construct($payload)
+    /**
+     * @var string
+     */
+    protected string $type;
+
+    /**
+     * @var string
+     */
+    protected string $serviceId;
+
+    /**
+     * @var string
+     */
+    protected $description;
+
+    /**
+     * @var string
+     */
+    protected $reference;
+
+    /**
+     * @var string
+     */
+    protected $manualTransferCode;
+
+    /**
+     * @var string
+     */
+    protected $orderId;
+
+    /**
+     * @var string
+     */
+    protected $uuid;
+
+    /**
+     * @var string
+     */
+    protected $customerKey;
+
+    /**
+     * @var array
+     */
+    protected $status;
+
+    /**
+     * @var string
+     */
+    protected $receipt;
+
+    /**
+     * @var array
+     */
+    protected $integration;
+
+    /**
+     * @var Amount
+     */
+    protected $amount;
+
+    /**
+     * @var Amount
+     */
+    protected $authorizedAmount;
+
+    /**
+     * @var Amount
+     */
+    protected $capturedAmount;
+
+    /**
+     * @var array
+     */
+    protected $checkoutData;
+
+    /**
+     * @var array
+     */
+    protected $payments;
+
+    /**
+     * @var string
+     */
+    protected $createdAt;
+
+    /**
+     * @var string
+     */
+    protected $createdBy;
+
+    /**
+     * @var string
+     */
+    protected $modifiedAt;
+
+    /**
+     * @var string
+     */
+    protected $modifiedBy;
+
+    /**
+     * @var string
+     */
+    protected $expiresAt;
+
+    /**
+     * @var string
+     */
+    protected $completedAt;
+
+    /**
+     * @var array
+     */
+    protected $links;
+
+    /**
+     * @param $payload
+     */
+    public function __construct($payload = null)
     {
-        if (!empty($payload)) {
-            foreach ($payload as $_key => $_val) {
-                $method = 'set' . ucfirst($_key);
-                if (method_exists($this, $method)) {
+        if (!empty($payload['object'])) {
+            foreach ($payload['object'] as $_key => $_val) {
+                if (in_array($_key, ['amount', 'capturedAmount', 'authorizedAmount'])) {
+                    continue;
+                }
+                $method = 'set' . ucfirst((string)$_key);
+                if (method_exists($this, $method) && !is_null($_val)) {
                     $this->$method($_val);
                 }
             }
         }
     }
 
-    public function failed()
+    /**
+     * @return string
+     */
+    public function getType(): string
     {
-        return $this->stateId === 0;
+        return (string)$this->type;
     }
 
-
-    public function setPaymentProfileId($p)
+    /**
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
     {
-        $this->paymentProfileId = $p;
+        $this->type = $type;
         return $this;
     }
 
-    public function getPaymentProfileId()
+    /**
+     * @return bool
+     */
+    public function isFastCheckout(): bool
     {
-        return $this->paymentProfileId;
-    }
-
-    public function getLastUsedProfileId()
-    {
-        $lastUsed = 0;
-        foreach ($this->payload['payments'] as $payment) {
-            $lastUsed = $payment['paymentMethod']['id'];
-        }
-
-        return $lastUsed;
-    }
-
-
-    public function isFastCheckout()
-    {
-        return !empty($this->processedPayload['checkoutData'] ?? []);
+        return strtolower($this->getType()) === 'payment_based_checkout';
     }
 
     /**
      * @return array
      */
-    public function getCheckoutData()
+    public function getFastCheckoutData(): array
     {
-        return (array)$this->processedPayload['checkoutData'] ?? [];
+        return $this->getCheckoutData();
     }
 
     /**
      * @return int
      */
-    public function getStateId(): int
+    public function getStatusCode(): int
     {
-        return $this->stateId;
+        return (int)($this->status['code'] ?? 0);
     }
 
     /**
-     * @param  $stateId
-     * @return void
+     * @return string
      */
-    public function setStateId($stateId): void
+    public function getStatusName(): string
     {
-        $this->stateId = $stateId;
+        return (string)($this->status['action'] ?? '');
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return (string)$this->id;
+    }
+
+    /**
+     * @param string $id
+     * @return $this
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServiceId(): string
+    {
+        return (string)$this->serviceId;
+    }
+
+    /**
+     * @param string $serviceId
+     * @return $this
+     */
+    public function setServiceId(string $serviceId): self
+    {
+        $this->serviceId = $serviceId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return (string)$this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
     }
 
     /**
@@ -115,233 +268,509 @@ class PayOrder
 
     /**
      * @param string $reference
-     * @return void
+     * @return $this
      */
-    public function setReference(string $reference): void
+    public function setReference(string $reference): self
     {
         $this->reference = $reference;
-    }
-
-
-    public function getProcessedPayload(): array
-    {
-        return $this->processedPayload;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPaid()
-    {
-        return $this->stateId === PayStatus::PAID;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPending()
-    {
-        return $this->stateId === PayStatus::PENDING;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPartialPayment()
-    {
-        return $this->stateId === PayStatus::PARTIAL_PAYMENT;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAuthorized(): bool
-    {
-        return $this->stateId === PayStatus::AUTHORIZE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCancelled()
-    {
-        return $this->stateId === PayStatus::CANCEL;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRefundedFully()
-    {
-        return $this->stateId === PayStatus::REFUND;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRefundedPartial()
-    {
-        return $this->stateId === PayStatus::PARTIAL_REFUND;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isBeingVerified()
-    {
-        return $this->stateId === PayStatus::VERIFY;
-    }
-
-
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-
-    public function setMessage(string $message): self
-    {
-        $this->message = $message;
         return $this;
     }
 
-    public function getPayload(): array
+    /**
+     * @return string
+     */
+    public function getManualTransferCode(): string
     {
-        return (array)$this->payload;
-    }
-
-    public function setPayload(array $payload): void
-    {
-        $this->payload = $payload;
+        return (string)$this->manualTransferCode;
     }
 
     /**
-     * @return mixed
+     * @param string $manualTransferCode
+     * @return $this
      */
-    public function getId()
+    public function setManualTransferCode(string $manualTransferCode): self
     {
-        return $this->id;
+        $this->manualTransferCode = $manualTransferCode;
+        return $this;
     }
 
     /**
-     * @param mixed $id
+     * @return string
      */
-    public function setId($id): void
+    public function getOrderId(): string
     {
-        $this->id = $id;
+        return (string)$this->orderId;
     }
 
     /**
-     * @return mixed
+     * @param string $orderId
+     * @return $this
      */
-    public function getUuid()
+    public function setOrderId(string $orderId): self
     {
-        return $this->uuid;
+        $this->orderId = $orderId;
+        return $this;
     }
 
     /**
-     * @param mixed $uuid
+     * @return string
      */
-    public function setUuid($uuid): void
+    public function getUuid(): string
+    {
+        return (string)$this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     * @return $this
+     */
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getAmount()
+    public function getCustomerKey(): string
     {
-        return $this->amount;
+        return (string)$this->customerKey;
     }
 
     /**
-     * @param mixed $amount
+     * @param string $customerKey
+     * @return $this
      */
-    public function setAmount($amount): void
+    public function setCustomerKey(string $customerKey): self
     {
-        $this->amount = $amount;
+        $this->customerKey = $customerKey;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         return $this->status;
     }
 
     /**
-     * @param mixed $status
+     * @param $code
+     * @param $name
+     * @return $this
      */
-    public function setStatus($status): void
+    public function setStatusCodeName($code, $name): self
+    {
+        $this->status = ['code' => $code, 'action' => $name];
+        return $this;
+    }
+
+    /**
+     * @param array $status
+     * @return $this
+     */
+    public function setStatus(array $status): self
     {
         $this->status = $status;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getOrderId()
+    public function getReceipt(): string
     {
-        return $this->orderId;
+        return (string)$this->receipt;
     }
 
     /**
-     * @param mixed $orderId
+     * @param string $receipt
+     * @return $this
      */
-    public function setOrderId($orderId): void
+    public function setReceipt(string $receipt): self
     {
-        $this->orderId = $orderId;
+        $this->receipt = (string)$receipt;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getPayments()
+    public function isTestmode(): bool
     {
-        return $this->payments;
+        $testmodeEnabled = $this->integration['test'] ?? false;
+        return $testmodeEnabled === true;
     }
 
     /**
-     * @param mixed $payments
+     * @return array
      */
-    public function setPayments($payments): void
+    public function getIntegration(): array
     {
-        $this->payments = $payments;
+        return $this->integration;
     }
 
     /**
-     * @return mixed
+     * @param array $integration
+     * @return $this
      */
-    public function getDescription()
+    public function setIntegration(array $integration): self
     {
-        return $this->description;
+        $this->integration = $integration;
+        return $this;
     }
 
     /**
-     * @param mixed $description
+     * @return float|int
      */
-    public function setDescription($description): void
+    public function getAmount()
     {
-        $this->description = $description;
+        return $this->amount->getValue() / 100;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getCapturedAmount()
+    public function getCurrency(): string
+    {
+        return (string)$this->amount->getCurrency();
+    }
+
+
+    /**
+     * @return mixed|null
+     */
+    public function getPaymentMethod()
+    {
+        return $this->payments[0]['paymentMethod']['id'] ?? null;
+    }
+
+
+    /**
+     * @param Amount $amount
+     * @return $this
+     */
+    public function setAmount(Amount $amount): self
+    {
+        $this->amount = $amount;
+        return $this;
+    }
+
+    /**
+     * @return Amount
+     */
+    public function getAuthorizedAmount(): Amount
+    {
+        return $this->authorizedAmount;
+    }
+
+    /**
+     * @param Amount $authorizedAmount
+     * @return $this
+     */
+    public function setAuthorizedAmount(Amount $authorizedAmount): self
+    {
+        $this->authorizedAmount = $authorizedAmount;
+        return $this;
+    }
+
+    /**
+     * @return Amount
+     */
+    public function getCapturedAmount(): Amount
     {
         return $this->capturedAmount;
     }
 
     /**
-     * @param mixed $capturedAmount
+     * @param Amount $capturedAmount
+     * @return $this
      */
-    public function setCapturedAmount($capturedAmount): void
+    public function setCapturedAmount(Amount $capturedAmount): self
     {
         $this->capturedAmount = $capturedAmount;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCheckoutData(): array
+    {
+        return (array)$this->checkoutData;
+    }
+
+    /**
+     * @param array $checkoutData
+     * @return $this
+     */
+    public function setCheckoutData(array $checkoutData): self
+    {
+        $this->checkoutData = $checkoutData;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPayments(): array
+    {
+        return $this->payments;
+    }
+
+    /**
+     * @param array $payments
+     * @return $this
+     */
+    public function setPayments(array $payments): self
+    {
+        $this->payments = $payments;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreatedAt(): string
+    {
+        return (string)$this->createdAt;
+    }
+
+    /**
+     * @param string $createdAt
+     * @return $this
+     */
+    public function setCreatedAt(string $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreatedBy(): string
+    {
+        return (string)$this->createdBy;
+    }
+
+    /**
+     * @param string $createdBy
+     * @return $this
+     */
+    public function setCreatedBy(string $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModifiedAt(): string
+    {
+        return (string)$this->modifiedAt;
+    }
+
+    /**
+     * @param string $modifiedAt
+     * @return $this
+     */
+    public function setModifiedAt(string $modifiedAt): self
+    {
+        $this->modifiedAt = $modifiedAt;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModifiedBy(): string
+    {
+        return (string)$this->modifiedBy;
+    }
+
+    /**
+     * @param string $modifiedBy
+     * @return $this
+     */
+    public function setModifiedBy(string $modifiedBy): self
+    {
+        $this->modifiedBy = $modifiedBy;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpiresAt(): string
+    {
+        return (string)$this->expiresAt;
+    }
+
+    /**
+     * @param string $expiresAt
+     * @return $this
+     */
+    public function setExpiresAt(string $expiresAt): self
+    {
+        $this->expiresAt = $expiresAt;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompletedAt(): string
+    {
+        return (string)$this->completedAt;
+    }
+
+    /**
+     * @param string $completedAt
+     * @return $this
+     */
+    public function setCompletedAt(string $completedAt): self
+    {
+        $this->completedAt = $completedAt;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLinks(): array
+    {
+        return $this->links;
+    }
+
+    /**
+     * @param array $links
+     * @return $this
+     */
+    public function setLinks(array $links): self
+    {
+        $this->links = $links;
+        return $this;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getPaymentUrl()
+    {
+        return $this->links['redirect'] ?? '';
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getStatusUrl()
+    {
+        return $this->links['status'] ?? '';
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isPaid()
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PAID;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isPending()
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PENDING;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isCancelled()
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::CANCEL;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isPartialPayment()
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PARTIAL_PAYMENT;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isAuthorized(): bool
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::AUTHORIZE;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isRefundedFully()
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::REFUND;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isRefundedPartial()
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PARTIAL_REFUND;
+
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isBeingVerified()
+    {
+        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::VERIFY;
+    }
+
+    /**
+     * Check whether the status of the transaction is chargeback
+     *
+     * @return bool
+     */
+    public function isChargeBack(): bool
+    {
+        return ($this->status['action'] ?? '') === 'CHARGEBACK';
+    }
+
+    /**
+     * @param bool $allowPartialRefunds
+     * @return bool
+     * @throws \Exception
+     */
+    public function isRefunded(bool $allowPartialRefunds = true): bool
+    {
+        if ($this->isRefundedFully()) {
+            return true;
+        }
+
+        if ($allowPartialRefunds && $this->isRefundedPartial()) {
+            return true;
+        }
+
+        return false;
     }
 
 }

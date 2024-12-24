@@ -80,24 +80,19 @@ class ConfigProvider implements ProviderInterface
                 'PayTransaction'                => 'TerminalTransaction',
                 'GetConfig'                     => 'ServiceGetConfigResponse',
                 'GetIpAddresses'                => 'IpAddresses',
-
-
-
                 'TerminalPaymentStatus'         => 'TerminalPaymentStatus',
                 'TerminalCancelPayment'         => 'TerminalPaymentStatus',
-
-                'CancelTransaction'             => 'Transaction',
-                'OrderCreate'                   => 'OrderCreateResponse',
                 'DeclineTransaction'            => 'Transaction',
-                'GetTransaction'                => 'Transaction',
-                'orderStatus'                   => 'OrderStatusResponse',
-                'orderApprove'                  => 'OrderApproveResponse',
-                'orderDecline'                  => 'OrderDeclineResponse',
-                'TokenizeTransaction'           => 'Transaction',
                 'TransactionRefund'             => 'TransactionRefundResponse',
-                'OrderCapture'                  => 'OrderCaptureResponse',
-                'OrderVoid'                     => 'OrderVoidResponse',
-                'OrderAbort'                    => 'OrderAbortResponse',
+                'TransactionStatus'             => 'PayOrder',
+                'OrderCreate'                   => 'PayOrder',
+                'OrderCapture'                  => 'PayOrder',
+                'OrderVoid'                     => 'PayOrder',
+                'OrderAbort'                    => 'PayOrder',
+                'OrderStatus'                   => 'PayOrder',
+                'OrderUpdate'                   => 'PayOrder',
+                'OrderApprove'                  => 'PayOrder',
+                'OrderDecline'                  => 'PayOrder',
                 'TerminalsGet'                   => 'Terminal',
                 'TerminalsBrowse'                => 'Terminals'
             ],

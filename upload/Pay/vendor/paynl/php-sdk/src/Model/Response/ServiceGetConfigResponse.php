@@ -328,6 +328,14 @@ class ServiceGetConfigResponse implements ModelInterface
     }
 
     /**
+     * @return array
+     */
+    public function getCores(): array
+    {
+        return $this->getTguList();
+    }
+
+    /**
      * Returns banks if iDEAL is enabled
      * @return array
      */

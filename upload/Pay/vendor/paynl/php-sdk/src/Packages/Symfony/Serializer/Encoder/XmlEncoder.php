@@ -154,8 +154,6 @@ class XmlEncoder implements EncoderInterface, DecoderInterface, NormalizationAwa
             }
         }
 
-        // todo: throw an exception if the root node name is not correctly configured (bc)
-
         if ($rootNode->hasChildNodes()) {
             $xpath = new \DOMXPath($dom);
             $data = [];

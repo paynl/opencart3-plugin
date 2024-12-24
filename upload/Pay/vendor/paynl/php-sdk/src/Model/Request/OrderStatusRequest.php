@@ -6,8 +6,9 @@ namespace PayNL\Sdk\Model\Request;
 
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Request\RequestData;
-use PayNL\Sdk\Model\Response\OrderStatusResponse;
+use PayNL\Sdk\Model\Pay\PayOrder;
 use PayNL\Sdk\Request\RequestInterface;
+use PayNL\Sdk\Config\Config;
 
 /**
  * Class OrderStatusRequest
@@ -25,9 +26,12 @@ class OrderStatusRequest extends RequestData
     public function __construct(string $orderId)
     {
         $this->orderId = $orderId;
-        parent::__construct('orderStatus', '/orders/%transactionId%/status', RequestInterface::METHOD_GET);
+        parent::__construct('OrderStatus', '/orders/%transactionId%/status', RequestInterface::METHOD_GET);
     }
 
+    /**
+     * @return string[]
+     */
     public function getPathParameters(): array
     {
         return [
@@ -35,17 +39,23 @@ class OrderStatusRequest extends RequestData
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getBodyParameters(): array
     {
         return [];
     }
 
     /**
-     * @return OrderStatusResponse
+     * @return PayOrder
      * @throws PayException
      */
-    public function start(): OrderStatusResponse
+    public function start(): PayOrder
     {
+        # Always use TGU-1 for orderStatus
+        $this->config->setCore(Config::TGU1);
+        
         return parent::start();
     }
 }

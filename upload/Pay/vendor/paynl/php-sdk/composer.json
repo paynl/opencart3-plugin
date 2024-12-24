@@ -8,9 +8,9 @@
         "ext-curl": "*",
         "ext-json": "*",
         "psr/container": "^1.0",
-        "psr/http-message": "~1.0"
+        "psr/http-message": "~1.0"        
     },
-    "license": "proprietary",
+    "license": "MIT",
     "support": {
         "email": "webshop@pay.nl"
     },

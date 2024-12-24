@@ -31,6 +31,10 @@ class PayStatus
 
     /**
      * @param int $stateId
+     *
+     * Source:
+     * https://developer.pay.nl/docs/transaction-statuses#processing-statusses
+     *
      * @return int|mixed
      * @throws Exception
      */
@@ -38,6 +42,7 @@ class PayStatus
     {
         $mapper[-70] = self::CHARGEBACK;
         $mapper[-71] = self::CHARGEBACK;
+        $mapper[-72] = self::REFUND;
         $mapper[-81] = self::REFUND;
         $mapper[-82] = self::PARTIAL_REFUND;
         $mapper[20] = self::PENDING;
@@ -50,20 +55,18 @@ class PayStatus
         $mapper[85] = self::VERIFY;
         $mapper[95] = self::AUTHORIZE;
         $mapper[97] = self::PARTLY_CAPTURED;
+        $mapper[98] = self::PENDING;
         $mapper[100] = self::PAID;
 
-        if (!isset($mapper[$stateId])) {
-            if ($stateId < 0) {
-                return self::CANCEL;
-            }
-        }
         if (isset($mapper[$stateId])) {
             return $mapper[$stateId];
         } else {
-            throw new Exception('Unexpected status');
+            if ($stateId < 0) {
+                return self::CANCEL;
+            } else {
+                throw new Exception('Unexpected status: ' . $stateId);
+            }
         }
-        #return $mapper[$stateId] ?? throw new Exception('Unexpected status');
     }
-
 
 }

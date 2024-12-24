@@ -192,7 +192,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
 
-        $this->load->model('checkout/order');
+        $this->load->model('checkout/order');      
 
         try {
             if ($status === Pay_Model::STATUS_COMPLETE) {
@@ -237,12 +237,12 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
                 }
                 $this->$modelName->updateTransactionStatus($transactionId, $status);
 
-                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
+                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData, 'paynl_paypal');
                 if ($result === false) {
                     die("FALSE| Order not found");
                 }
 
-                $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
+                $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout. Paypal');
 
                 die("TRUE| processed successfully");
             }
@@ -250,7 +250,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
             if ($status === Pay_Model::STATUS_CANCELED) {
                 $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
 
                 die("TRUE|Order cancelled");
             }

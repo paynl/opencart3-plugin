@@ -6,13 +6,11 @@ namespace PayNL\Sdk\Model\Request;
 
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Request\RequestData;
-use PayNL\Sdk\Model\Response\OrderCaptureResponse;
+use PayNL\Sdk\Model\Pay\PayOrder;
 use PayNL\Sdk\Request\RequestInterface;
 
 /**
  * Class OrderCaptureRequest
- * Transactions that have the status authorize need an extra action to convert the payment state to a PAID (100) transaction.
- * This can be achieved by capturing the transaction. You can use the EX code or the order ID to capture the transaction.
  *
  * @package PayNL\Sdk\Model\Request
  */
@@ -90,17 +88,16 @@ class OrderCaptureRequest extends RequestData
     }
 
     /**
-     * @return OrderCaptureResponse
+     * @return PayOrder
      * @throws PayException
      */
-    public function start(): OrderCaptureResponse
+    public function start(): PayOrder
     {
         if ($this->mode == 'amount') {
             $this->uri = '/orders/%transactionId%/capture/amount';
         } elseif ($this->mode == 'product') {
             $this->uri = '/orders/%transactionId%/capture/products';
         }
-
         return parent::start();
     }
 }

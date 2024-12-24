@@ -18,6 +18,10 @@ if (PHP_VERSION_ID >= 80000) {
      */
     class Config implements Countable, Iterator, ArrayAccess
     {
+        const TGU1 = 'https://connect.pay.nl';
+        const TGU2 = 'https://connect.payments.nl';
+        const TGU3 = 'https://connect.achterelkebetaling.nl';
+
         protected array $data = [];
         private static Config $configObject;
 
@@ -297,6 +301,17 @@ if (PHP_VERSION_ID >= 80000) {
         }
 
         /**
+         * @return string
+         */
+        public function getFailoverUrl(): string
+        {
+            if (!empty($this->data['failoverUrl'])) {
+                return trim($this->data['failoverUrl']);
+            }
+            return '';
+        }
+
+        /**
          * Set destination(core) url
          *
          * @param string $url
@@ -390,6 +405,10 @@ if (PHP_VERSION_ID >= 80000) {
      */
     class Config implements Countable, Iterator, ArrayAccess
     {
+        const TGU1 = 'https://connect.pay.nl';
+        const TGU2 = 'https://connect.payments.nl';
+        const TGU3 = 'https://connect.achterelkebetaling.nl';
+
         protected array $data = [];
         private static Config $configObject;
 
@@ -666,6 +685,17 @@ if (PHP_VERSION_ID >= 80000) {
         public function getDebug(): bool
         {
             return $this->data['debug'] == 1;
+        }
+
+        /**
+         * @return string
+         */
+        public function getFailoverUrl(): string
+        {
+            if (!empty($this->data['failoverUrl'])) {
+                return trim($this->data['failoverUrl']);
+            }
+            return '';
         }
 
         /**

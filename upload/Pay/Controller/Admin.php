@@ -354,7 +354,7 @@ class Pay_Controller_Admin extends Controller
                 $reqGateway = trim($this->getPost('payment_paynl_general_gateway'));
                 $gateway = (!empty($reqGateway) && substr($reqGateway, 0, 4) == 'http') ? $reqGateway : null;
 
-                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $gateway);
+                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway);
             } catch (Pay_Api_Exception $e) {
                 $this->error['apitoken'] = $this->language->get('error_api_error') . $e->getMessage();
             } catch (Pay_Exception $e) {

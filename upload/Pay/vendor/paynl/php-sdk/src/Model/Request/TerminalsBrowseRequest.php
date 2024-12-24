@@ -11,7 +11,6 @@ use PayNL\Sdk\Request\RequestInterface;
 
 /**
  * Class TerminalsBrowseRequest
- * Request the status of a transaction using this method.
  *
  * @package PayNL\Sdk\Model\Request
  */
@@ -22,11 +21,17 @@ class TerminalsBrowseRequest extends RequestData
         parent::__construct('TerminalsBrowse', '/terminals', RequestInterface::METHOD_GET);
     }
 
+    /**
+     * @return array
+     */
     public function getPathParameters(): array
     {
         return [];
     }
 
+    /**
+     * @return array
+     */
     public function getBodyParameters(): array
     {
         return [];

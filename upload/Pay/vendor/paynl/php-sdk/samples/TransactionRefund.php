@@ -9,7 +9,7 @@ use PayNL\Sdk\Model\Request\TransactionRefundRequest;
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Config\Config;
 
-$transactionId = $_REQUEST['pay_order_id'] ?? exit('Pass pay_order_id');
+$transactionId = $_REQUEST['pay_order_id'] ?? exit('expected pay_order_id');
 
 $transactionRefundRequest = new TransactionRefundRequest($transactionId);
 
@@ -17,7 +17,7 @@ $transactionRefundRequest = new TransactionRefundRequest($transactionId);
 # $transactionRefundRequest->addProduct('p2',2);
 # $transactionRefundRequest->setAmount(5.3);
 # $transactionRefundRequest->setDescription('Item returned');
-# $transactionRefundRequest->setProcessDate('2023-06-06 10:12:12');
+# $transactionRefundRequest->setProcessDate('2024-10-06 10:12:12');
 # $transactionRefundRequest->setVatPercentage(21);
 # $transactionRefundRequest->setExchangeUrl('https://pay.nl/exchange.php');
 

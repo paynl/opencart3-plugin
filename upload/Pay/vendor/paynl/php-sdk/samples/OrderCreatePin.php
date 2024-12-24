@@ -46,8 +46,8 @@ $request->setCustomer($customer);
 
 $order = new \PayNL\Sdk\Model\Order();
 $order->setCountryCode('NL');
-$order->setDeliveryDate('2023-12-28 14:11:01');
-$order->setInvoiceDate('2023-12-29 14:05:00');
+$order->setDeliveryDate('2024-12-28 14:11:01');
+$order->setInvoiceDate('2024-12-29 14:05:00');
 
 $devAddress = new \PayNL\Sdk\Model\Address();
 $devAddress->setCode('dev');
@@ -92,7 +92,7 @@ $config->setCore($_REQUEST['core'] ?? '');
 $request->setConfig($config);
 
 try {
-    $transaction = $request->start();
+    $payOrder = $request->start();
 } catch (PayException $e) {
     echo '<pre>';
     echo 'Technical message: ' . $e->getMessage() . PHP_EOL;
@@ -104,5 +104,5 @@ try {
 
 echo '<pre>';
 echo 'Success, values:' . PHP_EOL;
-echo 'getId: ' . $transaction->getId() . PHP_EOL;
-echo 'getPaymentUrl: ' . '<a target="_blank" href="' . $transaction->getPaymentUrl() . '">' . $transaction->getPaymentUrl() . '</a>' . PHP_EOL;
+echo 'getId: ' . $payOrder->getId() . PHP_EOL;
+echo 'getPaymentUrl: ' . '<a target="_blank" href="' . $payOrder->getPaymentUrl() . '">' . $payOrder->getPaymentUrl() . '</a>' . PHP_EOL;

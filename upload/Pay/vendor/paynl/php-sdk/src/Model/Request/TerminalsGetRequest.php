@@ -35,6 +35,9 @@ class TerminalsGetRequest extends RequestData
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getBodyParameters(): array
     {
         return [];

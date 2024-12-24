@@ -10,21 +10,22 @@ use PayNL\Sdk\Model\Pay\PayOrder;
 use PayNL\Sdk\Request\RequestInterface;
 
 /**
- * Class OrderDeclineRequest
+ * Class TransactionStatusRequest
+ * Request the status of a transaction using this method.
  *
  * @package PayNL\Sdk\Model\Request
  */
-class OrderDeclineRequest extends RequestData
+class TransactionStatusRequest extends RequestData
 {
-    private string $transactionId;
+    private string $orderId;
 
     /**
-     * @param $transactionId
+     * @param $orderid
      */
-    public function __construct($transactionId)
+    public function __construct($orderId)
     {
-        $this->transactionId = $transactionId;
-        parent::__construct('OrderDecline', '/orders/%transactionId%/decline', RequestInterface::METHOD_PATCH);
+        $this->orderId = $orderId;
+        parent::__construct('TransactionStatus', '/transactions/%transactionId%/status', RequestInterface::METHOD_GET);
     }
 
     /**
@@ -32,7 +33,9 @@ class OrderDeclineRequest extends RequestData
      */
     public function getPathParameters(): array
     {
-        return ['transactionId' => $this->transactionId];
+        return [
+            'transactionId' => $this->orderId
+        ];
     }
 
     /**
@@ -49,6 +52,8 @@ class OrderDeclineRequest extends RequestData
      */
     public function start(): PayOrder
     {
+        # Always use rest.pay.nl for this status request
+        $this->config->setCore('https://rest.pay.nl');
         return parent::start();
     }
 }

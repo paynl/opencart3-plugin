@@ -8,11 +8,11 @@ use PayNL\Sdk\Model\ModelInterface;
 use PayNL\Sdk\Model\Amount;
 
 /**
- * Class OrderStatusResponse
+ * Class TransactionStatusResponse
  *
  * @package PayNL\Sdk\Model
  */
-class OrderStatusResponse implements ModelInterface
+class TransactionStatusResponse implements ModelInterface
 {
     /**
      * @var string
@@ -52,7 +52,17 @@ class OrderStatusResponse implements ModelInterface
     /**
      * @var Amount
      */
+    protected $amountConverted;
+
+    /**
+     * @var Amount
+     */
     protected $amountPaid;
+
+    /**
+     * @var Amount
+     */
+    protected $amountRefunded;
 
     /**
      * @var array
@@ -62,7 +72,7 @@ class OrderStatusResponse implements ModelInterface
     /**
      * @var array
      */
-    protected array $payments;
+    protected $paymentData;
 
     /**
      * @var array
@@ -205,7 +215,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function getIpAddress(): string
     {
-        return (string)$this->ipAddress ?? '';
+        return (string) $this->ipAddress ?? '';
     }
 
     /**
@@ -245,12 +255,32 @@ class OrderStatusResponse implements ModelInterface
     }
 
     /**
+     * @param Amount $amountConverted
+     * @return $this
+     */
+    public function setAmountConverted(Amount $amountConverted): self
+    {
+        $this->amountConverted = $amountConverted;
+        return $this;
+    }
+
+    /**
      * @param Amount $amountPaid
      * @return $this
      */
     public function setAmountPaid(Amount $amountPaid): self
     {
         $this->amountPaid = $amountPaid;
+        return $this;
+    }
+
+    /**
+     * @param Amount $amountRefunded
+     * @return $this
+     */
+    public function setAmountRefunded(Amount $amountRefunded): self
+    {
+        $this->amountRefunded = $amountRefunded;
         return $this;
     }
 
@@ -399,11 +429,11 @@ class OrderStatusResponse implements ModelInterface
     }
 
     /**
-     * @return mixed|null
+     * @return array
      */
-    public function getPaymentMethod()
+    public function getPaymentMethod(): array
     {
-        return $this->payments[0]['paymentMethod']['id'] ?? null;
+        return $this->paymentMethod;
     }
 
     /**
@@ -435,7 +465,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function getPaymentData(): array
     {
-        return $this->payments;
+        return $this->paymentData;
     }
 
     /**
@@ -443,7 +473,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function setPaymentData(array $paymentData): void
     {
-        $this->payments = $paymentData;
+        $this->paymentData = $paymentData;
     }
 
     /**
@@ -471,7 +501,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function isBeingVerified(): bool
     {
-        return ($this->status['action'] ?? '') === 'VERIFY';
+        return ($this->status['action'] ?? '')  === 'VERIFY';
     }
 
     /**
@@ -481,7 +511,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function isPending(): bool
     {
-        return in_array(($this->status['action'] ?? ''), ['PENDING', 'VERIFY']);
+        return in_array( ($this->status['action'] ?? ''), ['PENDING', 'VERIFY']);
     }
 
     /**
@@ -491,7 +521,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function isChargeBack(): bool
     {
-        return ($this->status['action'] ?? '') === 'CHARGEBACK';
+        return ($this->status['action'] ?? '')  === 'CHARGEBACK';
     }
 
     /**
@@ -509,11 +539,11 @@ class OrderStatusResponse implements ModelInterface
      */
     public function isRefunded(bool $allowPartialRefunds = true): bool
     {
-        if (($this->status['action'] ?? '') === 'REFUND') {
+        if (($this->status['action'] ?? '')  === 'REFUND') {
             return true;
         }
 
-        if ($allowPartialRefunds && ($this->status['action'] ?? '') === 'PARTIAL_REFUND') {
+        if ($allowPartialRefunds && ($this->status['action'] ?? '')  === 'PARTIAL_REFUND') {
             return true;
         }
 
@@ -527,7 +557,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function isPartiallyRefunded(): bool
     {
-        return ($this->status['action'] ?? '') === 'PARTIAL_REFUND';
+        return ($this->status['action'] ?? '')  === 'PARTIAL_REFUND';
     }
 
     /**
@@ -537,7 +567,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function isPartialPayment(): bool
     {
-        return ($this->status['action'] ?? '') === 'PARTIAL_PAYMENT';
+        return ($this->status['action'] ?? '')  === 'PARTIAL_PAYMENT';
     }
 
     /**
@@ -553,7 +583,7 @@ class OrderStatusResponse implements ModelInterface
      */
     public function getStatusName(): string
     {
-        return (string)($this->status['action'] ?? '');
+        return (string)($this->status['action'] ?? '') ;
     }
 
     /**
@@ -561,7 +591,23 @@ class OrderStatusResponse implements ModelInterface
      */
     public function getPaymentProfileId(): int
     {
-        return $this->getPaymentMethod();
+        return $this->getPaymentMethod()['id'];
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getAmountConverted()
+    {
+        return $this->amountConverted->getValue() / 100;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmountConvertedCurrency(): string
+    {
+        return (string)$this->amountConverted->getCurrency();
     }
 
     /**
@@ -581,15 +627,18 @@ class OrderStatusResponse implements ModelInterface
     }
 
     /**
-     * @return array
+     * @return float|int
      */
-    public function getPayments(): array
+    public function getAmountRefunded()
     {
-        return $this->payments;
+        return $this->amountRefunded->getValue() / 100;
     }
 
-    public function setPayments(array $payments): void
+    /**
+     * @return string
+     */
+    public function getAmountRefundedCurrency(): string
     {
-        $this->payments = $payments;
+        return (string)$this->amountRefunded->getCurrency();
     }
 }

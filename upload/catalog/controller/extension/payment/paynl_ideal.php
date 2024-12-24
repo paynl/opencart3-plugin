@@ -60,6 +60,24 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
     }
 
     /**
+     * @param $orderId
+     * @return string
+     */
+    private function getCustomerGroupId($orderId)
+    {
+        $sql = "SELECT `customer_group_id` FROM `" . DB_PREFIX . "order` WHERE order_Id = '" . $this->db->escape($orderId) . "';";
+        $result = $this->db->query($sql);
+
+        $rows = $result->rows;
+
+        $result = '';
+        foreach ($rows as $row) {
+            $result = $row['customer_group_id'];
+        }
+        return $result;
+    }
+
+    /**
      * @return void
      */
     public function exchangeFastCheckout()
@@ -97,6 +115,10 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
 
         $this->load->model('checkout/order');
+        //$order_info = $this->model_checkout_order->getOrder($order_id);     
+        //$order_info['customer_group_id'] = $this->getCustomerGroupId($order_id);
+        //$order_info['payment_method'] = 'paynl_ideal';
+        //$this->model_checkout_order->editOrder($order_id, $order_info);
 
         try {
             if ($status === Pay_Model::STATUS_COMPLETE) {
@@ -130,13 +152,13 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                     'firstname' => $customer['firstName'],
                 ];
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
-                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
+                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
+                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData, 'paynl_ideal');
                 if ($result === false) {
                     die("FALSE| Order not found");
                 }
 
-                $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout.');
+                $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout. iDeal');
 
                 die("TRUE| processed successfully");
             }
@@ -144,7 +166,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             if ($status === Pay_Model::STATUS_CANCELED) {
                 $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status);
+                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
 
                 die("TRUE| Order cancelled");
             }

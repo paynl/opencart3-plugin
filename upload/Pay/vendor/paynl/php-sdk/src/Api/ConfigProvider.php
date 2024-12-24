@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayNL\Sdk\Api;
 
+use PayNL\Sdk\Config\Config;
 use PayNL\Sdk\Config\ProviderInterface as ConfigProviderInterface;
 
 /**
@@ -13,10 +14,6 @@ use PayNL\Sdk\Config\ProviderInterface as ConfigProviderInterface;
  */
 class ConfigProvider implements ConfigProviderInterface
 {
-    const TGU1 = 'https://connect.pay.nl';
-    const TGU2 = 'https://connect.payments.nl';
-    const TGU3 = 'https://connect.achterelkebetaling.nl';
-
     /**
      * @inheritDoc
      */
@@ -26,7 +23,7 @@ class ConfigProvider implements ConfigProviderInterface
             'service_manager' => $this->getDependencyConfig(),
             'api' => [
                 # Defaults
-                'url'     => self::TGU1,
+                'url'     => Config::TGU1,
                 'version' => 1,
             ],
         ];

@@ -89,7 +89,7 @@ class Pay_Model extends Model
      * @param string $gateway
      * @return void
      */
-    public function refreshPaymentOptions($serviceId, $apiToken, $gateway)
+    public function refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway)
     {
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
@@ -100,7 +100,7 @@ class Pay_Model extends Model
         $payConfig = new Pay_Controller_Config($this);
 
         try {
-            $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig())->start();
+            $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig(false, $tokencode, $apiToken))->start();
         } catch (PayException $e) {
             $config = null;
         }
@@ -501,7 +501,7 @@ class Pay_Model extends Model
         return $status;
     }
 
-    public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data) {
+    public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data, $payment_code) {
         $order_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");
 
         if ($order_query->num_rows) {
@@ -529,6 +529,8 @@ class Pay_Model extends Model
                 $fields[] = "email = '" . $this->db->escape($customer_data['email']) . "'";
                 $fields[] = "telephone = '" . $this->db->escape($customer_data['phone']) . "'";
             }
+
+            $fields[] = "payment_code = '" . $this->db->escape($payment_code) . "'";
 
             $query .= implode(", ", $fields);
             $query .= " WHERE order_id = '" . (int)$order_id . "'";

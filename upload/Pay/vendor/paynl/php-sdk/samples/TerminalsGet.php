@@ -9,7 +9,7 @@ use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Model\Request\TerminalsGetRequest;
 use PayNL\Sdk\Config\Config;
 
-$terminalCode = $_REQUEST['terminalcode'] ?? exit('Pass terminalcode');
+$terminalCode = $_REQUEST['terminalcode'] ?? exit('terminalcode expected');
 $TerminalGetRequest = new TerminalsGetRequest($terminalCode);
 
 $config = new Config();
@@ -31,9 +31,7 @@ try {
 
 echo '<pre>';
 echo 'Success, values:' . PHP_EOL . PHP_EOL;
-
 echo 'Code: ' . $terminal->getCode() . PHP_EOL;
 echo 'Name: ' . $terminal->getName() . PHP_EOL;
 echo 'TerminalType: ' . $terminal->getTerminalType() . PHP_EOL;
 echo 'getContractStartDate: ' . $terminal->getContractStartDate() . PHP_EOL;
-

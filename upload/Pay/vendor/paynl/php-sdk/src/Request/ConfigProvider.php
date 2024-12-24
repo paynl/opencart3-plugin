@@ -206,6 +206,13 @@ class ConfigProvider implements ConfigProviderInterface
               'transactionId' => '',
             ],
           ],
+        'OrderUpdate' => [
+            'uri' => '/',
+            'method' => RequestInterface::METHOD_PATCH,
+            'requiredParams' => [
+                'transactionId' => '',
+            ],
+        ],
           'OrderCapture' => [
             'uri' => '',
             'requiredParams' => [
@@ -229,39 +236,32 @@ class ConfigProvider implements ConfigProviderInterface
               'transactionId' => 'EX(-\d{4}){3,}',
             ],
           ],
-          'GetTransaction' => [
-            'uri' => '/transactions/%transactionId%',
-            'method' => RequestInterface::METHOD_GET,
-            'requiredParams' => [
-              'transactionId' => '',
+          'TransactionStatus' => [
+                'uri' => '/transactions/%transactionId%/status',
+                'method' => RequestInterface::METHOD_GET,
+                'requiredParams' => [
+                'transactionId' => '',
             ],
           ],
-          'orderStatus' => [
+          'OrderStatus' => [
             'uri' => '/transactions/%transactionId%/status',
             'method' => RequestInterface::METHOD_GET,
             'requiredParams' => [
               'transactionId' => '',
             ],
           ],
-          'orderApprove' => [
+          'OrderApprove' => [
             'uri' => '/',
             'method' => RequestInterface::METHOD_PATCH,
             'requiredParams' => [
               'transactionId' => '',
             ],
           ],
-          'orderDecline' => [
+          'OrderDecline' => [
             'uri' => '/',
             'method' => RequestInterface::METHOD_PATCH,
             'requiredParams' => [
               'transactionId' => '',
-            ],
-          ],
-          'MakeTransactionRecurring' => [
-            'uri' => '/transactions/%transactionId%/recurring',
-            'method' => RequestInterface::METHOD_POST,
-            'requiredParams' => [
-              'transactionId' => 'EX(-\d{4}){3,}',
             ],
           ],
           'TransactionRefund' => [
@@ -273,20 +273,6 @@ class ConfigProvider implements ConfigProviderInterface
           ],
           'RefundTransaction' => [
             'uri' => '/transactions/%transactionId%/refund',
-            'method' => RequestInterface::METHOD_PATCH,
-            'requiredParams' => [
-              'transactionId' => '',
-            ],
-          ],
-          'TokenizeTransaction' => [
-            'uri' => '/transactions/%transactionId%/tokenize',
-            'method' => RequestInterface::METHOD_PATCH,
-            'requiredParams' => [
-              'transactionId' => 'EX(-\d{4}){3,}',
-            ],
-          ],
-          'CancelTransaction' => [
-            'uri' => '/transactions/%transactionId%/cancel',
             'method' => RequestInterface::METHOD_PATCH,
             'requiredParams' => [
               'transactionId' => '',

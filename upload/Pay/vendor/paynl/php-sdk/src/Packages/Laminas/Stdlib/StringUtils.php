@@ -60,7 +60,6 @@ abstract class StringUtils
         'ISO-8859-16',
         'CP-1251',
         'CP-1252',
-        // TODO
     ];
 
     /**

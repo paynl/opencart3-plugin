@@ -3,38 +3,58 @@
 # This is a minimal example on how to handle a Pay. exchange call and process an order
 declare(strict_types=1);
 
-# You might need to adjust this mapping for your situation
+# You might need to adjust this mapping for your implementation
 require '../../../../vendor/autoload.php';
 
 use PayNL\Sdk\Util\Exchange;
-use PayNL\Sdk\Model\Pay\PayStatus;
 
 $exchange = new Exchange();
 
-# Process the exchange request
-$payOrder = $exchange->process();
+try {
+    # Process the exchange request
+    $payOrder = $exchange->process();
 
-if($payOrder->failed()) {
-    $exchange->setResponse(false, $payOrder->getMessage());
-}
-
-$orderId = $payOrder->getReference();
-
-switch ($payOrder->getStateId()) {
-    case PayStatus::PENDING :
-        $responseResult = yourCodeToProcessPendingOrder($orderId);
+    if ($payOrder->isPending()) {
+        $responseResult = yourCodeToProcessPendingOrder($payOrder->getReference());
         $responseMessage = 'Processed pending';
-        break;
-    case PayStatus::PAID :
-        $responseResult = yourCodeToProcessPaidOrder($orderId);
-        $responseMessage = 'Processed paid. Order: ' . $orderId;
-        break;
-    default :
-        $responseResult = false;
-        $responseMessage = 'Unexpected payment state';
+
+    } elseif ($payOrder->isPaid() || $payOrder->isAuthorized()) {
+        if ($payOrder->isFastCheckout()) {
+            $data = $payOrder->getFastCheckoutData();
+            $responseResult = yourCodeToProcessFastcheckoutOrder($data);
+            $responseMessage = 'Processed fastcheckout paid. Order: ' . $payOrder->getReference();
+        } else {
+            $responseResult = yourCodeToProcessPaidOrder($payOrder->getReference());
+            $responseMessage = 'Processed paid. Order: ' . $payOrder->getReference();
+        }
+    } elseif ($payOrder->isRefunded()) {
+        $responseResult = true; # Your code to process refund here
+        $responseMessage = 'Processed refund.';
+    } elseif ($payOrder->isCancelled()) {
+        $responseResult = true; # Your code to cancel order here
+        $responseMessage = 'Processed cancelled.';
+    } else {
+        $responseResult = true;
+        $responseMessage = 'No action defined for payment state ' . $payOrder->getStatusCode();
+    }
+} catch (Throwable $exception) {
+    $responseResult = false;
+    $responseMessage = $exception->getMessage();
 }
 
-function yourCodeToProcessPendingOrder($orderId) { return true; }
-function yourCodeToProcessPaidOrder($orderId) { return true; }
+function yourCodeToProcessPendingOrder($orderId)
+{
+    return true;
+}
+
+function yourCodeToProcessPaidOrder($orderId)
+{
+    return true;
+}
+
+function yourCodeToProcessFastcheckoutOrder($orderId)
+{
+    return true;
+}
 
 $exchange->setResponse($responseResult, $responseMessage);

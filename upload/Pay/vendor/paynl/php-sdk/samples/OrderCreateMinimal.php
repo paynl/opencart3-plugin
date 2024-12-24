@@ -9,19 +9,21 @@ use PayNL\Sdk\Model\Request\OrderCreateRequest;
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Config\Config;
 
-$request = new OrderCreateRequest();
-$request->setServiceId($_REQUEST['slcode'] ?? '');
-$request->setAmount((float)($_REQUEST['amount'] ?? 5.3));
-$request->setReturnurl($_REQUEST['returnUrl'] ?? 'https://yourdomain/finish.php');
+$username = ''; // Your AT-code (AT-####-####)
+$password = ''; // Your API Token
+$serviceId = ''; // Your Sales location code (SL-####-####)
 
 $config = new Config();
-$config->setUsername($_REQUEST['username'] ?? '');
-$config->setPassword($_REQUEST['password'] ?? '');
-$config->setCore($_REQUEST['core'] ?? '');
-$request->setConfig($config);
+$config->setUsername($username);
+$config->setPassword($password);
+
+$request = new OrderCreateRequest();
+$request->setServiceId($serviceId);
+$request->setAmount(1.0);
+$request->setReturnurl('https://yourdomain/finish.php');
 
 try {
-    $transaction = $request->start();
+    $payOrder = $request->setConfig($config)->start();
 } catch (PayException $e) {
     echo '<pre>';
     echo 'Technical message: ' . $e->getMessage() . PHP_EOL;
@@ -33,4 +35,5 @@ try {
 
 echo '<pre>';
 echo 'Success, values:' . PHP_EOL;
-echo 'getPaymentUrl: ' . '<a target="_blank" href="' . $transaction->getPaymentUrl() . '">' . $transaction->getPaymentUrl() . '</a>' . PHP_EOL;
+echo 'getOrderId: ' . $payOrder->getOrderId() . PHP_EOL;
+echo 'getPaymentUrl: ' . '<a target="_blank" href="' . $payOrder->getPaymentUrl() . '">' . $payOrder->getPaymentUrl() . '</a>' . PHP_EOL;

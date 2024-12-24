@@ -166,7 +166,7 @@ class Pay_Controller_Transaction extends Controller
                 $product->setAmount(round($totalIncl));
                 $product->setCurrency('EUR');
                 $product->setQuantity(1);
-                $product->setVatPercentage(($total_row_tax / $totalIncl * 100));
+                $product->setVatPercentage($total_row_tax > 0 ? ($total_row_tax / $totalIncl * 100) : 0);
                 $products->addProduct($product);
             }
         }

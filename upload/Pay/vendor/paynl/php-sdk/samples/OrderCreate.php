@@ -13,7 +13,6 @@ use PayNL\Sdk\Config\Config;
 $request = new OrderCreateRequest();
 $request->setServiceId($_REQUEST['slcode'] ?? '');
 $request->setDescription('Order ABC0123456789');
-$request->setReference('SDK0123456789');
 $request->setAmount((float)($_REQUEST['amount'] ?? 5.3));
 $request->setCurrency('EUR');
 $request->setExpire(date('Y-m-d H:i:s', strtotime('+1 DAY')));
@@ -21,7 +20,6 @@ $request->setReturnurl($_REQUEST['returnUrl'] ?? 'https://yourdomain/finish.php'
 $request->setExchangeUrl($_REQUEST['exchangeUrl'] ?? 'https://yourdomain/exchange.php');
 $request->setPaymentMethodId((int)($_REQUEST['paymentMethodId'] ?? 10));
 $request->setIssuerId(4); # ISSUER ING
-# $request->setTerminal('TH-1234-1234');
 $request->setTestmode(($_REQUEST['testmode'] ?? 1) == 1);
 
 $customer = new \PayNL\Sdk\Model\Customer();
@@ -34,7 +32,6 @@ $customer->setPhone('0612345678');
 $customer->setEmail('testbetaling@pay.nl');
 $customer->setLanguage('NL');
 $customer->setTrust('1');
-$request->setReference('A123');
 
 $company = new \PayNL\Sdk\Model\Company();
 $company->setName('CompanyName');
@@ -48,8 +45,8 @@ $request->setCustomer($customer);
 
 $order = new \PayNL\Sdk\Model\Order();
 $order->setCountryCode('NL');
-$order->setDeliveryDate('2023-10-28 14:11:01');
-$order->setInvoiceDate('2023-10-29 14:05:00');
+$order->setDeliveryDate('2024-10-28 14:11:01');
+$order->setInvoiceDate('2024-10-29 14:05:00');
 
 $devAddress = new \PayNL\Sdk\Model\Address();
 $devAddress->setCode('dev');
@@ -108,7 +105,9 @@ $config->setCore($_REQUEST['core'] ?? '');
 $request->setConfig($config);
 
 try {
-    $transaction = $request->start();
+    $request->setReference('SDK0123456789');
+    $payOrder = $request->start();
+    echo get_class($payOrder);
 } catch (PayException $e) {
     echo '<pre>';
     echo 'Technical message: ' . $e->getMessage() . PHP_EOL;
@@ -116,24 +115,27 @@ try {
     echo 'Customer message: ' . $e->getFriendlyMessage() . PHP_EOL;
     echo 'HTTP-code: ' . $e->getCode() . PHP_EOL;
     exit();
+} catch (Exception $e) {
+    echo 'Technical message: ' . $e->getMessage() . PHP_EOL;
+    exit();
 }
 
 echo '<pre>';
 echo 'Success, values:' . PHP_EOL;
-echo 'getId: ' . $transaction->getId() . PHP_EOL;
-echo 'getServiceId: ' . $transaction->getServiceId() . PHP_EOL;
-echo 'getDescription: ' . $transaction->getDescription() . PHP_EOL;
-echo 'getReference: ' . $transaction->getReference() . PHP_EOL;
-echo 'getManualTransferCode: ' . $transaction->getManualTransferCode() . PHP_EOL;
-echo 'getOrderId: ' . $transaction->getOrderId() . PHP_EOL;
-echo 'getPaymentUrl: ' . '<a target="_blank" href="' . $transaction->getPaymentUrl() . '">' . $transaction->getPaymentUrl() . '</a>' . PHP_EOL;
-echo 'getStatusUrl: ' . $transaction->getStatusUrl() . PHP_EOL;
-echo 'getAmount value: ' . $transaction->getAmount()->getValue() . PHP_EOL;
-echo 'getAmount currency: ' . $transaction->getAmount()->getCurrency() . PHP_EOL;
-echo 'getUuid: ' . $transaction->getUuid() . PHP_EOL;
-echo 'expiresAt: ' . $transaction->getExpiresAt() . PHP_EOL;
-echo 'createdAt: ' . $transaction->getCreatedAt() . PHP_EOL;
-echo 'createdBy: ' . $transaction->getCreatedBy() . PHP_EOL;
-echo 'getCreatedAt: ' . $transaction->getCreatedAt() . PHP_EOL;
-echo 'modifiedAt: ' . $transaction->getModifiedAt() . PHP_EOL;
-echo 'modifiedBy: ' . $transaction->getModifiedBy() . PHP_EOL;
+echo 'getId: ' . $payOrder->getId() . PHP_EOL;
+echo 'getServiceId: ' . $payOrder->getServiceId() . PHP_EOL;
+echo 'getDescription: ' . $payOrder->getDescription() . PHP_EOL;
+echo 'getReference: ' . $payOrder->getReference() . PHP_EOL;
+echo 'getManualTransferCode: ' . $payOrder->getManualTransferCode() . PHP_EOL;
+echo 'getOrderId: ' . $payOrder->getOrderId() . PHP_EOL;
+echo 'getPaymentUrl: ' . '<a target="_blank" href="' . $payOrder->getPaymentUrl() . '">' . $payOrder->getPaymentUrl() . '</a>' . PHP_EOL;
+echo 'getStatusUrl: ' . $payOrder->getStatusUrl() . PHP_EOL;
+echo 'getAmount value: ' . $payOrder->getAmount() . PHP_EOL;
+echo 'getAmount currency: ' . $payOrder->getCurrency() . PHP_EOL;
+echo 'getUuid: ' . $payOrder->getUuid() . PHP_EOL;
+echo 'expiresAt: ' . $payOrder->getExpiresAt() . PHP_EOL;
+echo 'createdAt: ' . $payOrder->getCreatedAt() . PHP_EOL;
+echo 'createdBy: ' . $payOrder->getCreatedBy() . PHP_EOL;
+echo 'getCreatedAt: ' . $payOrder->getCreatedAt() . PHP_EOL;
+echo 'modifiedAt: ' . $payOrder->getModifiedAt() . PHP_EOL;
+echo 'modifiedBy: ' . $payOrder->getModifiedBy() . PHP_EOL;

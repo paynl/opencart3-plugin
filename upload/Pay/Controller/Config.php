@@ -40,11 +40,11 @@ class Pay_Controller_Config extends Controller
      * @return Config
      * @throws Exception
      */
-    public function getConfig($useCore = false)
-    {
+    public function getConfig($useCore = false, $tokencode = false, $apitoken = false)
+    {  
         $config = new Config();
-        $config->setUsername($this->getTokencode());
-        $config->setPassword($this->getApiToken());
+        $config->setUsername($this->getTokencode() ?? $tokencode);
+        $config->setPassword($this->getApiToken() ?? $apitoken);
 
         if (!empty($this->openCart->config->get('payment_paynl_general_gateway')) && $useCore === true) {
             $config->setCore($this->openCart->config->get('payment_paynl_general_gateway'));

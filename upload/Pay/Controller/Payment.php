@@ -9,7 +9,7 @@ class Pay_Controller_Payment extends Controller
 {
     protected $_paymentOptionId;
     protected $_paymentMethodName;
-    protected $data = array();
+    protected $data = array();    
 
     /**
      * @return mixed
@@ -68,7 +68,7 @@ class Pay_Controller_Payment extends Controller
         try {
             $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
             $this->$modelName->log('start payment : ' . $this->_paymentMethodName);
-            $transaction = new Pay_Controller_Transaction($this);
+            $transaction = new Pay_Controller_Transaction(openCart: $this);
             $response['success'] = $transaction->startTransaction($order_info, $this->_paymentOptionId, $this->_paymentMethodName);
         } catch (PayException $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
@@ -111,10 +111,12 @@ class Pay_Controller_Payment extends Controller
 
         $transactionId = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : null;
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
-
+       
         if(empty($action)){     
+            $payConfig = new Pay_Controller_Config($this);
+            $config = $payConfig->getConfig();
             $exchange = new Exchange();       
-            $payOrder = $exchange->process();
+            $payOrder = $exchange->process($config);
             $transactionId = $payOrder->getOrderId();
             $action = $exchange->getAction();  
         }
@@ -154,30 +156,7 @@ class Pay_Controller_Payment extends Controller
             }
             die("FALSE|" . $message);
         }
-    }
-
-    /**
-     * @return true
-     */
-    public function isTestMode()
-    {
-        $ip = $this->request->server['REMOTE_ADDR'];
-        $ipconfig = $this->config->get('payment_paynl_general_test_ip');
-
-        if (!empty($ipconfig)) {
-            $allowed_ips = explode(',', $ipconfig);
-
-            if (
-                in_array($ip, $allowed_ips) &&
-                filter_var($ip, FILTER_VALIDATE_IP) &&
-                strlen($ip) > 0 &&
-                count($allowed_ips) > 0
-            ) {
-                return true;
-            }
-        }
-        return $this->config->get('payment_paynl_general_testmode');
-    }
+    } 
 
     /**
      * @return bool
@@ -289,7 +268,7 @@ class Pay_Controller_Payment extends Controller
                 );
             }
         }
-
+        
         $totals = array();
         $total = 0;
         $taxes = $this->cart->getTaxes();
@@ -375,7 +354,8 @@ class Pay_Controller_Payment extends Controller
             $apiFastCheckout->setApiToken($this->config->get('payment_paynl_general_apitoken'));
             $apiFastCheckout->setServiceId($this->config->get('payment_paynl_general_serviceid'));
 
-            $apiFastCheckout->setTestmode($this->isTestMode());
+            $payConfig = new Pay_Controller_Config($this);
+            $apiFastCheckout->setTestmode($payConfig->isTestMode());
             $apiFastCheckout->setOrderNumber($orderData['order_id']);
 
             $amount = round($orderData['total'] * 100 * $orderData['currency_value']);
@@ -425,7 +405,7 @@ class Pay_Controller_Payment extends Controller
             $response['data'] = $apiFastCheckout->doRequest();
 
             $this->$modelName->addTransaction(
-                $response['data']['id'],
+                $response['data']['orderId'],
                 $orderData['order_id'],
                 $this->_paymentOptionId,
                 $amount,
