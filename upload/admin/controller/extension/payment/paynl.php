@@ -14,9 +14,7 @@ class ControllerExtensionPaymentPaynl extends Controller
     public function paynlOrderInfoBefore(&$route, &$data, &$template_code = null)
     {
         $this->load->model('sale/order');
-        $order_info = $this->model_sale_order->getOrder($data['order_id']);
-
-        var_dump($order_info['payment_code']);
+        $order_info = $this->model_sale_order->getOrder($data['order_id']);        
 
         if ((strpos($order_info['payment_code'], 'paynl') !== false)) {
             $template_buffer = $this->getTemplateBuffer($route, $template_code);
