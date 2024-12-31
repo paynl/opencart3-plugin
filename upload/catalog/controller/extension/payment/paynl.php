@@ -21,11 +21,7 @@ class ControllerExtensionPaymentPaynl extends Controller
     {
         $orderId = $_REQUEST['order_id'];
         $orderStatusId = $_REQUEST['order_status_id'];
-
-        $this->load->model('setting/setting');
-        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
-        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
-
+    
         $autoVoid = $this->config->get('payment_paynl_general_auto_void');
         $autoCapture = $this->config->get('payment_paynl_general_auto_capture');
 
@@ -50,28 +46,26 @@ class ControllerExtensionPaymentPaynl extends Controller
             $transactionState == 'AUTHORIZE' &&
             $autoVoid
         ) {
-            $this->paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
+            $this->paynlDoAutoVoid($transactionId, $orderId, $orderStatusId);
         } elseif (
             $orderStatusId == 5 &&
             $transactionState == 'AUTHORIZE' &&
             $autoCapture
         ) {
-            $this->paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
+            $this->paynlDoAutoCapture($transactionId, $orderId, $orderStatusId);
         }
     }
 
     /**
-     * @param $apiToken
-     * @param $serviceId
      * @param $transactionId
      * @param $orderId
      * @param $orderStatusId
      * @return void
      * @throws Pay_Api_Exception
      */
-    public function paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
+    public function paynlDoAutoVoid($transactionId, $orderId, $orderStatusId)
     {
-        $payConfig = new Pay_Controller_Config(openCart: $this);
+        $payConfig = new Pay_Controller_Config($this);
 
         $orderVoidRequest = new OrderVoidRequest($transactionId);
         $orderVoidRequest->setConfig($payConfig->getConfig());    
@@ -85,16 +79,14 @@ class ControllerExtensionPaymentPaynl extends Controller
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
     }
 
-    /**
-     * @param $apiToken
-     * @param $serviceId
+    /** 
      * @param $transactionId
      * @param $orderId
      * @param $orderStatusId
      * @return void
      * @throws Pay_Api_Exception
      */
-    public function paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId)
+    public function paynlDoAutoCapture($transactionId, $orderId, $orderStatusId)
     {
         $payConfig = new Pay_Controller_Config($this);
 
