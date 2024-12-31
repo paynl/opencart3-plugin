@@ -68,7 +68,7 @@ class Pay_Controller_Payment extends Controller
         try {
             $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
             $this->$modelName->log('start payment : ' . $this->_paymentMethodName);
-            $transaction = new Pay_Controller_Transaction(openCart: $this);
+            $transaction = new Pay_Controller_Transaction($this);
             $response['success'] = $transaction->startTransaction($order_info, $this->_paymentOptionId, $this->_paymentMethodName);
         } catch (PayException $e) {
             $response['error'] = "Er is een fout opgetreden: " . $e->getMessage();
