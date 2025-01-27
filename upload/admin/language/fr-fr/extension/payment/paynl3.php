@@ -2,6 +2,7 @@
 
 $_['text_apitoken'] = 'jeton API';
 $_['text_serviceid'] = 'Service';
+$_['text_tokencode'] = 'Token Code';
 
 // Text
 $_['text_payment'] = 'Paiement';
@@ -20,6 +21,10 @@ $_['error_no_apitoken'] = 'Vous devez saisir un jeton API, vous pouvez retrouver
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 $_['error_no_serviceid'] = 'Vous avez un SL-code demandé et vous avez un ID de service op: 
     <a href="https://my.pay.nl/company/tokens">https://my.pay.nl/company/tokens</a>. Un SL-code commence altijd avec SL-';
+
+$_['error_wrong_apitoken'] = 'Jeton API non valide, vous pouvez trouver votre jeton API sur: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_tokencode'] = 'Apitoken non valide, un Apitoken commence toujours par AT-, vous pouvez trouver votre Apitoken sur: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_serviceid'] = 'Service invalide, un Service commence toujours par SL-';
 
 //texts
 $_['text_register'] = 'Vous n\'êtes pas inscrit chez Pay? Inscrivez-vous ';

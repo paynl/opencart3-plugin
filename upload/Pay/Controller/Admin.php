@@ -229,9 +229,9 @@ class Pay_Controller_Admin extends Controller
             $data[$key] = $setting;
         }
 
-        $data['apitoken'] = $this->configGet('apitoken');
-        $data['serviceid'] = $this->configGet('serviceid');
-        $data['tokencode'] = $this->configGet('tokencode');
+        $data['apitoken'] = $settings['payment_paynl_general_apitoken'] ?? $this->configGet('apitoken');
+        $data['serviceid'] = $settings['payment_paynl_general_serviceid'] ?? $this->configGet('serviceid');
+        $data['tokencode'] = $settings['payment_paynl_general_tokencode'] ?? $this->configGet('tokencode');
         $data['testmode'] = $this->configGet('testmode');
         $data['gateway'] = $this->configGet('gateway');
         $data['prefix'] = $this->configGet('prefix');
@@ -245,6 +245,7 @@ class Pay_Controller_Admin extends Controller
         $data['display_icon'] = $this->configGet('display_icon');
         $data['text_edit'] = 'Pay. - ' . $this->_defaultLabel;
         $data['error_warning'] = '';
+        $data['error_tokencode'] = '';
         $data['error_apitoken'] = '';
         $data['error_serviceid'] = '';
         $data['error_status'] = '';
@@ -252,6 +253,9 @@ class Pay_Controller_Admin extends Controller
         if (!empty($this->error)) {
             if (!empty($this->error['warning'])) {
                 $data['error_warning'] = $this->error['warning'];
+            }
+            if (!empty($this->error['tokencode'])) {
+                $data['error_tokencode'] = $this->error['tokencode'];
             }
             if (!empty($this->error['apitoken'])) {
                 $data['error_apitoken'] = $this->error['apitoken'];
@@ -340,29 +344,38 @@ class Pay_Controller_Admin extends Controller
 
         if (!$this->user->hasPermission('modify', "extension/payment/$this->_paymentMethodName")) {
             $this->error['warning'] = $this->language->get('error_permission');
-        }
-
+        }       
+ 
         if (empty($serviceId)) {
             $this->error['serviceid'] = $this->language->get('error_no_serviceid');
-        } elseif (empty($apiToken)) {
-            $this->error['apitoken'] = $this->language->get('error_no_apitoken');
-        } elseif (empty($tokencode)) {
-            $this->error['tokencode'] = $this->language->get('text_tokencode');
-        } else {
-            try {
-                $this->load->model('extension/payment/paynl3');
-                $reqGateway = trim($this->getPost('payment_paynl_general_gateway'));
-                $gateway = (!empty($reqGateway) && substr($reqGateway, 0, 4) == 'http') ? $reqGateway : null;
-
-                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway);
-            } catch (Pay_Api_Exception $e) {
-                $this->error['apitoken'] = $this->language->get('error_api_error') . $e->getMessage();
-            } catch (Pay_Exception $e) {
-                $this->error['apitoken'] = $this->language->get('error_error_occurred') . $e->getMessage();
-            } catch (Exception $e) {
-                $this->error['apitoken'] = $e->getMessage();
-            }
+        } elseif (!preg_match('/SL-\d{4}-\d{4}/', $serviceId)) {
+            $this->error['serviceid'] = $this->language->get('error_wrong_serviceid');
         }
+        
+        if (empty($apiToken)) {
+            $this->error['apitoken'] = $this->language->get('error_no_apitoken');
+        } elseif (strlen($apiToken) < 40){
+            $this->error['apitoken'] = $this->language->get('error_wrong_apitoken');
+        }
+        
+        if (empty($tokencode)) {
+            $this->error['tokencode'] = $this->language->get('text_tokencode');
+        } elseif (!preg_match('/AT-\d{4}-\d{4}/', $tokencode)) {
+           $this->error['tokencode'] = $this->language->get('error_wrong_tokencode');
+        }
+        
+        try {
+            $this->load->model('extension/payment/paynl3');
+            $reqGateway = trim($this->getPost('payment_paynl_general_gateway'));
+            $gateway = (!empty($reqGateway) && substr($reqGateway, 0, 4) == 'http') ? $reqGateway : null;
+
+            $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway);
+        } catch (PayException $e) {
+            $this->error['warning'] = $e->getFriendlyMessage();            
+        } catch (Exception $e) {
+            $this->error['warning'] = $e->getMessage();
+        }
+        
 
         return empty($this->error);
     }

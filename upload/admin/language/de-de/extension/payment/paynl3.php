@@ -2,6 +2,7 @@
 
 $_['text_apitoken'] = 'API token';
 $_['text_serviceid'] = 'Sales location';
+$_['text_tokencode'] = 'Token Code';
 
 // Text
 $_['text_payment'] = 'Zahlung';
@@ -20,6 +21,10 @@ $_['error_no_apitoken'] = 'Sie müssen einen API token eingeben. Sie finden Ihre
     <a href="https://my.pay.nl/programs/programs">https://my.pay.nl/programs/programs</a>';
 $_['error_no_serviceid'] = 'Sie müssen eine SL-code eingeben. Sie finden Ihre SL-code unter:
     <a href="https://my.pay.nl/programs/programs">https://my.pay.nl/programs/programs</a>. Eine SL-code beginnt immer mit SL-';
+
+$_['error_wrong_apitoken'] = 'Ungültiger API Token. Sie finden Ihren API Token auf: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_tokencode'] = 'Ungültiger Tokencode, ein Tokencode beginnt immer mit AT-, Sie finden Ihren Tokencode auf: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_serviceid'] = 'Ungültiger Sales location, ein Sales location beginnt immer mit SL-.';
 
 //texts
 $_['text_register'] = 'Sie haben noch kein Konto bei Pay? klicken Sie ';

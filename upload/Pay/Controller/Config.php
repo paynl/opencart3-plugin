@@ -9,7 +9,7 @@ class Pay_Controller_Config extends Controller
     public $openCart;
     public function __construct($openCart) // phpcs:ignore
     {
-        $this->openCart = $openCart;       
+        $this->openCart = $openCart;
     }
 
     /**
@@ -34,17 +34,17 @@ class Pay_Controller_Config extends Controller
         }
         return $this->openCart->config->get('payment_paynl_general_testmode');
     }
-  
+
     /**
      * @param boolean $useCore
      * @return Config
      * @throws Exception
      */
     public function getConfig($useCore = false, $tokencode = false, $apitoken = false)
-    {  
+    {
         $config = new Config();
-        $config->setUsername($this->getTokencode() ?? $tokencode);
-        $config->setPassword($this->getApiToken() ?? $apitoken);
+        $config->setUsername($tokencode ?? $this->getTokencode());
+        $config->setPassword($apitoken ?? $this->getApiToken());
 
         if (!empty($this->openCart->config->get('payment_paynl_general_gateway')) && $useCore === true) {
             $config->setCore($this->openCart->config->get('payment_paynl_general_gateway'));
@@ -75,7 +75,7 @@ class Pay_Controller_Config extends Controller
     public function getServiceId()
     {
         return $this->openCart->config->get('payment_paynl_general_serviceid');
-    }  
+    }
 
     /**
      * @return string
@@ -83,7 +83,7 @@ class Pay_Controller_Config extends Controller
     public function getCustomExchangeURL()
     {
         return trim($this->openCart->config->get('payment_paynl_general_custom_exchange_url'));
-    }    
+    }
 
     /**
      * @return string
@@ -91,7 +91,7 @@ class Pay_Controller_Config extends Controller
     public function getObject()
     {
         $object_string = 'opencart 3 ';
-        $object_string .= '1.7.1';
+        $object_string .= '2.0.0';
         $object_string .= ' | ';
         $object_string .= VERSION ?? '-';
         $object_string .= ' | ';

@@ -22,6 +22,10 @@ $_['error_no_apitoken'] = 'U moet een apitokeninvoeren, u vind uw apitokens op:
 $_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: 
     <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
+$_['error_wrong_apitoken'] = 'Ongeldige API-token, u kunt uw API-token vinden op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_tokencode'] = 'Ongeldige tokencode, een tokencode begint altijd met AT-, u kunt uw tokencode vinden op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_serviceid'] = 'Ongeldige verkooplocatie, een verkooplocatie begint altijd met SL-';
+
 //texts
 $_['text_register'] = 'Nog geen account bij Pay.? Klik ';
 $_['text_link_register'] = 'hier';

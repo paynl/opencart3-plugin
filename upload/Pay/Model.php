@@ -90,20 +90,15 @@ class Pay_Model extends Model
      * @return void
      */
     public function refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway)
-    {
+    {        
+        $payConfig = new Pay_Controller_Config($this);       
+        $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig(false, $tokencode, $apiToken))->start();
+        
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
             . "LEFT JOIN `" . DB_PREFIX . "paynl_paymentoption_subs` as optionsubs ON optionsubs.paymentOptionId = options.id ";
         $this->db->query($sql);
-
-        $payConfig = new Pay_Controller_Config($this);
-
-        try {
-            $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig(false, $tokencode, $apiToken))->start();
-        } catch (PayException $e) {
-            $config = null;
-        }
 
         if ($config) {
             foreach ($config->getPaymentMethods() as $method) {
