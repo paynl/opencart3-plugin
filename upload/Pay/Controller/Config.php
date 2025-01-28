@@ -40,7 +40,7 @@ class Pay_Controller_Config extends Controller
      * @return Config
      * @throws Exception
      */
-    public function getConfig($useCore = false, $tokencode = false, $apitoken = false)
+    public function getConfig($useCore = false, $tokencode = null, $apitoken = null)
     {
         $config = new Config();
         $config->setUsername($tokencode ?? $this->getTokencode());
