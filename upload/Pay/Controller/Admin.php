@@ -380,6 +380,15 @@ class Pay_Controller_Admin extends Controller
             'catalog/controller/api/order/history/after',
             'extension/payment/paynl/paynlOnOrderStatusChange'
         );
+
+        $paynlOrderTab = $this->model_setting_event->getEventByCode('paynl_set_order_tab');
+        if (!$paynlOrderTab) {
+            $this->model_setting_event->addEvent(
+                'paynl_set_order_tab',
+                'admin/view/sale/order_info/before',
+                'extension/payment/paynl/paynlOrderInfoBefore'
+            );
+        }
     }
 
     /**
