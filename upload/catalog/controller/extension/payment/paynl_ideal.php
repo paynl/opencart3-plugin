@@ -101,7 +101,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         $transactionId = $webhookData['object']['orderId'];      
 
         try {           
-            $apiInfo = new Pay_Api_Info();
+            $apiInfo = new Pay_Api_Status();
             $apiInfo->setApiToken($apiToken);
             $apiInfo->setServiceId($serviceId);
             $apiInfo->setTransactionId($transactionId);
@@ -115,13 +115,9 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
 
         $this->load->model('checkout/order');
-        //$order_info = $this->model_checkout_order->getOrder($order_id);     
-        //$order_info['customer_group_id'] = $this->getCustomerGroupId($order_id);
-        //$order_info['payment_method'] = 'paynl_ideal';
-        //$this->model_checkout_order->editOrder($order_id, $order_info);
 
         try {
-            if ($status === Pay_Model::STATUS_COMPLETE) {
+            if ($status === Pay_Model::STATUS_COMPLETE && !empty($webhookData['object']['checkoutData'])) {
                 $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
                 $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
                 $customer = $webhookData['object']['checkoutData']['customer'];

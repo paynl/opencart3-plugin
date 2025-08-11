@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayNL\Sdk\Model\Pay;
 
+use Exception;
 use PayNL\Sdk\Model\ModelInterface;
 use PayNL\Sdk\Model\Amount;
 
@@ -14,7 +15,6 @@ use PayNL\Sdk\Model\Amount;
  */
 class PayOrder implements ModelInterface
 {
-
     /**
      * @var string
      */
@@ -131,16 +131,21 @@ class PayOrder implements ModelInterface
     protected $completedAt;
 
     /**
+     * @var Amount
+     */
+    protected $amountRefunded;
+
+    /**
      * @var array
      */
     protected $links;
 
     /**
-     * @param $payload
+     * @param array|null $payload
      */
-    public function __construct($payload = null)
+    public function __construct(?array $payload = null)
     {
-        if (!empty($payload['object'])) {
+        if (!empty($payload['object']) && is_array($payload['object'])) {
             foreach ($payload['object'] as $_key => $_val) {
                 if (in_array($_key, ['amount', 'capturedAmount', 'authorizedAmount'])) {
                     continue;
@@ -151,6 +156,27 @@ class PayOrder implements ModelInterface
                 }
             }
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAmountRefunded()
+    {
+        if (!empty($this->amountRefunded) && $this->amountRefunded instanceof Amount) {
+            return $this->amountRefunded->getValue() / 100;
+        }
+        return null;
+    }
+
+    /**
+     * @param Amount $amountRefunded
+     * @return $this
+     */
+    public function setAmountRefunded(Amount $amountRefunded): self
+    {
+        $this->amountRefunded = $amountRefunded;
+        return $this;
     }
 
     /**
@@ -172,7 +198,7 @@ class PayOrder implements ModelInterface
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function isFastCheckout(): bool
     {
@@ -188,7 +214,7 @@ class PayOrder implements ModelInterface
     }
 
     /**
-     * @return int
+     * @return integer
      */
     public function getStatusCode(): int
     {
@@ -357,11 +383,11 @@ class PayOrder implements ModelInterface
     }
 
     /**
-     * @param $code
-     * @param $name
+     * @param mixed $code
+     * @param mixed $name
      * @return $this
      */
-    public function setStatusCodeName($code, $name): self
+    public function setStatusCodeName(mixed $code, mixed $name): self
     {
         $this->status = ['code' => $code, 'action' => $name];
         return $this;
@@ -396,7 +422,7 @@ class PayOrder implements ModelInterface
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function isTestmode(): bool
     {
@@ -423,7 +449,7 @@ class PayOrder implements ModelInterface
     }
 
     /**
-     * @return float|int
+     * @return float|integer
      */
     public function getAmount()
     {
@@ -447,7 +473,22 @@ class PayOrder implements ModelInterface
         return $this->payments[0]['paymentMethod']['id'] ?? null;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getCustomerId(): ?string
+    {
+        return $this->payments[0]['customerId'] ?? null;
+    }
 
+    /**
+     * @return string|null
+     */
+    public function getCustomerName(): ?string
+    {
+        return $this->payments[0]['customerName'] ?? null;
+    }
+    
     /**
      * @param Amount $amount
      * @return $this
@@ -517,7 +558,7 @@ class PayOrder implements ModelInterface
      */
     public function getPayments(): array
     {
-        return $this->payments;
+        return $this->payments ?? [];
     }
 
     /**
@@ -673,82 +714,90 @@ class PayOrder implements ModelInterface
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
      */
     public function isPaid()
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PAID;
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::PAID;
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
      */
     public function isPending()
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PENDING;
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::PENDING;
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
      */
     public function isCancelled()
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::CANCEL;
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::CANCEL;
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
      */
     public function isPartialPayment()
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PARTIAL_PAYMENT;
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::PARTIAL_PAYMENT;
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
      */
     public function isAuthorized(): bool
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::AUTHORIZE;
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::AUTHORIZE;
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
      */
-    public function isRefundedFully()
+    public function isRefundedFully(): bool
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::REFUND;
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::REFUND;
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
      */
-    public function isRefundedPartial()
+    public function isRefundedPartial(): bool
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::PARTIAL_REFUND;
-
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::PARTIAL_REFUND;
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return boolean
+     * @throws Exception
+     */
+    public function isVoided(): bool
+    {
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::VOID;
+    }
+
+    /**
+     * @return boolean
+     * @throws Exception
      */
     public function isBeingVerified()
     {
-        return (new PayStatus)->get($this->getStatusCode()) === PayStatus::VERIFY;
+        return (new PayStatus())->get($this->getStatusCode()) === PayStatus::VERIFY;
     }
 
     /**
      * Check whether the status of the transaction is chargeback
      *
-     * @return bool
+     * @return boolean
      */
     public function isChargeBack(): bool
     {
@@ -756,9 +805,9 @@ class PayOrder implements ModelInterface
     }
 
     /**
-     * @param bool $allowPartialRefunds
-     * @return bool
-     * @throws \Exception
+     * @param boolean $allowPartialRefunds
+     * @return boolean
+     * @throws Exception
      */
     public function isRefunded(bool $allowPartialRefunds = true): bool
     {
@@ -772,5 +821,4 @@ class PayOrder implements ModelInterface
 
         return false;
     }
-
 }

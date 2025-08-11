@@ -15,11 +15,17 @@ $request->setServiceId($_REQUEST['slcode'] ?? '');
 $request->setDescription('Order ABC0123456789');
 $request->setAmount((float)($_REQUEST['amount'] ?? 5.3));
 $request->setCurrency('EUR');
-$request->setExpire(date('Y-m-d H:i:s', strtotime('+1 DAY')));
+$request->setExpire(date('c', time() + 60));
 $request->setReturnurl($_REQUEST['returnUrl'] ?? 'https://yourdomain/finish.php');
 $request->setExchangeUrl($_REQUEST['exchangeUrl'] ?? 'https://yourdomain/exchange.php');
 $request->setPaymentMethodId((int)($_REQUEST['paymentMethodId'] ?? 10));
-$request->setIssuerId(4); # ISSUER ING
+
+# Example for specifically setting PayPal data
+#$request->setPayPalOrderId('yourPayPalOrderId');
+
+## Or for custom (and future) implementations
+#$request->setPaymentInputData($yourInputData);
+
 $request->setTestmode(($_REQUEST['testmode'] ?? 1) == 1);
 
 $customer = new \PayNL\Sdk\Model\Customer();
@@ -32,6 +38,7 @@ $customer->setPhone('0612345678');
 $customer->setEmail('testbetaling@pay.nl');
 $customer->setLanguage('NL');
 $customer->setTrust('1');
+$customer->setLocale('en_GB');
 
 $company = new \PayNL\Sdk\Model\Company();
 $company->setName('CompanyName');
@@ -92,8 +99,7 @@ $request->setStats((new \PayNL\Sdk\Model\Stats())
   ->setExtra1('ex1')
   ->setExtra2('ex2')
   ->setExtra3('ex3')
-  ->setDomainId('WU-1234-1234')
-);
+  ->setDomainId('WU-1234-1234'));
 
 $request->setNotification('EMAIL', 'youremail@yourdomain.ext');
 $request->setTransferData([['yourField' => 'yourData'], ['tracker' => 'trackerinfo']]);
@@ -107,7 +113,6 @@ $request->setConfig($config);
 try {
     $request->setReference('SDK0123456789');
     $payOrder = $request->start();
-    echo get_class($payOrder);
 } catch (PayException $e) {
     echo '<pre>';
     echo 'Technical message: ' . $e->getMessage() . PHP_EOL;

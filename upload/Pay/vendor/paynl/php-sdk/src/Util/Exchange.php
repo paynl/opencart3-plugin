@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PayNL\Sdk\Util;
 
-use PayNL\Sdk\Config\Config as PayConfig;
 use PayNL\Sdk\Config\Config;
 use PayNL\Sdk\Model\Amount;
+use PayNL\Sdk\Util\ExchangeResponse;
 use PayNL\Sdk\Model\Request\OrderStatusRequest;
 use PayNL\Sdk\Model\Pay\PayStatus;
 use PayNL\Sdk\Model\Pay\PayOrder;
@@ -24,34 +24,85 @@ class Exchange
 {
     private PayLoad $payload;
     private ?array $custom_payload;
-    private $headers;
+    private mixed $headers;
+    private string $gmsReferenceKey = 'extra1';
+
+    /**
+     * @return string
+     */
+    public function getGmsReferenceKey(): string
+    {
+        return $this->gmsReferenceKey;
+    }
+
+    /**
+     * Specifies the field to use for order retrieval when older exchange types, such as refunds, provide the order ID in a non-standard field(extra1).
+     * @param $key
+     * @return $this
+     */
+    public function setGmsReferenceKey($key): self
+    {
+        $this->gmsReferenceKey = $key;
+        return $this;
+    }
 
     /**
      * @param array|null $payload
      */
-    public function __construct(array $payload = null)
+    public function __construct(?array $payload = null)
     {
         $this->custom_payload = $payload;
     }
 
     /**
-     * @return bool
+     * @param boolean $includeAuth If yes, treat authorize as "paid"
+     * @return boolean
+     * @throws PayException
      */
-    public function eventStateChangeToPaid()
+    public function eventPaid(bool $includeAuth = false): bool
     {
-        return $this->getAction() === PayStatus::EVENT_PAID;
+        return $this->getAction() === PayStatus::EVENT_PAID || ($includeAuth == true && $this->getAction() === PayStatus::AUTHORIZE);
+    }
+
+    /**
+     * @return boolean
+     * @throws PayException
+     */
+    public function eventChargeback(): bool
+    {
+        return substr($this->getAction(), 0, 10) === PayStatus::EVENT_CHARGEBACK;
+    }
+
+    /**
+     * @return boolean
+     * @throws PayException
+     */
+    public function eventRefund()
+    {
+        return substr($this->getAction(), 0, 6) === PayStatus::EVENT_REFUND;
+    }
+
+    /**
+     * @return boolean
+     * @throws PayException
+     */
+    public function eventCapture()
+    {
+        return $this->getAction() == PayStatus::EVENT_CAPTURE;
     }
 
     /**
      * Set your exchange response in the end of your exchange processing
      *
-     * @param bool $result
+     * @param boolean $result
      * @param string $message
-     * @param bool $returnOutput If true, then this method returs the output string
+     * @param boolean $returnOutput
      * @return false|string|void
      */
-    public function setResponse(bool $result, string $message, $returnOutput = false)
+    public function setResponse(bool $result, string $message, bool $returnOutput = false)
     {
+        $message = ucfirst(strtolower($message));
+
         if ($this->isSignExchange() === true) {
             $response = json_encode(['result' => $result, 'description' => $message]);
         } else {
@@ -67,42 +118,79 @@ class Exchange
     }
 
     /**
-     * @return string
+     * @param \PayNL\Sdk\Util\ExchangeResponse $e
+     * @param boolean $returnOutput
+     * @return false|string|null
      */
-    public function getAction()
+    public function setExchangeResponse(ExchangeResponse $e, bool $returnOutput = false)
+    {
+        return $this->setResponse($e->getResult(), $e->getMessage(), $returnOutput);
+    }
+
+
+    /**
+     * Retrieve payload with exception handling.
+     *
+     * @return Payload
+     * @throws PayException
+     */
+    private function getSafePayload(): Payload
     {
         try {
-            $payload = $this->getPayload();
+            return $this->getPayload();
         } catch (\Throwable $e) {
-            return false;
+            throw new PayException('Could not retrieve payload: ' . $e->getMessage(), 0, 0);
         }
-        return $payload->getAction();
+    }
+    /**
+     * @return bool
+     */
+    public function isFastCheckout(): bool
+    {
+        return $this->getSafePayload()->isFastCheckout();
     }
 
     /**
-     * @return mixed|string
+     * @return string
+     * @throws PayException
      */
-    public function getReference()
+    public function getAction(): string
     {
-        try {
-            $payload = $this->getPayload();
-        } catch (\Throwable $e) {
-            return false;
-        }
-        return $payload->getReference();
+        return $this->getSafePayload()->getAction();
     }
 
     /**
      * @return string
+     * @throws PayException
      */
-    public function getPayOrderId()
+    public function getReference(): string
     {
-        try {
-            $payload = $this->getPayload();
-        } catch (\Throwable $e) {
-            return false;
-        }
-        return $payload->getPayOrderId();
+        return $this->getSafePayload()->getReference();
+    }
+
+    /**
+     * @return string
+     * @throws PayException
+     */
+    public function getPayOrderId(): string
+    {
+        return $this->getSafePayload()->getPayOrderId();
+    }
+
+
+    /**
+     * @param array $request
+     * @return array
+     */
+    private function legacyReturn(array $request)
+    {
+        $action = $request['action'] ?? null;
+        $paymentProfile = $request['payment_profile_id'] ?? null;
+        $payOrderId = $request['order_id'] ?? '';
+        $orderId = $request['extra1'] ?? null;
+        $reference = $request[$this->getGmsReferenceKey()] ?? null;
+
+        return [$action, $paymentProfile, $payOrderId, $orderId, $reference];
     }
 
     /**
@@ -130,11 +218,8 @@ class Exchange
 
         if (!empty($action)) {
             # The argument "action" tells us this is GMS
-            $action = $request['action'] ?? null;
-            $paymentProfile = $request['payment_profile_id'] ?? null;
-            $payOrderId = $request['order_id'] ?? '';
-            $orderId = $request['extra1'] ?? null;
-            $reference = $request['extra1'] ?? null;
+            [$action, $paymentProfile, $payOrderId, $orderId, $reference] = $this->legacyReturn($request);
+
         } else {
             # TGU
             if (isset($request['object'])) {
@@ -142,40 +227,40 @@ class Exchange
             } else {
                 $rawBody = file_get_contents('php://input');
                 if (empty(trim($rawBody))) {
-                    throw new Exception('Empty payload', 8002);
+                    throw new Exception('Empty or incomplete payload', 8002);
                 }
-
-                $tguData = json_decode($rawBody, true, 512, 4194304);
-
-                $exchangeType = $tguData['type'] ?? null;
-                if ($exchangeType != 'order') {
-                    throw new Exception('Cant handle exchange type other then order', 8003);
-                }
+                $tguData = json_decode($rawBody, true, 512, JSON_BIGINT_AS_STRING);
             }
 
             if (empty($tguData['object'])) {
                 throw new Exception('Payload error: object empty', 8004);
             }
 
-            foreach (($tguData['object']['payments'] ?? []) as $payment) {
-                $ppid = $payment['paymentMethod']['id'] ?? null;
+            if (!isset($tguData['type']) && isset($tguData['action'])) {
+                # Legacy call,
+                [$action, $paymentProfile, $payOrderId, $orderId, $reference] = $this->legacyReturn($tguData);
+            } else {
+                foreach (($tguData['object']['payments'] ?? []) as $payment) {
+                    $ppid = $payment['paymentMethod']['id'] ?? null;
+                }
+                $paymentProfile = $ppid ?? '';
+                $type = $tguData['object']['type'] ?? '';
+                $payOrderId = $tguData['object']['orderId'] ?? '';
+                $internalStateId = (int)($tguData['object']['status']['code'] ?? 0);
+
+                $internalStateName = $tguData['object']['status']['action'] ?? '';
+                $orderId = $tguData['object']['reference'] ?? '';
+
+                $action = in_array($internalStateId, [PayStatus::PAID, PayStatus::AUTHORIZE]) ? 'new_ppt' : $internalStateName;
+
+                $reference = $tguData['object']['reference'] ?? '';
+                $checkoutData = $tguData['object']['checkoutData'] ?? null;
+
+                $amount = $tguData['object']['amount']['value'] ?? '';
+                $currency = $tguData['object']['amount']['currency'] ?? '';
+                $amountCap = $tguData['object']['capturedAmount']['value'] ?? '';
+                $amountAuth = $tguData['object']['authorizedAmount']['value'] ?? '';
             }
-            $paymentProfile = $ppid ?? '';
-            $type = $tguData['object']['type'] ?? '';
-            $payOrderId = $tguData['object']['orderId'] ?? '';
-            $internalStateId = (int)$tguData['object']['status']['code'] ?? 0;
-            $internalStateName = $tguData['object']['status']['action'] ?? '';
-            $orderId = $tguData['object']['reference'] ?? '';
-
-            $action = in_array($internalStateId, [PayStatus::PAID, PayStatus::AUTHORIZE]) ? 'new_ppt' : $internalStateName;
-
-            $reference = $tguData['object']['reference'] ?? '';
-            $checkoutData = $tguData['object']['checkoutData'] ?? null;
-
-            $amount = $tguData['object']['amount']['value'] ?? '';
-            $currency = $tguData['object']['amount']['currency'] ?? '';
-            $amountCap = $tguData['object']['capturedAmount']['value'] ?? '';
-            $amountAuth = $tguData['object']['authorizedAmount']['value'] ?? '';
         }
 
         $this->payload = new PayLoad([
@@ -199,13 +284,13 @@ class Exchange
     }
 
     /**
-     * Process the exchange request.
+     * Processes the exchange request and returns a PayOrder object with the correct payment state.
      *
-     * @param Config|null $config
+     * @param Config|null $config Optional configuration object. If not provided, default config is used.
      * @return PayOrder
-     * @throws Exception
+     * @throws Exception If signing fails or order status cannot be retrieved
      */
-    public function process(PayConfig $config = null): PayOrder
+    public function process(?Config $config = null): PayOrder
     {
         $payload = $this->getPayload();
 
@@ -213,11 +298,15 @@ class Exchange
             $config = Config::getConfig();
         }
 
+        if (empty($config->getUsername()) || empty($config->getPassword())) {
+            throw new Exception('Process failed, config not set', 8003);
+        }
+
         if ($this->isSignExchange()) {
             $signingResult = $this->checkSignExchange($config->getUsername(), $config->getPassword());
 
             if ($signingResult === true) {
-                dbg('signingResult true');
+                paydbg('signingResult true');
                 $payOrder = new PayOrder($payload->getFullPayLoad());
                 $payOrder->setReference($payload->getReference());
                 $payOrder->setOrderId($payload->getPayOrderId());
@@ -226,39 +315,37 @@ class Exchange
             } else {
                 throw new Exception('Signing request failed');
             }
-        } else {
-            try {
-                $payloadState = (new PayStatus())->get($payload->getInternalStateId());
-            } catch (\Throwable $e) {
-                $payloadState = null;
+
+            # Return with correct status code; otherwise, proceed with API call to retrieve status.
+            if ($payOrder->getStatusCode() != 0) {
+                return $payOrder;
             }
+        }
 
-            # Not a signing request...
-            if ($payloadState === PayStatus::PENDING) {
-                $payOrder = new PayOrder();
-                $payOrder->setStatusCodeName(PayStatus::PENDING, 'PENDING');
-            } else {
-                # Continue to check the order status manually
-                try {
-                    if (empty($payload->getPayOrderId())) {
-                        throw new Exception('Missing pay order id in payload');
-                    }
+        # Continue to retrieve the order status with API call..
 
-                    $action = $this->getAction();
-                    if (stripos($action, 'refund') !== false) {
-                        dbg('TransactionStatusRequest');
-                        $request = new TransactionStatusRequest($payload->getPayOrderId());
-                    } else {
-                        dbg('OrderStatusRequest');
-                        $request = new OrderStatusRequest($payload->getPayOrderId());
-                    }
-
-                    $payOrder = $request->setConfig($config)->start();
-
-                } catch (PayException $e) {
-                    dbg($e->getMessage());
-                    throw new Exception('API Retrieval error: ' . $e->getFriendlyMessage());
+        if ($this->getPayloadState($payload) === PayStatus::PENDING) {
+            $payOrder = new PayOrder();
+            $payOrder->setType($payload->getType());
+            $payOrder->setStatusCodeName(PayStatus::PENDING, 'PENDING');
+        } else {
+            # Continue to check the order status manually
+            try {
+                if (empty($payload->getPayOrderId())) {
+                    throw new Exception('Missing pay order id in payload');
                 }
+
+                $action = $this->getAction();
+                # Using TransactionStatusRequest for backwards compatibility, and refunds.
+                if (stripos($action, 'refund') !== false || !$payload->isTguTransaction()) {
+                    $request = new TransactionStatusRequest($payload->getPayOrderId());
+                } else {
+                    $request = new OrderStatusRequest($payload->getPayOrderId());
+                }
+
+                $payOrder = $request->setConfig($config)->start();
+            } catch (PayException $e) {
+                throw new Exception('API Retrieval error: ' . $payload->getPayOrderId() . ' - ' . $e->getFriendlyMessage());
             }
         }
 
@@ -266,9 +353,23 @@ class Exchange
     }
 
     /**
+     * @param $payload
+     * @return int|mixed|null
+     */
+    private function getPayloadState($payload)
+    {
+        try {
+            $payloadState = (new PayStatus())->get($payload->getInternalStateId());
+        } catch (\Throwable $e) {
+            $payloadState = null;
+        }
+        return $payloadState;
+    }
+
+    /**
      * @param string $username Token code
      * @param string $password API Token
-     * @return bool Returns true if the signing is successful and authorised
+     * @return boolean Returns true if the signing is successful and authorised
      */
     public function checkSignExchange(string $username = '', string $password = ''): bool
     {
@@ -299,14 +400,14 @@ class Exchange
                 throw new Exception('Signature failed');
             }
         } catch (Exception $e) {
-            dbg('checkSignExchange: ' . $e->getMessage());
+            paydbg('checkSignExchange: ' . $e->getMessage());
             return false;
         }
         return true;
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function isSignExchange(): bool
     {
@@ -318,12 +419,11 @@ class Exchange
     /**
      * @return array|false|string
      */
-    private function getRequestHeaders()
+    private function getRequestHeaders(): bool|array|string
     {
         if (empty($this->headers)) {
             $this->headers = array_change_key_case(getallheaders());
         }
         return $this->headers;
     }
-
 }

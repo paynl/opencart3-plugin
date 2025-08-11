@@ -18,6 +18,7 @@ use PayNL\Sdk\Util\Text;
  */
 abstract class RequestData implements RequestDataInterface
 {
+    protected Application $application;
     protected string $mapperName = '';
     protected string $uri = '';
     protected string $methodType = 'GET';
@@ -42,28 +43,58 @@ abstract class RequestData implements RequestDataInterface
      */
     public function setConfig(Config $config): self
     {
-        $this->config = $config;
+        $this->config = (new Config(require __DIR__ . '/../../config/config.global.php'));
+        $this->config->merge($config);
         return $this;
     }
 
     /**
-     * @return mixed
-     * @throws PayException
-     * @throws Exception
+     * @param Application $application
+     * @return void
      */
-    public function start()
+    public function setApplication(Application $application): void
     {
-        $config = (new Config(require __DIR__ . '/../../config/config.global.php'));
-        if (!empty($this->config)) {
-            $config->merge($this->config);
+        $this->application = $application;
+    }
+
+
+    /**
+     * @return Config|null
+     * @throws PayException
+     */
+    private function getConfig(): Config
+    {
+        if (empty($this->config)) {
+            $config = (new Config(require __DIR__ . '/../../config/config.global.php'));
+        } else {
+            $config = $this->config;
         }
 
         if (!empty($config->getFailoverUrl())) {
             $config->setCore($config->getFailoverUrl());
         }
 
+        if ($config->isEmpty()) {
+            throw new PayException('Please check your config', 0, 0);
+        }
+
+        return $config;
+    }
+
+    /**
+     * @return mixed
+     * @throws PayException
+     */
+    public function start()
+    {
+        $config = $this->getConfig();
+
         try {
-            $response = (Application::init($config))->request($this)->run();
+            if (empty($this->application)) {
+                $this->application = Application::init($config);
+            }
+
+            $response = $this->application->request($this)->run();
         } catch (\Throwable $e) {
             throw (new PayException('Could not initiate API call:' . $e->getMessage(), 0, 0))
                 ->setFriendlyMessage(Text::getFriendlyMessage($e->getMessage()));
@@ -95,14 +126,13 @@ abstract class RequestData implements RequestDataInterface
         }
     }
 
-
-    /*
-     * For defining the arguments used in the requestpath
+    /**
+     * @return array
      */
     abstract public function getPathParameters(): array;
 
-    /*
-     * For defining the arguments used in the body of the request
+    /**
+     * @return array
      */
     abstract public function getBodyParameters(): array;
 

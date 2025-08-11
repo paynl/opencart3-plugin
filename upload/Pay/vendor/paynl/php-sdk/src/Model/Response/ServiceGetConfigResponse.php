@@ -16,7 +16,6 @@ use PayNL\Sdk\Model\Method;
  */
 class ServiceGetConfigResponse implements ModelInterface
 {
-
     /**
      * @required
      *
@@ -93,9 +92,8 @@ class ServiceGetConfigResponse implements ModelInterface
     }
 
     /**
-     * @param string $id
-     *
-     * @return Config
+     * @param string $code
+     * @return $this
      */
     public function setCode(string $code): self
     {
@@ -123,7 +121,7 @@ class ServiceGetConfigResponse implements ModelInterface
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function isTestMode(): bool
     {
@@ -172,6 +170,7 @@ class ServiceGetConfigResponse implements ModelInterface
 
     /**
      * @param array $translations
+     * @return void
      */
     public function setTranslations(array $translations): void
     {
@@ -188,6 +187,7 @@ class ServiceGetConfigResponse implements ModelInterface
 
     /**
      * @param string $status
+     * @return void
      */
     public function setStatus(string $status): void
     {
@@ -204,6 +204,7 @@ class ServiceGetConfigResponse implements ModelInterface
 
     /**
      * @param array $merchant
+     * @return void
      */
     public function setMerchant(array $merchant): void
     {
@@ -211,7 +212,7 @@ class ServiceGetConfigResponse implements ModelInterface
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function getTestMode(): bool
     {
@@ -228,6 +229,7 @@ class ServiceGetConfigResponse implements ModelInterface
 
     /**
      * @param array $checkoutSequence
+     * @return void
      */
     public function setCheckoutSequence(array $checkoutSequence): void
     {
@@ -247,16 +249,32 @@ class ServiceGetConfigResponse implements ModelInterface
      */
     public function getPaymentMethods(): array
     {
+        $methods = [];
         foreach ($this->getCheckoutOptions() as $checkoutOption) {
-            foreach ($checkoutOption->getPaymentMethods() as $method) {
-                $methods[] = $method;
+            $tag = $checkoutOption->getTag();
+            if (str_starts_with($tag, 'PG')) {
+                # Methods are "grouped" so only return the group "method"
+                $groupMethod = new Method();
+                $groupMethod->setId($checkoutOption->getId());
+                $groupMethod->setName($checkoutOption->getName());
+                $groupMethod->setDescription($checkoutOption->getName());
+                $groupMethod->setTranslations($checkoutOption->getTranslations());
+                $groupMethod->setImage($checkoutOption->getImage());
+                $groupMethod->setMinAmount(0);
+                $groupMethod->setMaxAmount(0);
+                $methods[] = $groupMethod;
+            } else {
+                foreach ($checkoutOption->getPaymentMethods() as $method) {
+                    $methods[] = $method;
+                }
             }
         }
-        return $methods ?? [];
+        return $methods;
     }
 
     /**
      * @param CheckoutOptions $checkoutOptions
+     * @return void
      */
     public function setCheckoutOptions(CheckoutOptions $checkoutOptions): void
     {
@@ -273,6 +291,7 @@ class ServiceGetConfigResponse implements ModelInterface
 
     /**
      * @param array $layout
+     * @return void
      */
     public function setLayout(array $layout): void
     {
@@ -289,6 +308,7 @@ class ServiceGetConfigResponse implements ModelInterface
 
     /**
      * @param array $turnoverGroup
+     * @return void
      */
     public function setTurnoverGroup(array $turnoverGroup): void
     {
@@ -305,6 +325,7 @@ class ServiceGetConfigResponse implements ModelInterface
 
     /**
      * @param array $category
+     * @return void
      */
     public function setCategory(array $category): void
     {
@@ -316,11 +337,12 @@ class ServiceGetConfigResponse implements ModelInterface
      */
     public function getTguList(): array
     {
-        return $this->tguList;
+        return $this->tguList ?? [];
     }
 
     /**
      * @param array $tguList
+     * @return void
      */
     public function setTguList(array $tguList): void
     {
@@ -328,11 +350,31 @@ class ServiceGetConfigResponse implements ModelInterface
     }
 
     /**
+     * Provides a core-list prepared with web protocol.
      * @return array
      */
     public function getCores(): array
     {
-        return $this->getTguList();
+        $cores = $this->getTguList();
+
+        foreach ($cores as &$core) {
+            $domain = $core['domain'];
+
+            $parts = explode('.', $domain);
+            if (count($parts) === 2) {
+                $domain = 'connect.' . $domain;
+            }
+
+            $core['domain'] = 'https://' . $domain;
+            $core['label'] = $domain;
+        }
+
+        # Sort on share
+        usort($cores, function ($a, $b) {
+            return $b['share'] <=> $a['share'];
+        });
+
+        return $cores;
     }
 
     /**

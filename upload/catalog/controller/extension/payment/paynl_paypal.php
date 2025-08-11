@@ -155,7 +155,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $transactionId = $webhookData['object']['orderId'];
 
         try {           
-            $apiInfo = new Pay_Api_Info();
+            $apiInfo = new Pay_Api_Status();
             $apiInfo->setApiToken($apiToken);
             $apiInfo->setServiceId($serviceId);
             $apiInfo->setTransactionId($transactionId);
@@ -195,7 +195,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $this->load->model('checkout/order');      
 
         try {
-            if ($status === Pay_Model::STATUS_COMPLETE) {
+            if ($status === Pay_Model::STATUS_COMPLETE && !empty($paypalPayer) && !empty($paypalShipping)) {
                 $paymentData = [
                     'firstname' => $paypalPayer['firstname'],
                     'lastname' => $paypalPayer['lastname'],
