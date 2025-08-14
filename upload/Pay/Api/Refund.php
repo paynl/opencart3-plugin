@@ -22,7 +22,7 @@ class Pay_Api_Refund extends Pay_Api
     public function setAmount($amount)
     {
         $this->_postData['amount'] = $amount;
-    }   
+    }
 
     /**
      * @return array|mixed
