@@ -153,6 +153,16 @@ class Pay_Controller_Admin extends Controller
             if ($generalValid && $bMethodValidate) {
                 $data['success_message'] = $this->language->get('text_success');
             }
+        }  else {
+            if(!empty($this->request->get['action'])){
+                if ($this->request->get['action'] == 'refund') {
+                    $returnarray = $this->refund();
+                    die(json_encode($returnarray));
+                } elseif ($this->request->get['action'] == 'capture') {     
+                    $returnarray = $this->capture();
+                    die(json_encode($returnarray));
+                }
+            }            
         }
 
         if (($data['availability_fast_checkout'] == true)) {
@@ -521,5 +531,47 @@ class Pay_Controller_Admin extends Controller
                 exit;
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function refund()
+    {
+        $json = array();
+        $transactionId = $this->request->get['transaction_id'] ?? null;  
+        $amount = (float) $this->request->get['amount'] ?? null;      
+        try {
+            $apiRefund = new Pay_Api_Refund();
+            $apiRefund->setApiToken($this->configGet('apitoken'));
+            $apiRefund->setServiceId($this->configGet('serviceid'));
+            $apiRefund->setTransactionId($transactionId);
+            $apiRefund->setAmount($amount);
+            $apiRefund->doRequest();
+            $json['success'] = 'Pay. refunded ' . $this->request->get['amount'] . ' successfully!';
+        } catch (\Exception $e) {
+            $json['error'] = 'Pay. couldn\'t refund, please try again later.' . $e->getMessage();
+        }
+        return $json;
+    }
+
+    /**
+     * @return array
+     */
+    private function capture()
+    {
+        $json = array();
+        $transactionId = $this->request->get['transaction_id'] ?? null;        
+        try {
+            $apiCapture = new Pay_Api_Capture(); 
+            $apiCapture->setApiToken($this->configGet('apitoken'));
+            $apiCapture->setServiceId($this->configGet('serviceid'));
+            $apiCapture->setTransactionId($transactionId);
+            $apiCapture->doRequest();    
+            $json['success'] = 'Pay. capture ' . $this->request->get['amount'] . ' successfully!';
+        } catch (\Exception $e) {
+            $json['error'] = 'Pay. couldn\'t capture, please try again later.' . $e->getMessage();
+        }
+        return $json;
     }
 }
