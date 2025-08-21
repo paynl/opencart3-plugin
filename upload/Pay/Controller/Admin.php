@@ -540,7 +540,7 @@ class Pay_Controller_Admin extends Controller
     {
         $json = array();
         $transactionId = $this->request->get['transaction_id'] ?? null;  
-        $amount = (float) $this->request->get['amount'] ?? null;      
+        $amount = (float) ($this->request->get['amount'] * 100) ?? null;      
         try {
             $apiRefund = new Pay_Api_Refund();
             $apiRefund->setApiToken($this->configGet('apitoken'));
