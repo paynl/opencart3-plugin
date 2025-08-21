@@ -153,19 +153,17 @@ class Pay_Controller_Admin extends Controller
             if ($generalValid && $bMethodValidate) {
                 $data['success_message'] = $this->language->get('text_success');
             }
-        }  else {
-            if(!empty($this->request->get['action'])){
+        } else {
+            if (!empty($this->request->get['action'])) {
                 if ($this->request->get['action'] == 'refund') {
-                    $returnarray = $this->refund();
-                    die(json_encode($returnarray));
-                } elseif ($this->request->get['action'] == 'capture') {     
-                    $returnarray = $this->capture();
-                    die(json_encode($returnarray));
+                    die(json_encode($this->refund()));
+                } elseif ($this->request->get['action'] == 'capture') {
+                    die(json_encode($this->capture()));
                 }
-            }            
+            }
         }
 
-        if (($data['availability_fast_checkout'] == true)) {
+        if ($data['availability_fast_checkout'] == true) {
             $paynlFastCheckoutEventCode = 'paynl_fast_checkout';
             $paynlFastCheckout = $this->model_setting_event->getEventByCode($paynlFastCheckoutEventCode);
             if (!$paynlFastCheckout) {
@@ -538,7 +536,7 @@ class Pay_Controller_Admin extends Controller
      */
     private function refund()
     {
-        $json = array();
+        $response = array();
         $transactionId = $this->request->get['transaction_id'] ?? null;  
         $amount = (float) ($this->request->get['amount'] * 100) ?? null;      
         try {
@@ -548,11 +546,11 @@ class Pay_Controller_Admin extends Controller
             $apiRefund->setTransactionId($transactionId);
             $apiRefund->setAmount($amount);
             $apiRefund->doRequest();
-            $json['success'] = 'Pay. refunded ' . $this->request->get['amount'] . ' successfully!';
+            $response['success'] = 'Pay. refunded ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
-            $json['error'] = 'Pay. couldn\'t refund, please try again later.' . $e->getMessage();
+            $response['error'] = 'Pay. couldn\'t refund, please try again later.' . $e->getMessage();
         }
-        return $json;
+        return $response;
     }
 
     /**
@@ -560,7 +558,7 @@ class Pay_Controller_Admin extends Controller
      */
     private function capture()
     {
-        $json = array();
+        $response = array();
         $transactionId = $this->request->get['transaction_id'] ?? null;        
         try {
             $apiCapture = new Pay_Api_Capture(); 
@@ -568,10 +566,10 @@ class Pay_Controller_Admin extends Controller
             $apiCapture->setServiceId($this->configGet('serviceid'));
             $apiCapture->setTransactionId($transactionId);
             $apiCapture->doRequest();    
-            $json['success'] = 'Pay. capture ' . $this->request->get['amount'] . ' successfully!';
+            $response['success'] = 'Pay. capture ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
-            $json['error'] = 'Pay. couldn\'t capture, please try again later.' . $e->getMessage();
+            $response['error'] = 'Pay. couldn\'t capture, please try again later.' . $e->getMessage();
         }
-        return $json;
+        return $response;
     }
 }

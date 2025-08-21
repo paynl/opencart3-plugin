@@ -16,7 +16,7 @@ class Pay_Api_Refund extends Pay_Api
     }
 
     /**
-     * @param $transactionId
+     * @param $amount
      * @return void
      */
     public function setAmount($amount)

@@ -11,6 +11,11 @@ class Pay_Api_Status extends Pay_Api
     {
         $this->_postData['transactionId'] = $transactionId;
     }
+
+    /**
+     * @return array|mixed
+     * @throws Pay_Exception
+     */
     protected function _getPostData()
     {
         $data = parent::_getPostData();
