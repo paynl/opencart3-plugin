@@ -1,0 +1,13 @@
+#payContent {
+    left: 0px;
+    margin-left: 235px;
+}
+
+#payFunction .row {
+    margin-bottom: 0px !important;
+    padding: 0 10px;
+}
+
+.modal-backdrop {
+    background-color: #00000080;
+}

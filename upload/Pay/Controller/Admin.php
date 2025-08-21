@@ -153,9 +153,17 @@ class Pay_Controller_Admin extends Controller
             if ($generalValid && $bMethodValidate) {
                 $data['success_message'] = $this->language->get('text_success');
             }
+        } else {
+            if (!empty($this->request->get['action'])) {
+                if ($this->request->get['action'] == 'refund') {
+                    die(json_encode($this->refund()));
+                } elseif ($this->request->get['action'] == 'capture') {
+                    die(json_encode($this->capture()));
+                }
+            }
         }
 
-        if (($data['availability_fast_checkout'] == true)) {
+        if ($data['availability_fast_checkout'] == true) {
             $paynlFastCheckoutEventCode = 'paynl_fast_checkout';
             $paynlFastCheckout = $this->model_setting_event->getEventByCode($paynlFastCheckoutEventCode);
             if (!$paynlFastCheckout) {
@@ -380,6 +388,15 @@ class Pay_Controller_Admin extends Controller
             'catalog/controller/api/order/history/after',
             'extension/payment/paynl/paynlOnOrderStatusChange'
         );
+
+        $paynlOrderTab = $this->model_setting_event->getEventByCode('paynl_set_order_tab');
+        if (!$paynlOrderTab) {
+            $this->model_setting_event->addEvent(
+                'paynl_set_order_tab',
+                'admin/view/sale/order_info/before',
+                'extension/payment/paynl/paynlOrderInfoBefore'
+            );
+        }
     }
 
     /**
@@ -512,5 +529,47 @@ class Pay_Controller_Admin extends Controller
                 exit;
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function refund()
+    {
+        $response = array();
+        $transactionId = $this->request->get['transaction_id'] ?? null;  
+        $amount = (float) ($this->request->get['amount'] * 100) ?? null;      
+        try {
+            $apiRefund = new Pay_Api_Refund();
+            $apiRefund->setApiToken($this->configGet('apitoken'));
+            $apiRefund->setServiceId($this->configGet('serviceid'));
+            $apiRefund->setTransactionId($transactionId);
+            $apiRefund->setAmount($amount);
+            $apiRefund->doRequest();
+            $response['success'] = 'Pay. refunded ' . $this->request->get['amount'] . ' successfully!';
+        } catch (\Exception $e) {
+            $response['error'] = 'Pay. couldn\'t refund, please try again later.' . $e->getMessage();
+        }
+        return $response;
+    }
+
+    /**
+     * @return array
+     */
+    private function capture()
+    {
+        $response = array();
+        $transactionId = $this->request->get['transaction_id'] ?? null;        
+        try {
+            $apiCapture = new Pay_Api_Capture(); 
+            $apiCapture->setApiToken($this->configGet('apitoken'));
+            $apiCapture->setServiceId($this->configGet('serviceid'));
+            $apiCapture->setTransactionId($transactionId);
+            $apiCapture->doRequest();    
+            $response['success'] = 'Pay. capture ' . $this->request->get['amount'] . ' successfully!';
+        } catch (\Exception $e) {
+            $response['error'] = 'Pay. couldn\'t capture, please try again later.' . $e->getMessage();
+        }
+        return $response;
     }
 }
