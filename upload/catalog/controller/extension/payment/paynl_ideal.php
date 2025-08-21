@@ -148,8 +148,8 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                     'firstname' => $customer['firstName'],
                 ];
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
-                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData, 'paynl_ideal');
+                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status, $order_id);
+                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
                 if ($result === false) {
                     die("FALSE| Order not found");
                 }

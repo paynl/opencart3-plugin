@@ -86,6 +86,15 @@ class Pay_Controller_Payment extends Controller
         $status = Pay_Helper::getStatus($orderStatusId);
 
         if (isset($status) && ($status == Pay_Model::STATUS_COMPLETE || $status == Pay_Model::STATUS_PENDING)) {
+            $this->load->model('checkout/order');
+            $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+            $statusPending = $this->config->get('payment_' . $this->_paymentMethodName . '_pending_status');
+            $confirm_on_start = $this->config->get('payment_' . $this->_paymentMethodName . '_confirm_on_start');
+            $message = 'Pay. Transactie aangemaakt. TransactieId: ' . $this->request->get['orderId'] . ' PaymentSessionId: ' . $this->request->get['paymentSessionId'] . ' .<br />';
+
+            if ($confirm_on_start !== 1) {
+                $this->model_checkout_order->addOrderHistory($order_info['order_id'], $statusPending, $message, false);
+            }
             header("Location: " . $this->url->link('checkout/success'));
         } else {
             $this->load->language('extension/payment/paynl3');

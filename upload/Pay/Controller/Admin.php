@@ -192,7 +192,7 @@ class Pay_Controller_Admin extends Controller
             }            
         }
 
-        if (($data['availability_fast_checkout'] == true)) {
+        if ($data['availability_fast_checkout'] == true) {
             $paynlFastCheckoutEventCode = 'paynl_fast_checkout';
             $paynlFastCheckout = $this->model_setting_event->getEventByCode($paynlFastCheckoutEventCode);
             if (!$paynlFastCheckout) {
@@ -439,11 +439,14 @@ class Pay_Controller_Admin extends Controller
             'extension/payment/paynl/paynlOnOrderStatusChange'
         );
 
-        $this->model_setting_event->addEvent(
-            'paynl_set_order_tab',
-            'admin/view/sale/order_info/before',
-            'extension/payment/paynl/paynlOrderInfoBefore'
-        );
+        $paynlOrderTab = $this->model_setting_event->getEventByCode('paynl_set_order_tab');
+        if (!$paynlOrderTab) {
+            $this->model_setting_event->addEvent(
+                'paynl_set_order_tab',
+                'admin/view/sale/order_info/before',
+                'extension/payment/paynl/paynlOrderInfoBefore'
+            );
+        }
     }
 
     /**

@@ -205,12 +205,20 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param string $transactionId
-     * @return array
+     * @param $transactionId
+     * @param $orderId
+     * @return mixed
      */
-    public function getTransaction($transactionId)
+    public function getTransaction($transactionId, $orderId = null)
     {
-        $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE id = '" . $this->db->escape($transactionId) . "' LIMIT 1;";
+        if (empty($orderId)) {
+            $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE id = '" . $this->db->escape($transactionId) . "' LIMIT 1;";
+        } else {
+            $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE" .
+                " orderId = '" . $this->db->escape($orderId) . "' AND " .
+                " id = '" . $this->db->escape($transactionId) . "' LIMIT 1;";
+        }
+
         $result = $this->db->query($sql);
 
         return $result->row;
@@ -250,17 +258,20 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param string $transactionId
-     * @param string $status
-     * @return boolean|array
+     * @param $transactionId
+     * @param $status
+     * @param $orderId
+     * @return true|void
+     * @throws Pay_Exception
      */
-    public function updateTransactionStatus($transactionId, $status)
+    public function updateTransactionStatus($transactionId, $status, $orderId = null)
     {
         if (!in_array($status, array(self::STATUS_CANCELED, self::STATUS_COMPLETE, self::STATUS_PENDING, self::STATUS_REFUNDED))) {
             throw new Pay_Exception('Invalid transaction status');
         }
-        //safety so processed orders cannot go to canceled
-        $transaction = $this->getTransaction($transactionId);
+
+        # Safety so processed orders cannot go to cancelled
+        $transaction = $this->getTransaction($transactionId, $orderId);
 
         if (empty($transaction)) {
             throw new Pay_Exception('Transaction not found');
