@@ -207,6 +207,7 @@ $arrPaymentMethods = array(
     'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
+    'mobilepay'
 );
 
 foreach ($arrPaymentMethods as $paymentMethod) {
