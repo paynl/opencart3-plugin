@@ -240,6 +240,12 @@ $arrPaymentMethods = array(
     'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
+    'babycadeaubon',
+    'fashionchequebeauty',
+    'boekencadeau',
+    'leescadeau',
+    'sofort',
+    'sportsgiftcard'
 );
 
 foreach ($arrPaymentMethods as $paymentMethod) {
