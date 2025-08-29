@@ -206,6 +206,7 @@ $arrPaymentMethods = array(
     'xafaxmynetpay',
     'yourgift',
     'yourgreengift',
+    'mobilepay',
     'babycadeaubon',
     'fashionchequebeauty',
     'boekencadeau',
