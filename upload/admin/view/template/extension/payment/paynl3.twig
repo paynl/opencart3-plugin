@@ -63,7 +63,7 @@
                     <div class="form-group required">
                         <label class="col-sm-2 control-label" for="payment_paynl_general_apitoken">{{ text_apitoken }}</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" name="payment_paynl_general_apitoken" value="{{ apitoken }}"/>
+                            <input type="text" class="form-control obscuredInput" name="payment_paynl_general_apitoken" value="{{ apitoken }}"/>
                             {% if error_apitoken %}
                                 <div class="text-danger">{{ error_apitoken }}</div>
                             {% endif %}
