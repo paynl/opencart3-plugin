@@ -1,4 +1,8 @@
 $(document).ready(function () {
+
+    $isCapture = true;
+    $isVoid = false;
+
     $('#payOrderAmount').change(function () {
         $(this).val(parseFloat($.trim($(this).val().replace(/[^0-9\.]/g, ''))).toFixed(2))
     })
@@ -16,6 +20,8 @@ $(document).ready(function () {
     })
 
     $('#payOrderButton').click(function () {
+        $isCapture = true;
+        $isVoid = false;
         var amount = parseFloat($.trim($('#payOrderAmount').val().replace(/[^0-9\.]/g, '')));
         if ((isFloat(amount) || isInteger(amount)) && !(amount <= 0)) {
             var message = $('#confirmMessage').val().replace('%amount%', $('#payOrderCurrency').val() + ' ' + $('#payOrderAmount').val());
@@ -27,8 +33,26 @@ $(document).ready(function () {
         }
     })
 
+    $('#payOrderButtonVoid').click(function () {
+        $isCapture = false;
+        $isVoid = true;
+        var amount = parseFloat($.trim($('#payOrderAmount').val().replace(/[^0-9\.]/g, '')));
+        if((isFloat(amount) || isInteger(amount)) && !(amount <= 0)){
+            var message = $('#confirmMessageVoid').val().replace('%amount%', $('#payOrderCurrency').val() + ' ' + $('#orderVoidAmount').val());
+            $('#payMessage').text(message);
+            $('#modal-pay').show();
+            $('body').append('<div class="modal-backdrop show"></div>');   
+        } else {
+            showMessage($('#nanErrorMessage').val())
+        }            
+    })
+
     $('#paymodalconfirm').click(function () {
-        ajax($('#ajaxURL').val() + '&amount=' + $.trim($('#payOrderAmount').val()) + '&currency=' + $('#payOrderCurrency').val());
+        if ($isVoid) {
+            ajax($('#ajaxURLVoid').val() + '&amount=' + $.trim($('#payOrderAmount').val()) + '&currency=' + $('#payOrderCurrency').val());
+        } else {
+            ajax($('#ajaxURL').val() + '&amount=' + $.trim($('#payOrderAmount').val()) + '&currency=' + $('#payOrderCurrency').val());
+        }        
     })
 
     function showMessage(message) {

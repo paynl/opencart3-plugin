@@ -31,16 +31,20 @@
               </tbody>            
             </table>
             <div id="payFunction">
-              {% if show_refund or show_capture %} 
-        
+              {% if show_refund or show_capture %}         
                   <input type="hidden" id="ajaxURL" value="{{ ajax_url }}"></input>
+                  <input type="hidden" id="ajaxURLVoid" value="{{ ajax_url_void }}"></input>
                   <input type="hidden" id="payOrderCurrency" value="{{ paynl_currency }}"></input>
-                  <input type="hidden" id="confirmMessage" value="{{ text_confirm }}"></input>              
+                  <input type="hidden" id="confirmMessage" value="{{ text_confirm }}"></input>   
+                  <input type="hidden" id="confirmMessageVoid" value="{{ text_confirm_void }}"></input>            
                   <input type="hidden" id="nanErrorMessage" value="{{ text_error_nan }}"></input>
-                  <label for="payOrderAmount" class="col-form-label" style="display: inline-block;text-align: left;width: auto;">{{text_description}} ({{ paynl_currency }})</label>                 
-                  <input type="number" step="0.01" placeholder="0,00" class="form-control" name="payOrderAmount" id="payOrderAmount" style="max-width: calc(100% - 100px); display: inline-block;vertical-align: middle;"value="{{ paynl_amount_value }}"/>            
+                  <input type="hidden" id="orderVoidAmount" value="{{ paynl_amount_value }}"></input>
+                  <label for="payOrderAmount" class="col-form-label" style="display: block;text-align: left;width: auto;">{{text_description}} ({{ paynl_currency }})</label>                 
+                  <input type="number" step="0.01" placeholder="0,00" class="form-control" name="payOrderAmount" id="payOrderAmount" style="max-width: calc(100% - 300px); display: inline-block;vertical-align: middle; width: auto;"value="{{ paynl_amount_value }}"/>            
                   <a id="payOrderButton" class="btn btn-primary col-sm-1" target="_BLANK" style="display: inline-block;width: 95px;float: none; text-align: center;">Confirm</a>
-            
+                  {% if show_void %}
+                    <a id="payOrderButtonVoid" class="btn btn-primary col-sm-1" target="_BLANK" style="display: inline-block;width: 95px;float: none; text-align: center;">VOID</a>
+                  {% endif %}   
               {% endif %}          
             </div>
         </div>

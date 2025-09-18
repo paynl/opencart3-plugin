@@ -4,7 +4,6 @@ $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
-require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Model\Request\OrderVoidRequest;
 use PayNL\Sdk\Model\Request\OrderCaptureRequest;

@@ -6,6 +6,7 @@ require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Model\Request\TransactionRefundRequest;
 use PayNL\Sdk\Model\Request\OrderCaptureRequest;
+use PayNL\Sdk\Model\Request\OrderVoidRequest;
 
 class Pay_Controller_Admin extends Controller
 {
@@ -188,6 +189,9 @@ class Pay_Controller_Admin extends Controller
                 } elseif ($this->request->get['action'] == 'capture') {     
                     $returnarray = $this->capture();
                     die(json_encode($returnarray));
+                }  elseif ($this->request->get['action'] == 'void') {     
+                    $returnarray = $this->void();
+                    die(json_encode($returnarray));
                 }
             }            
         }
@@ -365,11 +369,12 @@ class Pay_Controller_Admin extends Controller
         }
         
         try {
-            $this->load->model('extension/payment/paynl3');
-            $reqGateway = trim($this->getPost('payment_paynl_general_gateway'));
-            $gateway = (!empty($reqGateway) && substr($reqGateway, 0, 4) == 'http') ? $reqGateway : null;
-
-            $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway);
+            if (!empty($serviceId) && !empty($apiToken) && !empty($tokencode)) {
+                $this->load->model('extension/payment/paynl3');
+                $reqGateway = trim($this->getPost('payment_paynl_general_gateway'));
+                $gateway = (!empty($reqGateway) && substr($reqGateway, 0, 4) == 'http') ? $reqGateway : null;
+                $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway);
+            } 
         } catch (PayException $e) {
             $this->error['warning'] = $e->getFriendlyMessage();            
         } catch (Exception $e) {
@@ -439,14 +444,11 @@ class Pay_Controller_Admin extends Controller
             'extension/payment/paynl/paynlOnOrderStatusChange'
         );
 
-        $paynlOrderTab = $this->model_setting_event->getEventByCode('paynl_set_order_tab');
-        if (!$paynlOrderTab) {
-            $this->model_setting_event->addEvent(
-                'paynl_set_order_tab',
-                'admin/view/sale/order_info/before',
-                'extension/payment/paynl/paynlOrderInfoBefore'
-            );
-        }
+        $this->model_setting_event->addEvent(
+            'paynl_set_order_tab',
+            'admin/view/sale/order_info/before',
+            'extension/payment/paynl/paynlOrderInfoBefore'
+        );
     }
 
     /**
@@ -596,7 +598,7 @@ class Pay_Controller_Admin extends Controller
             $payConfig = new Pay_Controller_Config($this);   
             $transactionRefundRequest = new TransactionRefundRequest($transactionId, $amount, $currency);
             $transactionRefundRequest->setConfig($payConfig->getConfig());
-            $refund = $transactionRefundRequest->start();          
+            $transactionRefundRequest->start();          
             $json['success'] = 'Pay. refunded ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
             $json['error'] = 'Pay. couldn\'t refund, please try again later.' . $e->getMessage();
@@ -618,10 +620,31 @@ class Pay_Controller_Admin extends Controller
             $orderCaptureRequest = new OrderCaptureRequest($transactionId);
             $orderCaptureRequest->setAmount($amount);
             $orderCaptureRequest->setConfig($payConfig->getConfig());            
-            $refund = $orderCaptureRequest->start();          
+            $orderCaptureRequest->start();          
             $json['success'] = 'Pay. capture ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
             $json['error'] = 'Pay. couldn\'t capture, please try again later.' . $e->getMessage();
+        }
+        return $json;
+    }
+
+    /**
+     * @return void
+     */
+    public function void()
+    {
+        $json = array();
+        $transactionId = $this->request->get['transaction_id'] ?? null;
+        $amount = (float) $this->request->get['amount'] ?? null;
+        $currency = $this->request->get['currency'] ?? null;
+        try {
+            $payConfig = new Pay_Controller_Config($this);   
+            $orderVoidRequest = new OrderVoidRequest($transactionId);
+            $orderVoidRequest->setConfig($payConfig->getConfig());            
+            $orderVoidRequest->start();     
+            $json['success'] = 'Pay. voided ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
+        } catch (\Exception $e) {
+            $json['error'] = 'Pay. couldn\'t void, please try again later.' . $e->getMessage();
         }
         return $json;
     }

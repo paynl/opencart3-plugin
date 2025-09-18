@@ -4,12 +4,15 @@ $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
 
+use PayNL\Sdk\Util\Exchange;
+
 class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
 {
     protected $_paymentOptionId = 10;
     protected $_paymentMethodName = 'paynl_ideal';
 
-    public function initFastCheckout() {
+    public function initFastCheckout()
+    {
         if (empty($this->cart->getProducts())) {
             header("Location: " . $this->url->link('checkout/cart'));
             exit;
@@ -96,25 +99,24 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         $order_id = $webhookData['object']['reference'];
 
         $this->load->model('setting/setting');
-        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
-        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
-        $transactionId = $webhookData['object']['orderId'];      
+        $transactionId = $webhookData['object']['orderId'];
 
-        try {           
-            $apiInfo = new Pay_Api_Status();
-            $apiInfo->setApiToken($apiToken);
-            $apiInfo->setServiceId($serviceId);
-            $apiInfo->setTransactionId($transactionId);
-            $infoResult = $apiInfo->doRequest();
-            $status = Pay_Helper::getStatus($infoResult['paymentDetails']['state']);          
+        try {
+            $payConfig = new Pay_Controller_Config($this);
+            $config = $payConfig->getConfig();
+            $exchange = new Exchange();
+            $payOrder = $exchange->process($config);
+            $transactionId = $payOrder->getOrderId();
+            $action = $exchange->getAction();
+            $statusCode = $payOrder->getStatusCode();
+            $status = Pay_Helper::getStatus($statusCode);
+
         } catch (\Exception $e) {
-            die('FALSE| Error fetching transaction. ' . $e->getMessage());     
+            die('FALSE| Error fetching transaction. ' . $e->getMessage());
         }
 
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-
-        $this->load->model('checkout/order');
 
         try {
             if ($status === Pay_Model::STATUS_COMPLETE && !empty($webhookData['object']['checkoutData'])) {
@@ -148,11 +150,18 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                     'firstname' => $customer['firstName'],
                 ];
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['id'], $status, $order_id);
-                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData);
+                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
+                $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData, 'paynl_ideal');
                 if ($result === false) {
                     die("FALSE| Order not found");
                 }
+
+                $this->load->model('checkout/order');
+                $order_info = $this->model_checkout_order->getOrder($order_id);
+                $order_info['customer_group_id'] = $this->getCustomerGroupId($order_id);
+                $order_info['payment_method'] = 'iDeal Fastcheckout';
+                $order_info['payment_code'] = 'paynl_ideal';
+                $this->model_checkout_order->editOrder($order_id, $order_info);
 
                 $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout. iDeal');
 
@@ -174,6 +183,11 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             die("FALSE| Unknown Error: " . $e->getMessage());
         }
 
-        die("TRUE| Ignoring $status");
+        if ($action == 'pending') {
+            die("TRUE| ignoring pending");
+        } else {
+            die("FALSE| Unexpected status: $status for action: $action");
+        }
+
     }
 }

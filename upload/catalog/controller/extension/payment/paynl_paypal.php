@@ -4,12 +4,15 @@ $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
 
+use PayNL\Sdk\Util\Exchange;
+
 class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
 {
     protected $_paymentOptionId = 138;
     protected $_paymentMethodName = 'paynl_paypal';
 
-    public function initFastCheckout() {
+    public function initFastCheckout()
+    {
         $order_data = $this->createBlankFastCheckoutOrder('payment_paynl_paypal_default_shipping');
 
         $this->session->data['fast_checkout_paypal_order'] = $order_data;
@@ -117,7 +120,8 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $this->response->redirect($this->url->link('checkout/cart', '', true));
     }
 
-    public function getButtonConfig() {
+    public function getButtonConfig()
+    {
         $client_id = $this->config->get('payment_paynl_paypal_client_id');
         $currency = $this->session->data['currency'];
         $intent = 'capture';
@@ -137,7 +141,8 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
     }
 
     /** @throws Pay_Api_Exception */
-    public function exchangeFastCheckout() {
+    public function exchangeFastCheckout()
+    {
         $rawData = file_get_contents('php://input');
         $webhookData = json_decode($rawData, true);
 
@@ -150,20 +155,19 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
             : null;
 
         $this->load->model('setting/setting');
-        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
-        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
-        $transactionId = $webhookData['object']['orderId'];
 
-        try {           
-            $apiInfo = new Pay_Api_Status();
-            $apiInfo->setApiToken($apiToken);
-            $apiInfo->setServiceId($serviceId);
-            $apiInfo->setTransactionId($transactionId);
-            $infoResult = $apiInfo->doRequest();
-            $status = Pay_Helper::getStatus($infoResult['paymentDetails']['state']);          
+        try {
+            $payConfig = new Pay_Controller_Config($this);
+            $config = $payConfig->getConfig();
+            $exchange = new Exchange();
+            $payOrder = $exchange->process($config);
+            $action = $exchange->getAction();
+            $statusCode = $payOrder->getStatusCode();
+            $status = Pay_Helper::getStatus($statusCode);
+
         } catch (\Exception $e) {
-            die('FALSE| Error fetching transaction. ' . $e->getMessage());     
-        }  
+            die('FALSE| Error fetching transaction. ' . $e->getMessage());
+        }
 
         $accessToken = $this->getAccessToken();
         $paypalOrderDetails = $this->getOrderDetails($orderId, $accessToken);
@@ -192,7 +196,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
 
-        $this->load->model('checkout/order');      
+        $this->load->model('checkout/order');
 
         try {
             if ($status === Pay_Model::STATUS_COMPLETE && !empty($paypalPayer) && !empty($paypalShipping)) {
@@ -220,13 +224,13 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
                     'phone' => '',
                     'lastname' => $paypalPayer['lastname'],
                     'firstname' => $paypalPayer['firstname'],
-                ]; 
+                ];
 
                 $transactionId = $webhookData['object']['id'];
 
                 $transaction = $this->$modelName->getTransaction($transactionId);
 
-                if(empty($transaction)) {
+                if (empty($transaction)) {
                     $this->$modelName->addTransaction(
                         $transactionId,
                         $order_id,
@@ -241,6 +245,13 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
                 if ($result === false) {
                     die("FALSE| Order not found");
                 }
+
+                $this->load->model('checkout/order');
+                $order_info = $this->model_checkout_order->getOrder($order_id);
+                $order_info['customer_group_id'] = $this->getCustomerGroupId($order_id);
+                $order_info['payment_method'] = 'Paypal Fastcheckout';
+                $order_info['payment_code'] = 'paynl_paypal';
+                $this->model_checkout_order->editOrder($order_id, $order_info);
 
                 $this->model_checkout_order->addOrderHistory($order_id, 2, 'Order paid via fast checkout. Paypal');
 
@@ -261,9 +272,16 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         } catch (Exception $e) {
             die("FALSE| Unknown Error: " . $e->getMessage());
         }
+
+        if ($action == 'pending') {
+            die("TRUE| ignoring pending");
+        } else {
+            die("FALSE| Unexpected status: $status for action: $action");
+        }
     }
 
-    private function getAccessToken() {
+    private function getAccessToken()
+    {
         $clientId = $this->config->get('payment_' . $this->_paymentMethodName . '_client_id');
         $clientSecret = $this->config->get('payment_' . $this->_paymentMethodName . '_client_token');
 
@@ -276,7 +294,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $ch = curl_init();
 
         $testMode = $this->config->get('payment_paynl_general_testmode');
-        $domain = $testMode ? 'https://api-m.sandbox.paypal.com': 'https://api-m.paypal.com';
+        $domain = $testMode ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
         $url = "{$domain}/v1/oauth2/token";
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -300,7 +318,8 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         return $result['access_token'] ?? false;
     }
 
-    public function getOrderDetails($orderID, $accessToken) {
+    public function getOrderDetails($orderID, $accessToken)
+    {
         if (empty($orderID) || empty($accessToken)) {
             return false;
         }
@@ -308,7 +327,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $ch = curl_init();
 
         $testMode = $this->config->get('payment_paynl_general_testmode');
-        $domain = $testMode ? "https://api.sandbox.paypal.com": "https://api.paypal.com";
+        $domain = $testMode ? "https://api.sandbox.paypal.com" : "https://api.paypal.com";
         $url = "{$domain}/v2/checkout/orders/{$orderID}";
 
         curl_setopt($ch, CURLOPT_URL, $url);

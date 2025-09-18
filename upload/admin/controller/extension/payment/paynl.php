@@ -5,6 +5,9 @@ $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
 
+use PayNL\Sdk\Model\Request\OrderStatusRequest;
+use PayNL\Sdk\Model\Request\TransactionStatusRequest;
+
 class ControllerExtensionPaymentPaynl extends Controller
 {
     /**
@@ -17,6 +20,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         $order_info = $this->model_sale_order->getOrder($data['order_id']);        
 
         if ((strpos($order_info['payment_code'], 'paynl') !== false)) {
+            
             $template_buffer = $this->getTemplateBuffer($route, $template_code);
 
             $admin_dir = dirname(dirname(dirname(dirname(__FILE__))));
@@ -34,35 +38,50 @@ class ControllerExtensionPaymentPaynl extends Controller
             $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($data['order_id']);
             $transactionId = $transaction['id'];
 
-            $this->load->model('setting/setting');
-            $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
-            $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
+            $this->load->model('setting/setting');      
 
-            $apiInfo = new Pay_Api_Status();
-            $apiInfo->setApiToken($apiToken);
-            $apiInfo->setServiceId($serviceId);
-            $apiInfo->setTransactionId($transactionId);
-            $payTransaction = $apiInfo->doRequest();
+            $payConfig = new Pay_Controller_Config($this);
+
+            try {                
+                $orderStatusRequest = new OrderStatusRequest($transactionId);
+                $orderStatusRequest->setConfig($payConfig->getConfig(true));
+                $payTransaction = $orderStatusRequest->start();
+            } catch (\Exception $e) {
+                $payTransaction = null;
+            }
+
+            if (empty($payTransaction) || ($payTransaction instanceof \PayNL\Sdk\Model\Pay\PayOrder && ($payTransaction->isPaid() || $payTransaction->isAuthorized()))) {
+                $transactionStatusRequest = new TransactionStatusRequest($transactionId);
+                $transactionStatusRequest->setConfig($payConfig->getConfig(true));
+                $payGmsOrder = $transactionStatusRequest->start();                
+                if ($payGmsOrder->isRefunded() || empty($payTransaction)) {
+                    $payTransaction = $payGmsOrder;
+                }
+                $alreadyRefunded = $payGmsOrder->getAmountRefunded();
+            }
 
             $data['paynl_order_id'] = $this->request->get['order_id'];
             $data['paynl_transaction_id'] = $transactionId;
 
-            $data['paynl_status_code'] = $payTransaction['paymentDetails']['state'];
-            $data['paynl_status_name'] = $payTransaction['paymentDetails']['stateName'];
-            $data['paynl_currency'] = $payTransaction['paymentDetails']['currency'];
-            $data['paynl_amount'] = number_format((float) $payTransaction['paymentDetails']['amount'] / 100, 2, '.', '');
-            $data['paynl_amount_captured'] = number_format((float) $payTransaction['paymentDetails']['paidAmount'] / 100, 2, '.', '');            
-            $data['paynl_amount_refunded'] = number_format((float) $payTransaction['paymentDetails']['refundAmount'] / 100, 2, '.', '');
+            $data['paynl_status_code'] = $payTransaction->getStatusCode();
+            $data['paynl_status_name'] = $payTransaction->getStatusName();
+            $data['paynl_currency'] = $payTransaction->getCurrency();            
 
             $data['cart_amount'] = number_format((float) $order_info['total'], 2, '.', '');
-            $data['cart_currency'] = $order_info['currency_code'];
+            $data['paynl_amount'] = number_format((float) $payTransaction->getAmount(), 2, '.', '');  
+            $data['cart_currency'] = $order_info['currency_code'];    
 
-            $data['show_refund'] = ($payTransaction['paymentDetails']['state'] == 100 || $payTransaction['paymentDetails']['state'] == -82);
-            $data['show_capture'] = ($payTransaction['paymentDetails']['state'] == 97 || $payTransaction['paymentDetails']['state'] == 95);
+            $data['show_refund'] = ($payTransaction->isPaid() || $payTransaction->isRefundedPartial());
+            $data['show_capture'] = ($payTransaction->isAuthorized() || $payTransaction->getStatus()['code'] == 97);
 
             if ($data['show_refund']) {
-                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund');
-                $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount'] - $data['paynl_amount_refunded']), 2, '.', '');
+                $data['paynl_amount_value'] = number_format((float) ($payTransaction->getAmount()), 2, '.', '');
+                if ($payTransaction->getCurrency() == 'EUR') {
+                    $data['paynl_amount_refunded'] = $alreadyRefunded;
+                    $data['paynl_amount'] = number_format((float) $payTransaction->getAmount() - $alreadyRefunded, 2, '.', '');
+                    $data['paynl_amount_value'] = number_format((float) ($payTransaction->getAmount() - $alreadyRefunded), 2, '.', '');
+                } 
+                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund');  
                 $data['text_button'] = 'Refund';
                 $data['text_description'] = 'Amount to refund';
                 $data['text_confirm'] = 'Are you sure want to refund this amount: %amount% ?';
@@ -70,12 +89,16 @@ class ControllerExtensionPaymentPaynl extends Controller
                 $data['amount_field_text'] = 'Refunded';
                 $data['show_refunded_field'] = true;
             } elseif ($data['show_capture']) {
+                $data['paynl_amount_captured'] = number_format((float) ($payTransaction->getCapturedAmount()->getValue() / 100), 2, '.', '');
+                $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount'] - $data['paynl_amount_captured']), 2, '.', '');
                 $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=capture');
-                $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount']), 2, '.', '');
+                $data['ajax_url_void'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=void');
                 $data['text_button'] = 'Capture';
                 $data['text_description'] = 'Amount to capture';
                 $data['text_confirm'] = 'Are you sure want to capture this amount: %amount% ?';     
-                $data['show_refunded_field'] = false;              
+                $data['show_refunded_field'] = false;     
+                $data['show_void'] = (($payTransaction->isAuthorized() || $payTransaction->getStatus()['code'] == 97) && $data['paynl_amount_captured'] == 0);  
+                $data['text_confirm_void'] = 'Are you sure want to void this amount: %amount% ?';       
             }
 
             return null;

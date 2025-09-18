@@ -44,7 +44,17 @@ Trustly |  | Paysafecard |  | Blik |
 |  |  | WinkelCheque |  |  |
 |  |  | Your Green Gift Cadeaukaart |  |  |
 
+
+
 # Installation
+#### Requirements
+
+> min PHP 8.1  
+> max PHP 8.4  
+> JSON extension installed  
+> CURL extension installed
+
+
 #### Installing
 
 Download the latest .zip from https://github.com/paynl/opencart3-plugin/releases.<br/>
