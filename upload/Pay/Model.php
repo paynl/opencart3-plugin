@@ -90,10 +90,10 @@ class Pay_Model extends Model
      * @return void
      */
     public function refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway)
-    {        
-        $payConfig = new Pay_Controller_Config($this);       
+    {
+        $payConfig = new Pay_Controller_Config($this);
         $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig(false, $tokencode, $apiToken))->start();
-        
+
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
@@ -205,20 +205,12 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param $transactionId
-     * @param $orderId
-     * @return mixed
+     * @param string $transactionId
+     * @return array
      */
-    public function getTransaction($transactionId, $orderId = null)
+    public function getTransaction($transactionId)
     {
-        if (empty($orderId)) {
-            $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE id = '" . $this->db->escape($transactionId) . "' LIMIT 1;";
-        } else {
-            $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE" .
-                " orderId = '" . $this->db->escape($orderId) . "' AND " .
-                " id = '" . $this->db->escape($transactionId) . "' LIMIT 1;";
-        }
-
+        $sql = "SELECT * FROM `" . DB_PREFIX . "paynl_transactions` WHERE id = '" . $this->db->escape($transactionId) . "' LIMIT 1;";
         $result = $this->db->query($sql);
 
         return $result->row;
@@ -258,20 +250,17 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param $transactionId
-     * @param $status
-     * @param $orderId
-     * @return true|void
-     * @throws Pay_Exception
+     * @param string $transactionId
+     * @param string $status
+     * @return boolean|array
      */
-    public function updateTransactionStatus($transactionId, $status, $orderId = null)
+    public function updateTransactionStatus($transactionId, $status)
     {
         if (!in_array($status, array(self::STATUS_CANCELED, self::STATUS_COMPLETE, self::STATUS_PENDING, self::STATUS_REFUNDED))) {
             throw new Pay_Exception('Invalid transaction status');
         }
-
-        # Safety so processed orders cannot go to cancelled
-        $transaction = $this->getTransaction($transactionId, $orderId);
+        //safety so processed orders cannot go to canceled
+        $transaction = $this->getTransaction($transactionId);
 
         if (empty($transaction)) {
             throw new Pay_Exception('Transaction not found');
@@ -435,7 +424,7 @@ class Pay_Model extends Model
      * @throws Pay_Api_Exception
      * @throws Pay_Exception
      */
-    public function processTransaction($transactionId)
+    public function processTransaction($transactionId, $payOrder)
     {
         $this->load->model('setting/setting');
         $this->load->model('checkout/order');
@@ -444,21 +433,10 @@ class Pay_Model extends Model
 
         $transaction = $this->getTransaction($transactionId);
 
-        $payConfig = new Pay_Controller_Config($this);
-        $request = new OrderStatusRequest($transactionId ?? '');
-        $request->setConfig($payConfig->getConfig(true));
+        $status = Pay_Helper::getStatus($payOrder->getStatusCode());
+        $orderStatusId = Pay_Helper::getOrderStatusId($payOrder->getStatusCode(), $settings, $this->_paymentMethodName);
 
-        try {
-            $result = $request->start();
-        } catch (PayException $e) {
-            $this->log('OrderStatusRequest error: ' . $e->getMessage(), true);
-            return false;
-        }
-
-        $status = Pay_Helper::getStatus($result->getStatusCode());
-        $orderStatusId = Pay_Helper::getOrderStatusId($result->getStatusCode(), $settings, $this->_paymentMethodName);
-
-        $this->log('pre ' . print_r(array($result->getStatusCode(), $this->_paymentMethodName, $status, $orderStatusId), true));
+        $this->log('pre ' . print_r(array($payOrder->getStatusCode(), $this->_paymentMethodName, $status, $orderStatusId), true));
 
         # Status update
         $this->updateTransactionStatus($transactionId, $status);
@@ -466,10 +444,13 @@ class Pay_Model extends Model
 
         # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
+        if ($order_info['order_status_id'] == $settings['payment_' . $this->_paymentMethodName . '_pending_status'] && $orderStatusId == $settings['payment_' . $this->_paymentMethodName . '_pending_status']) {
+            throw new \Exception("unexpected status " . $status);
+        }
 
-        $newPaymentMethodArr = $this->getPaymentOption($result->getPaymentMethod());
+        $newPaymentMethodArr = $this->getPaymentOption($payOrder->getPaymentMethod());
 
-        if (!empty($newPaymentMethodArr) && $this->_paymentOptionId != $result->getPaymentMethod() && $this->config->get('payment_paynl_general_follow_payment_method') !== '0') {
+        if (!empty($newPaymentMethodArr) && $this->_paymentOptionId != $payOrder->getPaymentMethod() && $this->config->get('payment_paynl_general_follow_payment_method') !== '0') {
             $newPaymentMethod = $newPaymentMethodArr['name'];
             $oldPaymentMethod = $order_info['payment_method'];
             $orderId = $transaction['orderId'];
@@ -507,8 +488,9 @@ class Pay_Model extends Model
         return $status;
     }
 
-    public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data, $payment_code) {
-        $order_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");
+    public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data, $payment_code)
+    {
+        $order_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int) $order_id . "'");
 
         if ($order_query->num_rows) {
             $query = "UPDATE `" . DB_PREFIX . "order` SET ";
@@ -539,7 +521,7 @@ class Pay_Model extends Model
             $fields[] = "payment_code = '" . $this->db->escape($payment_code) . "'";
 
             $query .= implode(", ", $fields);
-            $query .= " WHERE order_id = '" . (int)$order_id . "'";
+            $query .= " WHERE order_id = '" . (int) $order_id . "'";
 
             $this->db->query($query);
 

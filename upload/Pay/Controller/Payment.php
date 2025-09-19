@@ -9,7 +9,7 @@ class Pay_Controller_Payment extends Controller
 {
     protected $_paymentOptionId;
     protected $_paymentMethodName;
-    protected $data = array();    
+    protected $data = array();
 
     /**
      * @return mixed
@@ -86,15 +86,6 @@ class Pay_Controller_Payment extends Controller
         $status = Pay_Helper::getStatus($orderStatusId);
 
         if (isset($status) && ($status == Pay_Model::STATUS_COMPLETE || $status == Pay_Model::STATUS_PENDING)) {
-            $this->load->model('checkout/order');
-            $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-            $statusPending = $this->config->get('payment_' . $this->_paymentMethodName . '_pending_status');
-            $confirm_on_start = $this->config->get('payment_' . $this->_paymentMethodName . '_confirm_on_start');
-            $message = 'Pay. Transactie aangemaakt. TransactieId: ' . $this->request->get['orderId'] . ' PaymentSessionId: ' . $this->request->get['paymentSessionId'] . ' .<br />';
-
-            if ($confirm_on_start !== 1) {
-                $this->model_checkout_order->addOrderHistory($order_info['order_id'], $statusPending, $message, false);
-            }
             header("Location: " . $this->url->link('checkout/success'));
         } else {
             $this->load->language('extension/payment/paynl3');
@@ -116,19 +107,15 @@ class Pay_Controller_Payment extends Controller
      */
     public function exchange()
     {
-        $this->load->model('extension/payment/' . $this->_paymentMethodName);        
+        $this->load->model('extension/payment/' . $this->_paymentMethodName);
 
-        $transactionId = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : null;
-        $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
-       
-        if(empty($action)){     
-            $payConfig = new Pay_Controller_Config($this);
-            $config = $payConfig->getConfig();
-            $exchange = new Exchange();       
-            $payOrder = $exchange->process($config);
-            $transactionId = $payOrder->getOrderId();
-            $action = $exchange->getAction();  
-        }
+        $payConfig = new Pay_Controller_Config($this);
+        $config = $payConfig->getConfig();
+        $exchange = new Exchange();
+        $payOrder = $exchange->process($config);
+        $transactionId = $payOrder->getOrderId();
+        $action = $exchange->getAction();
+        $statusName = Pay_Helper::getStatus($payOrder->getStatusCode());
 
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
         if ($action == 'pending') {
@@ -138,14 +125,13 @@ class Pay_Controller_Payment extends Controller
             die("TRUE|ignoring, invalid arguments");
         } elseif (substr($action, 0, 6) == 'refund') {
             $message = 'ignoring REFUND';
-
             if ($this->config->get('payment_paynl_general_refund_processing')) {
-                $status = $this->$modelName->processTransaction($transactionId);
+                if ($statusName != Pay_Model::STATUS_REFUNDED) {
+                    die("FALSE|unexpected status for refund: $statusName");
+                }
+                $status = $this->$modelName->processTransaction($transactionId, $payOrder);
                 $message = "Status updated to $status";
             }
-            die("TRUE|" . $message);
-        } elseif ($action == 'capture') {
-            $message = 'ignoring COMPLETE';
             die("TRUE|" . $message);
         } elseif ($action == 'cancel') {
             $message = 'ignoring CANCELED';
@@ -153,7 +139,7 @@ class Pay_Controller_Payment extends Controller
         } else {
             try {
                 $this->$modelName->log('Exchange: ' . $action . ' transactionId: ' . $transactionId);
-                $status = $this->$modelName->processTransaction($transactionId);
+                $status = $this->$modelName->processTransaction($transactionId, $payOrder);
                 $message = "Status updated to $status";
                 die("TRUE|" . $message);
             } catch (Pay_Api_Exception $e) {
@@ -161,7 +147,7 @@ class Pay_Controller_Payment extends Controller
             } catch (Pay_Exception $e) {
                 $message = "Plugin error: " . $e->getMessage();
             } catch (Exception $e) {
-                $message = "Unknown error: " . $e->getMessage();
+                $message = "Error: " . $e->getMessage();
             }
             die("FALSE|" . $message);
         }
