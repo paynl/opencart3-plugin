@@ -104,6 +104,7 @@ class Pay_Controller_Payment extends Controller
 
     /**
      * @return void
+     * @throws Exception
      */
     public function exchange()
     {
@@ -112,46 +113,75 @@ class Pay_Controller_Payment extends Controller
         $payConfig = new Pay_Controller_Config($this);
         $config = $payConfig->getConfig();
         $exchange = new Exchange();
-        $payOrder = $exchange->process($config);
-        $transactionId = $payOrder->getOrderId();
-        $action = $exchange->getAction();
-        $statusName = Pay_Helper::getStatus($payOrder->getStatusCode());
+        try {
+            $payOrder = $exchange->process($config);
 
-        $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-        if ($action == 'pending') {
-            $message = 'ignoring PENDING';
-            die("TRUE|" . $message);
-        } elseif (empty($transactionId)) {
-            die("TRUE|ignoring, invalid arguments");
-        } elseif (substr($action, 0, 6) == 'refund') {
-            $message = 'ignoring REFUND';
-            if ($this->config->get('payment_paynl_general_refund_processing')) {
-                if ($statusName != Pay_Model::STATUS_REFUNDED) {
-                    die("FALSE|unexpected status for refund: $statusName");
+
+            $transactionId = $payOrder->getOrderId();
+            $action = $exchange->getAction();
+            $statusName = Pay_Helper::getStatus($payOrder->getStatusCode());
+
+            $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
+            if ($action == 'pending')
+            {
+                $responseResult = true;
+                $responseMessage = 'Processed pending';
+
+
+            } elseif (empty($transactionId))
+            {
+                $responseResult = true;
+                $responseMessage = 'ignoring, invalid arguments';
+            }
+            elseif (substr($action, 0, 6) == 'refund')
+            {
+                $responseResult = true;
+                $responseMessage = 'ignoring REFUND';
+
+                if ($this->config->get('payment_paynl_general_refund_processing'))
+                {
+                    if ($statusName != Pay_Model::STATUS_REFUNDED)
+                    {
+                        $responseResult = false;
+                        $responseMessage = 'unexpected status for refund: ' . $statusName;
+                    } else {
+                        $status = $this->$modelName->processTransaction($transactionId, $payOrder);
+                        $responseMessage = "Status updated to $status";
+                    }
                 }
-                $status = $this->$modelName->processTransaction($transactionId, $payOrder);
-                $message = "Status updated to $status";
+
+
+            } elseif ($action == 'cancel')
+            {
+                $responseResult = true;
+                $responseMessage = 'ignoring CANCELED';
+
+            } else
+            {
+                try {
+                    $this->$modelName->log('Exchange: ' . $action . ' transactionId: ' . $transactionId);
+                    $status = $this->$modelName->processTransaction($transactionId, $payOrder);
+                    $responseMessage = "Status updated to $status";
+                    $responseResult = true;
+                } catch (Pay_Api_Exception $e) {
+                    $responseMessage = "Api Error: " . $e->getMessage();
+                    $responseResult = false;
+                } catch (Pay_Exception $e) {
+                    $responseMessage = "Plugin error: " . $e->getMessage();
+                    $responseResult = false;
+                } catch (Exception $e) {
+                    $responseMessage = "Error: " . $e->getMessage();
+                    $responseResult = false;
+                }
             }
-            die("TRUE|" . $message);
-        } elseif ($action == 'cancel') {
-            $message = 'ignoring CANCELED';
-            die("TRUE|" . $message);
-        } else {
-            try {
-                $this->$modelName->log('Exchange: ' . $action . ' transactionId: ' . $transactionId);
-                $status = $this->$modelName->processTransaction($transactionId, $payOrder);
-                $message = "Status updated to $status";
-                die("TRUE|" . $message);
-            } catch (Pay_Api_Exception $e) {
-                $message = "Api Error: " . $e->getMessage();
-            } catch (Pay_Exception $e) {
-                $message = "Plugin error: " . $e->getMessage();
-            } catch (Exception $e) {
-                $message = "Error: " . $e->getMessage();
-            }
-            die("FALSE|" . $message);
+
+        } catch (Throwable $exception) {
+            $responseResult = false;
+            $responseMessage = $exception->getMessage();
         }
-    } 
+
+        $exchange->setResponse($responseResult, $responseMessage);
+    }
 
     /**
      * @return bool
