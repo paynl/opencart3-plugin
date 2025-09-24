@@ -4,6 +4,7 @@ require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Exception\PayException;
 use PayNL\Sdk\Util\Exchange;
+use PayNL\Sdk\Util\ExchangeResponse;
 
 class Pay_Controller_Payment extends Controller
 {
@@ -106,9 +107,11 @@ class Pay_Controller_Payment extends Controller
      * @return void
      * @throws Exception
      */
-    public function exchange()
+    public function exchange(): void
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
+
+        $eResponse = new ExchangeResponse(true, '');
 
         $payConfig = new Pay_Controller_Config($this);
         $config = $payConfig->getConfig();
@@ -122,65 +125,46 @@ class Pay_Controller_Payment extends Controller
             $statusName = Pay_Helper::getStatus($payOrder->getStatusCode());
 
             $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
-            if ($action == 'pending')
-            {
-                $responseResult = true;
-                $responseMessage = 'Processed pending';
-
-
-            } elseif (empty($transactionId))
-            {
-                $responseResult = true;
-                $responseMessage = 'ignoring, invalid arguments';
+            if ($action == 'pending') {
+                $eResponse->set(true, 'Processed pending');
+            } elseif (empty($transactionId)) {
+                $eResponse->set(true, 'ignoring, invalid arguments');
             }
-            elseif (substr($action, 0, 6) == 'refund')
-            {
-                $responseResult = true;
-                $responseMessage = 'ignoring REFUND';
+            elseif (str_starts_with($action, 'refund')) {
+                $eResponse->set(true, 'ignoring REFUND');
 
-                if ($this->config->get('payment_paynl_general_refund_processing'))
-                {
-                    if ($statusName != Pay_Model::STATUS_REFUNDED)
-                    {
-                        $responseResult = false;
-                        $responseMessage = 'unexpected status for refund: ' . $statusName;
+                if ($this->config->get('payment_paynl_general_refund_processing')) {
+                    if ($statusName != Pay_Model::STATUS_REFUNDED) {
+                        $eResponse->set(false, 'unexpected status for refund: ' . $statusName);
                     } else {
-                        $status = $this->$modelName->processTransaction($transactionId, $payOrder);
-                        $responseMessage = "Status updated to $status";
+                        $eResponse = $this->$modelName->processTransaction($transactionId, $payOrder);
                     }
                 }
 
+            } elseif ($action == 'cancel') {
+                $eResponse->set(true, 'ignoring CANCELED');
 
-            } elseif ($action == 'cancel')
-            {
-                $responseResult = true;
-                $responseMessage = 'ignoring CANCELED';
-
-            } else
-            {
+            } else {
                 try {
                     $this->$modelName->log('Exchange: ' . $action . ' transactionId: ' . $transactionId);
-                    $status = $this->$modelName->processTransaction($transactionId, $payOrder);
-                    $responseMessage = "Status updated to $status";
-                    $responseResult = true;
+                    $eResponse = $this->$modelName->processTransaction($transactionId, $payOrder);
+
                 } catch (Pay_Api_Exception $e) {
-                    $responseMessage = "Api Error: " . $e->getMessage();
-                    $responseResult = false;
+                    $eResponse->set(false, 'API Error ' . $e->getMessage());
+
                 } catch (Pay_Exception $e) {
-                    $responseMessage = "Plugin error: " . $e->getMessage();
-                    $responseResult = false;
+                    $eResponse->set(false, 'Plugin Error ' . $e->getMessage());
+
                 } catch (Exception $e) {
-                    $responseMessage = "Error: " . $e->getMessage();
-                    $responseResult = false;
+                    $eResponse->set(false, 'Error ' . $e->getMessage());
                 }
             }
 
         } catch (Throwable $exception) {
-            $responseResult = false;
-            $responseMessage = $exception->getMessage();
+            $eResponse->set(false, 'Error ' . $exception->getMessage());
         }
 
-        $exchange->setResponse($responseResult, $responseMessage);
+        $exchange->setExchangeResponse($eResponse);
     }
 
     /**

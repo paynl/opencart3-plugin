@@ -3,9 +3,7 @@
 require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Model\Request\ServiceGetConfigRequest;
-use PayNL\Sdk\Config\Config;
-use PayNL\Sdk\Exception\PayException;
-use PayNL\Sdk\Model\Request\OrderStatusRequest;
+use PayNL\Sdk\Util\ExchangeResponse;
 
 class Pay_Model extends Model
 {
@@ -420,11 +418,12 @@ class Pay_Model extends Model
 
     /**
      * @param $transactionId
-     * @return string
-     * @throws Pay_Api_Exception
+     * @param $payOrder
+     * @return ExchangeResponse
      * @throws Pay_Exception
+     * @throws Exception
      */
-    public function processTransaction($transactionId, $payOrder)
+    public function processTransaction($transactionId, $payOrder): ExchangeResponse
     {
         $this->load->model('setting/setting');
         $this->load->model('checkout/order');
@@ -467,7 +466,7 @@ class Pay_Model extends Model
         }
 
         if ($order_info['payment_code'] != $this->_paymentMethodName && $status == self::STATUS_CANCELED) {
-            return 'Not cancelling because the last used method is not this method';
+            return new ExchangeResponse(false, 'Not cancelling because the last used method is not this method');
         }
 
         if ($order_info['order_status_id'] != $orderStatusId) {
@@ -477,7 +476,6 @@ class Pay_Model extends Model
             if ($order_info['order_status_id'] == 0 && $status != self::STATUS_COMPLETE && !$send_status_update) {
                 # not confirmed, only save when completed
                 $this->log('No update, returning. Vars:' . print_r(array($order_info['order_status_id'], $status), true));
-                return $status;
             }
             $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $message, $send_status_update), true));
             $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $message, $send_status_update);
@@ -485,7 +483,7 @@ class Pay_Model extends Model
             $this->log('Not updating  ' . $order_info['order_status_id'] . ' vs ' . $orderStatusId);
         }
 
-        return $status;
+        return new ExchangeResponse(true, 'Updated to: ' . $status);
     }
 
     public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data, $payment_code)
