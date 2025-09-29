@@ -438,17 +438,21 @@ class Pay_Controller_Admin extends Controller
             $this->model_setting_setting->editSetting('payment_' . $this->_paymentMethodName, $settings);
         }
 
-        $this->model_setting_event->addEvent(
-            'paynl_on_order_status_change',
-            'catalog/controller/api/order/history/after',
-            'extension/payment/paynl/paynlOnOrderStatusChange'
-        );
+        if (!$this->model_setting_event->getEventByCode('paynl_on_order_status_change')) {
+            $this->model_setting_event->addEvent(
+                'paynl_on_order_status_change',
+                'catalog/controller/api/order/history/after',
+                'extension/payment/paynl/paynlOnOrderStatusChange'
+            );
+        }
 
-        $this->model_setting_event->addEvent(
-            'paynl_set_order_tab',
-            'admin/view/sale/order_info/before',
-            'extension/payment/paynl/paynlOrderInfoBefore'
-        );
+        if (!$this->model_setting_event->getEventByCode('paynl_set_order_tab')) {
+            $this->model_setting_event->addEvent(
+                'paynl_set_order_tab',
+                'admin/view/sale/order_info/before',
+                'extension/payment/paynl/paynlOrderInfoBefore'
+            );
+        }
     }
 
     /**
