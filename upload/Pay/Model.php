@@ -479,7 +479,7 @@ class Pay_Model extends Model
             }
             if ($order_info['order_status_id'] == 5 && $status == self::STATUS_COMPLETE) {
                 $this->log('Not updating  ' . $order_info['order_status_id'] . ' vs ' . $orderStatusId);
-                return new ExchangeResponse(true, 'Updated to: ' . $status);
+                return new ExchangeResponse(true, 'Ignored: ' . $status);
             }
             $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $message, $send_status_update), true));
             $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $message, $send_status_update);
