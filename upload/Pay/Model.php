@@ -443,7 +443,7 @@ class Pay_Model extends Model
 
         # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
-        if ($order_info['order_status_id'] == $settings['payment_' . $this->_paymentMethodName . '_pending_status'] && $orderStatusId == $settings['payment_' . $this->_paymentMethodName . '_pending_status']) {
+        if ($order_info['order_status_id'] != 0 && $orderStatusId == $settings['payment_' . $this->_paymentMethodName . '_pending_status']) {
             throw new \Exception("unexpected status " . $status);
         }
 
@@ -476,6 +476,10 @@ class Pay_Model extends Model
             if ($order_info['order_status_id'] == 0 && $status != self::STATUS_COMPLETE && !$send_status_update) {
                 # not confirmed, only save when completed
                 $this->log('No update, returning. Vars:' . print_r(array($order_info['order_status_id'], $status), true));
+            }
+            if ($order_info['order_status_id'] == 5 && $status == self::STATUS_COMPLETE) {
+                $this->log('Not updating  ' . $order_info['order_status_id'] . ' vs ' . $orderStatusId);
+                return new ExchangeResponse(true, 'Updated to: ' . $status);
             }
             $this->log('addOrderHistory: ' . print_r(array($order_info['order_id'], $orderStatusId, $message, $send_status_update), true));
             $this->model_checkout_order->addOrderHistory($order_info['order_id'], $orderStatusId, $message, $send_status_update);
