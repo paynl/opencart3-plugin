@@ -95,18 +95,22 @@ class Pay_Controller_Transaction extends Controller
         $order->setInvoiceAddress($invAddress);
 
         $products = new \PayNL\Sdk\Model\Products();
-        $currency_value = $order_info['currency_value'];
 
         foreach ($this->openCart->cart->getProducts() as $productItem) {
-            $priceWithTax = $this->openCart->tax->calculate(
-                $productItem['price'] * $currency_value,
-                $productItem['tax_class_id'],
-                $this->openCart->config->get('config_tax')
+            $priceWithTax = $this->openCart->currency->convert(
+                $this->openCart->tax->calculate(
+                    $productItem['price'],
+                    $productItem['tax_class_id'],
+                    $this->openCart->config->get('config_tax')
+                ),
+                $this->openCart->config->get('config_currency'),
+                $this->openCart->session->data['currency']
             );
 
-            $tax = $priceWithTax - ($productItem['price'] * $currency_value);
+            $priceWithoutTax = $this->openCart->currency->convert($productItem['price'], $this->openCart->config->get('config_currency'), $this->openCart->session->data['currency']);
+            $tax = $priceWithTax - $this->openCart->currency->convert($productItem['price'], $this->openCart->config->get('config_currency'), $this->openCart->session->data['currency']);
 
-            $price = round($priceWithTax);
+            $price = round($priceWithTax, 2);
 
             $product = new Product();
             $product->setId($productItem['product_id']);
@@ -115,7 +119,7 @@ class Pay_Controller_Transaction extends Controller
             $product->setAmount($price);
             $product->setCurrency($order_info['currency_code']);
             $product->setQuantity($productItem['quantity']);
-            $product->setVatPercentage(($tax / $priceWithTax * 100));
+            $product->setVatPercentage(($tax / $priceWithoutTax * 100));
             $products->addProduct($product);
         }
 
@@ -146,29 +150,34 @@ class Pay_Controller_Transaction extends Controller
                 } else {
                     $total_row_tax = 0;
                 }
-                $totalIncl = $total_row['value'] + $total_row_tax;
 
-                $totalIncl = $totalIncl * $currency_value;
-                $total_row_tax = $total_row_tax * $currency_value;
+                $totalExcl = $this->openCart->currency->convert($total_row['value'], $this->openCart->config->get('config_currency'), $this->openCart->session->data['currency']);
+                $total_row_tax = $this->openCart->currency->convert($total_row_tax, $this->openCart->config->get('config_currency'), $this->openCart->session->data['currency']);
+                $totalIncl = $totalExcl + $total_row_tax;
 
                 switch ($total_row['code']) {
                     case 'shipping':
-                        $type = "SHIPPING";
+                        $type = Product::TYPE_SHIPPING;
+                        break;
+                    case 'coupon':
+                    case 'voucher':
+                        $type = Product::TYPE_DISCOUNT;
                         break;
                     default:
-                        $type = "ARTICLE";
+                        $type = Product::TYPE_ARTICLE;
                         break;
                 }
 
                 $product = new Product();
-                $product->setId($total_row['code'], );
+                $product->setId($total_row['code']);
                 $product->setDescription($total_row['title']);
-                $product->setType(Product::TYPE_ARTICLE);
-                $product->setAmount(round($totalIncl));
+                $product->setType($type);
+                $product->setAmount(round($totalIncl, 2));
                 $product->setCurrency($order_info['currency_code']);
                 $product->setQuantity(1);
-                $product->setVatPercentage($total_row_tax > 0 ? ($total_row_tax / $totalIncl * 100) : 0);
+                $product->setVatPercentage($total_row_tax > 0 ? ($total_row_tax / $totalExcl * 100) : 0);
                 $products->addProduct($product);
+
             }
         }
 
@@ -176,7 +185,7 @@ class Pay_Controller_Transaction extends Controller
         $request->setOrder($order);
         $request->setStats((new \PayNL\Sdk\Model\Stats())->setObject($this->payConfig->getObject()));
 
-        $amount = round($order_info['total'] * $currency_value);
+        $amount = round($this->openCart->currency->convert($order_info['total'], $this->openCart->config->get('config_currency'), $this->openCart->session->data['currency']), 2);
         $request->setAmount((float) $amount);
 
         $transaction = $request->start();
