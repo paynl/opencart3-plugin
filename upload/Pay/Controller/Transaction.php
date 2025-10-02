@@ -21,13 +21,13 @@ class Pay_Controller_Transaction extends Controller
      * @return PayNL\Sdk\Model\Response\OrderCreateResponse
      */
     public function startTransaction($order_info, $paymentOption, $paymentMethodName)
-    {       
+    {
         $request = new OrderCreateRequest();
         $request->setConfig($this->payConfig->getConfig(true));
         $request->setServiceId($this->payConfig->getServiceId());
         $request->setDescription($order_info['order_id']);
         $request->setReference($order_info['order_id']);
-        $request->setCurrency('EUR');
+        $request->setCurrency($order_info['currency_code']);
         $request->setPaymentMethodId((int) $paymentOption);
         if (!empty($this->openCart->request->post['optionSubId'])) {
             $request->setIssuerId($this->openCart->request->post['optionSubId']);
@@ -67,12 +67,13 @@ class Pay_Controller_Transaction extends Controller
         $request->setCustomer($customer);
 
         $order = new \PayNL\Sdk\Model\Order();
-        $order->setCountryCode('NL');
+        $order->setCountryCode($order_info['payment_iso_code_2']);
 
         $strAddress = $order_info['shipping_address_1'] . ' ' . $order_info['shipping_address_2'];
         list($street, $housenumber) = Pay_Helper::splitAddress($strAddress);
         $devAddress = new \PayNL\Sdk\Model\Address();
         $devAddress->setCode('dev');
+
         $devAddress->setStreetName($street);
         $devAddress->setStreetNumber($housenumber);
         $devAddress->setZipCode($order_info['shipping_postcode']);
@@ -112,7 +113,7 @@ class Pay_Controller_Transaction extends Controller
             $product->setDescription($productItem['name']);
             $product->setType(Product::TYPE_ARTICLE);
             $product->setAmount($price);
-            $product->setCurrency('EUR');
+            $product->setCurrency($order_info['currency_code']);
             $product->setQuantity($productItem['quantity']);
             $product->setVatPercentage(($tax / $priceWithTax * 100));
             $products->addProduct($product);
@@ -164,7 +165,7 @@ class Pay_Controller_Transaction extends Controller
                 $product->setDescription($total_row['title']);
                 $product->setType(Product::TYPE_ARTICLE);
                 $product->setAmount(round($totalIncl));
-                $product->setCurrency('EUR');
+                $product->setCurrency($order_info['currency_code']);
                 $product->setQuantity(1);
                 $product->setVatPercentage($total_row_tax > 0 ? ($total_row_tax / $totalIncl * 100) : 0);
                 $products->addProduct($product);
