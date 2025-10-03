@@ -1,7 +1,7 @@
 <?php
 
-class Pay_Api {
-
+class Pay_Api
+{
     const REQUEST_TYPE_POST = 1;
     const REQUEST_TYPE_GET = 0;
 
@@ -22,7 +22,8 @@ class Pay_Api {
      *
      * @param string $serviceId
      */
-    public function setServiceId($serviceId) {
+    public function setServiceId($serviceId)
+    {
         $this->_serviceId = $serviceId;
     }
 
@@ -75,12 +76,13 @@ class Pay_Api {
         return $host . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
     }
 
-    public function getPostData(){
+    public function getPostData()
+    {
         return $this->_getPostData();
     }
-    public function doRequest() {
+    public function doRequest()
+    {
         if ($this->_getPostData()) {
-
             $url = $this->_getApiUrl();
             $data = $this->_getPostData();
 
@@ -104,7 +106,7 @@ class Pay_Api {
 
             if ($result == false) {
                 $error = curl_error($ch);
-                throw new Pay_Api_Exception("Curl error: ".$error);
+                throw new Pay_Api_Exception("Curl error: " . $error);
             }
             curl_close($ch);
 
@@ -116,13 +118,14 @@ class Pay_Api {
         }
     }
 
-    protected function validateResult($arrResult) {
+    protected function validateResult($arrResult)
+    {
         if ($arrResult['request']['result'] == 1) {
             return true;
         } else {
-            if(isset($arrResult['request']['errorId']) && isset($arrResult['request']['errorMessage']) ){
+            if (isset($arrResult['request']['errorId']) && isset($arrResult['request']['errorMessage'])) {
                 throw new Pay_Api_Exception($arrResult['request']['errorId'] . ' - ' . $arrResult['request']['errorMessage']);
-            } elseif(isset($arrResult['error'])){
+            } elseif (isset($arrResult['error'])) {
                 throw new Pay_Api_Exception($arrResult['error']);
             } else {
                 throw new Pay_Api_Exception('Unexpected api result');

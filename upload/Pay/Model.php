@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
+ */
+
 require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Model\Request\ServiceGetConfigRequest;

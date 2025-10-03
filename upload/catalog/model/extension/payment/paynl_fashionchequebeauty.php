@@ -9,5 +9,4 @@ class ModelExtensionPaymentPaynlFashionchequebeauty extends Pay_Model
 {
     protected $_paymentOptionId = 4428;
     protected $_paymentMethodName = 'paynl_fashionchequebeauty';
-
 }

@@ -17,10 +17,9 @@ class ControllerExtensionPaymentPaynl extends Controller
     public function paynlOrderInfoBefore(&$route, &$data, &$template_code = null)
     {
         $this->load->model('sale/order');
-        $order_info = $this->model_sale_order->getOrder($data['order_id']);        
+        $order_info = $this->model_sale_order->getOrder($data['order_id']);
 
         if ((strpos($order_info['payment_code'], 'paynl') !== false)) {
-            
             $template_buffer = $this->getTemplateBuffer($route, $template_code);
 
             $admin_dir = dirname(dirname(dirname(dirname(__FILE__))));
@@ -38,11 +37,11 @@ class ControllerExtensionPaymentPaynl extends Controller
             $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($data['order_id']);
             $transactionId = $transaction['id'];
 
-            $this->load->model('setting/setting');      
+            $this->load->model('setting/setting');
 
             $payConfig = new Pay_Controller_Config($this);
 
-            try {                
+            try {
                 $orderStatusRequest = new OrderStatusRequest($transactionId);
                 $orderStatusRequest->setConfig($payConfig->getConfig(true));
                 $payTransaction = $orderStatusRequest->start();
@@ -53,7 +52,7 @@ class ControllerExtensionPaymentPaynl extends Controller
             if (empty($payTransaction) || ($payTransaction instanceof \PayNL\Sdk\Model\Pay\PayOrder && ($payTransaction->isPaid() || $payTransaction->isAuthorized()))) {
                 $transactionStatusRequest = new TransactionStatusRequest($transactionId);
                 $transactionStatusRequest->setConfig($payConfig->getConfig(true));
-                $payGmsOrder = $transactionStatusRequest->start();                
+                $payGmsOrder = $transactionStatusRequest->start();
                 if ($payGmsOrder->isRefunded() || empty($payTransaction)) {
                     $payTransaction = $payGmsOrder;
                 }
@@ -65,11 +64,11 @@ class ControllerExtensionPaymentPaynl extends Controller
 
             $data['paynl_status_code'] = $payTransaction->getStatusCode();
             $data['paynl_status_name'] = $payTransaction->getStatusName();
-            $data['paynl_currency'] = $payTransaction->getCurrency();            
+            $data['paynl_currency'] = $payTransaction->getCurrency();
 
             $data['cart_amount'] = number_format((float) $order_info['total'], 2, '.', '');
-            $data['paynl_amount'] = number_format((float) $payTransaction->getAmount(), 2, '.', '');  
-            $data['cart_currency'] = $order_info['currency_code'];    
+            $data['paynl_amount'] = number_format((float) $payTransaction->getAmount(), 2, '.', '');
+            $data['cart_currency'] = $order_info['currency_code'];
 
             $data['show_refund'] = ($payTransaction->isPaid() || $payTransaction->isRefundedPartial());
             $data['show_capture'] = ($payTransaction->isAuthorized() || $payTransaction->getStatus()['code'] == 97);
@@ -80,8 +79,8 @@ class ControllerExtensionPaymentPaynl extends Controller
                     $data['paynl_amount_refunded'] = $alreadyRefunded;
                     $data['paynl_amount'] = number_format((float) $payTransaction->getAmount() - $alreadyRefunded, 2, '.', '');
                     $data['paynl_amount_value'] = number_format((float) ($payTransaction->getAmount() - $alreadyRefunded), 2, '.', '');
-                } 
-                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund');  
+                }
+                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund');
                 $data['text_button'] = 'Refund';
                 $data['text_description'] = 'Amount to refund';
                 $data['text_confirm'] = 'Are you sure want to refund this amount: %amount% ?';
@@ -95,10 +94,10 @@ class ControllerExtensionPaymentPaynl extends Controller
                 $data['ajax_url_void'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=void');
                 $data['text_button'] = 'Capture';
                 $data['text_description'] = 'Amount to capture';
-                $data['text_confirm'] = 'Are you sure want to capture this amount: %amount% ?';     
-                $data['show_refunded_field'] = false;     
-                $data['show_void'] = (($payTransaction->isAuthorized() || $payTransaction->getStatus()['code'] == 97) && $data['paynl_amount_captured'] == 0);  
-                $data['text_confirm_void'] = 'Are you sure want to void this amount: %amount% ?';       
+                $data['text_confirm'] = 'Are you sure want to capture this amount: %amount% ?';
+                $data['show_refunded_field'] = false;
+                $data['show_void'] = (($payTransaction->isAuthorized() || $payTransaction->getStatus()['code'] == 97) && $data['paynl_amount_captured'] == 0);
+                $data['text_confirm_void'] = 'Are you sure want to void this amount: %amount% ?';
             }
 
             return null;
@@ -132,18 +131,18 @@ class ControllerExtensionPaymentPaynl extends Controller
                 if (file_exists(DIR_MODIFICATION . 'admin/' . substr($file, strlen(DIR_APPLICATION)))) {
                     $file = DIR_MODIFICATION . 'admin/' . substr($file, strlen(DIR_APPLICATION));
                 }
-            } else if ($this->startsWith($file, DIR_SYSTEM)) {
+            } elseif ($this->startsWith($file, DIR_SYSTEM)) {
                 if (file_exists(DIR_MODIFICATION . 'system/' . substr($file, strlen(DIR_SYSTEM)))) {
                     $file = DIR_MODIFICATION . 'system/' . substr($file, strlen(DIR_SYSTEM));
                 }
             }
-        }   
+        }
 
         if (class_exists('VQMod', false)) {
             if (VQMod::$directorySeparator) {
-                if (strpos($file, 'vq2-') !== FALSE) {
+                if (strpos($file, 'vq2-') !== false) {
                     return $file;
-                }           
+                }
                 if ($original_file != $file) {
                     return VQMod::modCheck($file, $original_file);
                 }
@@ -160,5 +159,4 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
         return (substr($haystack, 0, strlen($needle)) == $needle);
     }
-
 }

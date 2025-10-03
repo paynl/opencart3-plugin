@@ -20,7 +20,7 @@ class ControllerExtensionPaymentPaynl extends Controller
     {
         $orderId = $_REQUEST['order_id'];
         $orderStatusId = $_REQUEST['order_status_id'];
-    
+
         $autoVoid = $this->config->get('payment_paynl_general_auto_void');
         $autoCapture = $this->config->get('payment_paynl_general_auto_capture');
 
@@ -34,11 +34,11 @@ class ControllerExtensionPaymentPaynl extends Controller
 
         try {
             $transaction = $request->start();
-        } catch (PayException $e) {        
+        } catch (PayException $e) {
             exit();
         }
 
-        $transactionState = $transaction->getStatusName();     
+        $transactionState = $transaction->getStatusName();
 
         if (
             $orderStatusId == 7 &&
@@ -67,7 +67,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         $payConfig = new Pay_Controller_Config($this);
 
         $orderVoidRequest = new OrderVoidRequest($transactionId);
-        $orderVoidRequest->setConfig($payConfig->getConfig());    
+        $orderVoidRequest->setConfig($payConfig->getConfig());
         try {
             $orderVoidRequest->start();
             $autoVoidMessage = 'Auto-Void completed';
@@ -78,7 +78,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoVoidMessage, false);
     }
 
-    /** 
+    /**
      * @param $transactionId
      * @param $orderId
      * @param $orderStatusId
@@ -90,13 +90,13 @@ class ControllerExtensionPaymentPaynl extends Controller
         $payConfig = new Pay_Controller_Config($this);
 
         $orderCaptureRequest = new OrderCaptureRequest($transactionId);
-        $orderCaptureRequest->setConfig($payConfig->getConfig());    
+        $orderCaptureRequest->setConfig($payConfig->getConfig());
         try {
             $orderCaptureRequest->start();
             $autoCaptureMessage = 'Auto-Capture completed';
         } catch (PayException $e) {
             $autoCaptureMessage = 'Auto-Capture: something went wrong. ' . $e->getMessage();
-        }     
+        }
 
         $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $autoCaptureMessage, false);
     }
@@ -107,7 +107,8 @@ class ControllerExtensionPaymentPaynl extends Controller
      * @param $output
      * @return void
      */
-    public function addFastCheckoutButtons(&$route, &$data, &$output) {
+    public function addFastCheckoutButtons(&$route, &$data, &$output)
+    {
         if (!$this->isButtonAllowed('cart')) {
             return;
         }
@@ -138,7 +139,8 @@ class ControllerExtensionPaymentPaynl extends Controller
      * @param $output
      * @return void
      */
-    public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output) {
+    public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output)
+    {
         if (!$this->isButtonAllowed('mini_cart')) {
             return;
         }
@@ -165,7 +167,8 @@ class ControllerExtensionPaymentPaynl extends Controller
      * @param $output
      * @return void
      */
-    public function addFastCheckoutProductPageButtons(&$route, &$data, &$output) {
+    public function addFastCheckoutProductPageButtons(&$route, &$data, &$output)
+    {
         if (!$this->isButtonAllowed('product')) {
             return;
         }
@@ -186,7 +189,8 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
-    private function getFastCheckoutButtons($options = array(), $page = null) {
+    private function getFastCheckoutButtons($options = array(), $page = null)
+    {
         $this->load->model('setting/extension');
         $results = $this->model_setting_extension->getExtensions('payment');
         $payMethodsWithFastCheckout = array();
@@ -208,7 +212,7 @@ class ControllerExtensionPaymentPaynl extends Controller
                 if ($fastCheckout === true && $allowedToProceed === true) {
                     $paypalContainerId = isset($options['paypal_container_id']) ?  $options['paypal_container_id'] : null;
 
-                    $payMethodsWithFastCheckout[] = $this->getFastCheckoutButtonLayout($result['code'],  $paypalContainerId);
+                    $payMethodsWithFastCheckout[] = $this->getFastCheckoutButtonLayout($result['code'], $paypalContainerId);
                 }
             }
         }
@@ -220,7 +224,8 @@ class ControllerExtensionPaymentPaynl extends Controller
      * @param $methodCode
      * @return string|void
      */
-    private function getFastCheckoutButtonLayout($methodCode, $paypalContainerId) {
+    private function getFastCheckoutButtonLayout($methodCode, $paypalContainerId)
+    {
         if ($paypalContainerId === null) {
             $paypalContainerId = 'paypal-button-container';
         }
@@ -235,18 +240,21 @@ class ControllerExtensionPaymentPaynl extends Controller
                 </a></div>';
             case 'paynl_paypal':
                 return '<div class="fast-checkout-btn-margin" id="' . $paypalContainerId . '" data-init-url="' . $url . '"></div>';
-            default: null;
+            default:
+                null;
         }
     }
 
-    private function loadResources(&$output) {
+    private function loadResources(&$output)
+    {
         $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
         $scriptTag = '<script src="catalog/view/theme/default/javascript/paynl.js"></script>';
 
         $output = str_replace('<div id="cart" class="btn-group btn-block">', '<div id="cart" class="btn-group btn-block">' . $styleTag . $scriptTag, $output);
     }
 
-    private function isButtonAllowed($placeName) {
+    private function isButtonAllowed($placeName)
+    {
         $configKeys = $this->getButtonPlacesConfigKeys();
 
         foreach ($configKeys as $configKey) {
@@ -260,7 +268,8 @@ class ControllerExtensionPaymentPaynl extends Controller
         return false;
     }
 
-    private function getButtonPlacesConfigKeys() {
+    private function getButtonPlacesConfigKeys()
+    {
         return [
             'payment_paynl_ideal_button_places',
             'payment_paynl_paypal_button_places',

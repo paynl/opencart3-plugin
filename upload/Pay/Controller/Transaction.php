@@ -8,7 +8,6 @@ use PayNL\Sdk\Model\Product;
 
 class Pay_Controller_Transaction extends Controller
 {
-
     public $openCart;
     public $payConfig;
     public function __construct($openCart) // phpcs:ignore
@@ -177,7 +176,6 @@ class Pay_Controller_Transaction extends Controller
                 $product->setQuantity(1);
                 $product->setVatPercentage($total_row_tax > 0 ? ($total_row_tax / $totalExcl * 100) : 0);
                 $products->addProduct($product);
-
             }
         }
 

@@ -101,7 +101,7 @@ class Pay_Api_FastCheckout extends Pay_Api
     }
 
     /**
-     * @param int $paymentMethod
+     * @param integer $paymentMethod
      * @return void
      */
     public function setPaymentMethod($paymentMethod = 10)
@@ -221,7 +221,6 @@ class Pay_Api_FastCheckout extends Pay_Api
     public function doRequest()
     {
         if ($this->_getPostData()) {
-
             $url = $this->_getApiUrl();
             $data = $this->_getPostData();
 

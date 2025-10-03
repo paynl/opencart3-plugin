@@ -183,5 +183,5 @@ class Pay_Helper
             $output = $NDat[0];
         }
         return $output;
-    }    
+    }
 }
