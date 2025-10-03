@@ -10,14 +10,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0      
-          options: --exclude=/github/workspace/upload/Pay/vendor/ --ignore=*/vendor/*
-
+          fetch-depth: 0
       # https://github.com/github/super-linter
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
-        with:
-          options: --exclude=/github/workspace/upload/Pay/vendor --ignore=*/vendor/*
         env:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -25,3 +21,4 @@ jobs:
           VALIDATE_PHP: true
           VALIDATE_PHP_PHPCS: true
           VALIDATE_ALL_CODEBASE: false
+          FILTER_REGEX_EXCLUDE: .*vendor/.*
