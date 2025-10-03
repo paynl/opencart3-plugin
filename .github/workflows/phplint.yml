@@ -11,13 +11,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0      
-          options: --exclude=vendor,vendor/*,upload/Pay/vendor,upload/Pay/vendor/*
+          options: --exclude=/github/workspace/upload/Pay/vendor/ --ignore=*/vendor/*
 
       # https://github.com/github/super-linter
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
         with:
-          options: --exclude=vendor,vendor/*,upload/Pay/vendor,upload/Pay/vendor/*
+          options: --exclude=/github/workspace/upload/Pay/vendor --ignore=*/vendor/*
         env:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
