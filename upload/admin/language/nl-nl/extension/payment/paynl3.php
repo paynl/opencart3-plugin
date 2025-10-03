@@ -23,7 +23,7 @@ $_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId o
     <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
 
 $_['error_wrong_apitoken'] = 'Ongeldige API-token, u kunt uw API-token vinden op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
-$_['error_wrong_tokencode'] = 'Ongeldige tokencode, een tokencode begint altijd met AT-, u kunt uw tokencode vinden op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_tokencode'] = 'Ongeldige tokencode, een tokencode begint altijd met AT-, u kunt uw tokencode vinden op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>'; // phpcs:ignore
 $_['error_wrong_serviceid'] = 'Ongeldige verkooplocatie, een verkooplocatie begint altijd met SL-';
 
 //texts

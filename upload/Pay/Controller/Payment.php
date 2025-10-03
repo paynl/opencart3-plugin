@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
+ */
+
 require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Exception\PayException;
@@ -80,6 +86,9 @@ class Pay_Controller_Payment extends Controller
         die(json_encode($response));
     }
 
+    /**
+     * @return void
+     */
     public function finish()
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
@@ -169,7 +178,7 @@ class Pay_Controller_Payment extends Controller
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @return string
      */
     public function getErrorMessage($message)
@@ -193,6 +202,10 @@ class Pay_Controller_Payment extends Controller
         return $errorMessage;
     }
 
+    /**
+     * @param string $defaultShippingMethodConfigKey
+     * @return array
+     */
     protected function createBlankFastCheckoutOrder($defaultShippingMethodConfigKey)
     {
         $this->load->model('setting/extension');
@@ -345,6 +358,13 @@ class Pay_Controller_Payment extends Controller
         return $order_data;
     }
 
+    /**
+     * @param array $orderData
+     * @return array
+     * @throws Pay_Api_Exception
+     * @throws PayException
+     * @throws Exception
+     */
     protected function sendRequest($orderData)
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);

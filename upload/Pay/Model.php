@@ -147,7 +147,7 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param $text
+     * @param string $text
      * @return void
      */
     public function log($text)
@@ -293,7 +293,7 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param $orderId
+     * @param string $orderId
      * @return string
      */
     private function getCustomerGroupId($orderId)
@@ -425,8 +425,8 @@ class Pay_Model extends Model
     }
 
     /**
-     * @param $transactionId
-     * @param $payOrder
+     * @param string $transactionId
+     * @param string $payOrder
      * @return ExchangeResponse
      * @throws Pay_Exception
      * @throws Exception
@@ -498,6 +498,14 @@ class Pay_Model extends Model
         return new ExchangeResponse(true, 'Updated to: ' . $status);
     }
 
+    /**
+     * @param string $order_id
+     * @param array $payment_data
+     * @param array $shipping_data
+     * @param array $customer_data
+     * @param string $payment_code
+     * @return boolean
+     */
     public function updateOrderAfterWebhook($order_id, $payment_data, $shipping_data, $customer_data, $payment_code)
     {
         $order_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int) $order_id . "'");

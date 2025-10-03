@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
+ */
+
 require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Exception\PayException;
@@ -16,15 +22,15 @@ class Pay_Controller_Admin extends Controller
     protected $data = array();
     protected $error;
 
-    const BUTTON_PLACES = array(
+    public const BUTTON_PLACES = array(
         ['value' => 'Cart', 'key' => 'cart'],
         ['value' => 'Mini cart', 'key' => 'mini_cart'],
         ['value' => 'Product', 'key' => 'product']
     );
 
     /**
-     * @param $field
-     * @return null
+     * @param string $field
+     * @return string|null
      */
     private function configGet($field)
     {
@@ -328,8 +334,8 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @param $field
-     * @return null
+     * @param string $field
+     * @return string|null
      */
     private function getPost($field)
     {
@@ -456,8 +462,8 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @param $suggestions_form_message
-     * @param $suggestions_form_email
+     * @param string $suggestions_form_message
+     * @param string $suggestions_form_email
      * @return void
      */
     public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email, $suggestions_form_plugin_version)
@@ -518,7 +524,7 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @param $version
+     * @param string $version
      * @return void
      */
     private function checkVersion($version)
@@ -611,7 +617,7 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @return void
+     * @return array
      */
     private function capture()
     {
@@ -633,7 +639,7 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @return void
+     * @return array
      */
     public function void()
     {

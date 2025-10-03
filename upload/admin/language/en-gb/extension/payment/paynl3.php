@@ -25,7 +25,7 @@ $_['error_no_tokencode'] = 'You must enter an Token Code, you can find your AT-c
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 
 $_['error_wrong_apitoken'] = 'Invalid API token, you can find your API token on: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
-$_['error_wrong_tokencode'] = 'Invalid Token Code, a Token Code always starts with AT-, you can find your Token Code on: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_tokencode'] = 'Invalid Token Code, a Token Code always starts with AT-, you can find your Token Code on: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>'; // phpcs:ignore
 $_['error_wrong_serviceid'] = 'Invalid Sales location, a Sales location always starts with SL-';
 
 //texts

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
+ */
+
 class Pay_Helper
 {
     /**
@@ -98,7 +104,7 @@ class Pay_Helper
     }
 
     /**
-     * @param $payState
+     * @param integer$payState
      * @return string
      */
     public static function getStatus($payState)
@@ -115,9 +121,9 @@ class Pay_Helper
     }
 
     /**
-     * @param $payState
-     * @param $settings
-     * @param $name
+     * @param integer $payState
+     * @param array $settings
+     * @param string $name
      * @return mixed
      */
     public static function getOrderStatusId($payState, $settings, $name)

@@ -11,7 +11,7 @@ use PayNL\Sdk\Model\Request\TransactionStatusRequest;
 class ControllerExtensionPaymentPaynl extends Controller
 {
     /**
-     * @return void
+     * @return null|void
      * @throws Pay_Api_Exception
      */
     public function paynlOrderInfoBefore(&$route, &$data, &$template_code = null)
@@ -80,7 +80,7 @@ class ControllerExtensionPaymentPaynl extends Controller
                     $data['paynl_amount'] = number_format((float) $payTransaction->getAmount() - $alreadyRefunded, 2, '.', '');
                     $data['paynl_amount_value'] = number_format((float) ($payTransaction->getAmount() - $alreadyRefunded), 2, '.', '');
                 }
-                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund');
+                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund'); // phpcs:ignore
                 $data['text_button'] = 'Refund';
                 $data['text_description'] = 'Amount to refund';
                 $data['text_confirm'] = 'Are you sure want to refund this amount: %amount% ?';
@@ -90,8 +90,8 @@ class ControllerExtensionPaymentPaynl extends Controller
             } elseif ($data['show_capture']) {
                 $data['paynl_amount_captured'] = number_format((float) ($payTransaction->getCapturedAmount()->getValue() / 100), 2, '.', '');
                 $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount'] - $data['paynl_amount_captured']), 2, '.', '');
-                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=capture');
-                $data['ajax_url_void'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=void');
+                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=capture'); // phpcs:ignore
+                $data['ajax_url_void'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=void'); // phpcs:ignore
                 $data['text_button'] = 'Capture';
                 $data['text_description'] = 'Amount to capture';
                 $data['text_confirm'] = 'Are you sure want to capture this amount: %amount% ?';
@@ -104,6 +104,11 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
+    /**
+     * @param string $route
+     * @param string $event_template_buffer
+     * @return string|boolean
+     */
     protected function getTemplateBuffer($route, $event_template_buffer)
     {
         if ($event_template_buffer) {
@@ -122,6 +127,10 @@ class ControllerExtensionPaymentPaynl extends Controller
         exit;
     }
 
+    /**
+     * @param string $file
+     * @return string
+     */
     protected function modCheck($file)
     {
 
@@ -152,6 +161,11 @@ class ControllerExtensionPaymentPaynl extends Controller
         return $file;
     }
 
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @return boolean
+     */
     protected function startsWith($haystack, $needle)
     {
         if (strlen($haystack) < strlen($needle)) {

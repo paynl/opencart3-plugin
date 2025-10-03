@@ -56,9 +56,9 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
-     * @param $transactionId
-     * @param $orderId
-     * @param $orderStatusId
+     * @param string $transactionId
+     * @param string $orderId
+     * @param string $orderStatusId
      * @return void
      * @throws Pay_Api_Exception
      */
@@ -79,9 +79,9 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
-     * @param $transactionId
-     * @param $orderId
-     * @param $orderStatusId
+     * @param string $transactionId
+     * @param string $orderId
+     * @param string $orderStatusId
      * @return void
      * @throws Pay_Api_Exception
      */
@@ -102,9 +102,9 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
-     * @param $route
-     * @param $data
-     * @param $output
+     * @param string $route
+     * @param array $data
+     * @param string $output
      * @return void
      */
     public function addFastCheckoutButtons(&$route, &$data, &$output)
@@ -134,9 +134,9 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
-     * @param $route
-     * @param $data
-     * @param $output
+     * @param string $route
+     * @param array $data
+     * @param string $output
      * @return void
      */
     public function addFastCheckoutMiniCartButtons(&$route, &$data, &$output)
@@ -162,9 +162,9 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
-     * @param $route
-     * @param $data
-     * @param $output
+     * @param string $route
+     * @param array $data
+     * @param string $output
      * @return void
      */
     public function addFastCheckoutProductPageButtons(&$route, &$data, &$output)
@@ -189,6 +189,11 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
+    /**
+     * @param array $options
+     * @param string $page
+     * @return array
+     */
     private function getFastCheckoutButtons($options = array(), $page = null)
     {
         $this->load->model('setting/extension');
@@ -221,7 +226,8 @@ class ControllerExtensionPaymentPaynl extends Controller
     }
 
     /**
-     * @param $methodCode
+     * @param string $methodCode
+     * @param string $paypalContainerId
      * @return string|void
      */
     private function getFastCheckoutButtonLayout($methodCode, $paypalContainerId)
@@ -245,6 +251,10 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
     }
 
+    /**
+     * @param string $output
+     * @return void
+     */
     private function loadResources(&$output)
     {
         $styleTag = '<link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css">';
@@ -253,6 +263,10 @@ class ControllerExtensionPaymentPaynl extends Controller
         $output = str_replace('<div id="cart" class="btn-group btn-block">', '<div id="cart" class="btn-group btn-block">' . $styleTag . $scriptTag, $output);
     }
 
+    /**
+     * @param string $placeName
+     * @return boolean
+     */
     private function isButtonAllowed($placeName)
     {
         $configKeys = $this->getButtonPlacesConfigKeys();
@@ -268,6 +282,9 @@ class ControllerExtensionPaymentPaynl extends Controller
         return false;
     }
 
+    /**
+     * @return array
+     */
     private function getButtonPlacesConfigKeys()
     {
         return [

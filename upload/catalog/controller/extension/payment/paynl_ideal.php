@@ -12,6 +12,10 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
     protected $_paymentOptionId = 10;
     protected $_paymentMethodName = 'paynl_ideal';
 
+    /**
+     * @return void
+     * @throws Pay_Api_Exception
+     */
     public function initFastCheckout()
     {
         if (empty($this->cart->getProducts())) {
@@ -64,7 +68,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
     }
 
     /**
-     * @param $orderId
+     * @param string $orderId
      * @return string
      */
     private function getCustomerGroupId($orderId)

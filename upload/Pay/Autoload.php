@@ -2,14 +2,26 @@
 
 /**
  * Generic autoloader for classes
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
  */
+
 class Pay_Autoload
 {
+    /**
+     * Register the autoloader
+     * @return void
+     */
     public static function register()
     {
         spl_autoload_register(array(__CLASS__, 'spl_autoload_register'));
     }
 
+    /**
+     * @param string $class_name
+     * @return void
+     */
     public static function spl_autoload_register($class_name)
     {
         $dir = realpath(dirname(__FILE__));
