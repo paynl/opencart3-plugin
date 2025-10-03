@@ -10,12 +10,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-        exclude:
-          - upload/Pay/vendor
-          - upload/Pay/vendor/*
-          - vendor
-          - vendor/*
+          fetch-depth: 0      
+          options: --ignore=*/vendor/*
 
       # https://github.com/github/super-linter
       - name: Lint Code Base
