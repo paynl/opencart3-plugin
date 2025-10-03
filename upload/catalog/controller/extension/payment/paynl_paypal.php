@@ -1,4 +1,5 @@
 <?php
+
 $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 $autoload = $dir . '/Pay/Autoload.php';
 
@@ -164,7 +165,6 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
             $action = $exchange->getAction();
             $statusCode = $payOrder->getStatusCode();
             $status = Pay_Helper::getStatus($statusCode);
-
         } catch (\Exception $e) {
             die('FALSE| Error fetching transaction. ' . $e->getMessage());
         }

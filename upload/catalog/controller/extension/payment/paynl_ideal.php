@@ -1,4 +1,5 @@
 <?php
+
 $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 $autoload = $dir . '/Pay/Autoload.php';
 
@@ -110,7 +111,6 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             $action = $exchange->getAction();
             $statusCode = $payOrder->getStatusCode();
             $status = Pay_Helper::getStatus($statusCode);
-
         } catch (\Exception $e) {
             die('FALSE| Error fetching transaction. ' . $e->getMessage());
         }
@@ -188,6 +188,5 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         } else {
             die("FALSE| Unexpected status: $status for action: $action");
         }
-
     }
 }
