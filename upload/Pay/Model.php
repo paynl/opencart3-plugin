@@ -84,10 +84,9 @@ class Pay_Model extends Model
     /**
      * @param string $serviceId
      * @param string $apiToken
-     * @param string $gateway
      * @return void
      */
-    public function refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway)
+    public function refreshPaymentOptions($serviceId, $apiToken, $tokencode)
     {
         $payConfig = new Pay_Controller_Config($this);
         $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig(false, $tokencode, $apiToken))->start();
@@ -106,7 +105,10 @@ class Pay_Model extends Model
                 $optionId = $this->db->escape($method->getId());
                 $name = $this->db->escape($method->getName());
                 $img = $this->db->escape($img);
-                $brand_id = isset($paymentOption['brand']['id']) ? $paymentOption['brand']['id'] : 0;
+                $imgExplode = explode('/', $img);
+                $brandImg = end($imgExplode);
+                $brandImgExplode = explode('.', $brandImg);
+                $brand_id = !empty(reset($brandImgExplode)) ? reset($brandImgExplode) : 0;
                 $brand_id = $this->db->escape($brand_id);
 
                 $imageArr = array('img' => $img, 'brand_id' => $brand_id);
