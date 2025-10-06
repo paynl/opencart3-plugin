@@ -85,9 +85,12 @@ class ControllerExtensionPaymentPaynl extends Controller
                 $data['text_button'] = 'Refund';
                 $data['text_description'] = 'Amount to refund';
                 $data['text_confirm'] = 'Are you sure want to refund this amount: %amount% ?';
-                $data['paynl_amount_field'] = $data['paynl_amount_refunded'] ?? '';
+                $data['paynl_amount_field'] = $data['paynl_amount_refunded'] ?? 0;
                 $data['amount_field_text'] = 'Refunded';
-                $data['show_refunded_field'] = true;
+                $data['show_refunded_field'] = false;
+                if($data['paynl_amount_field'] > 0){
+                    $data['show_refunded_field'] = true;
+                }                
             } elseif ($data['show_capture']) {
                 $data['paynl_amount_captured'] = number_format((float) ($payTransaction->getCapturedAmount()->getValue() / 100), 2, '.', '');
                 $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount'] - $data['paynl_amount_captured']), 2, '.', '');
