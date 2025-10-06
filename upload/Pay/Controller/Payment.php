@@ -100,10 +100,10 @@ class Pay_Controller_Payment extends Controller
         } else {
             $this->load->language('extension/payment/paynl3');
 
-            $action = $this->request->get['orderStatusId'];
+            $action = $this->request->get['statusCode'];
             if ($action == -90) {
                 $this->session->data['error'] = $this->language->get('text_cancel');
-            } elseif ($action == -63) {
+            } elseif ($action == -64 || $action == -63) {
                 $this->session->data['error'] = $this->language->get('text_denied');
             }
 
