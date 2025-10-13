@@ -8,8 +8,8 @@
 
 class Pay_Api
 {
-    private const REQUEST_TYPE_POST = 1;
-    private const REQUEST_TYPE_GET = 0;
+    public const REQUEST_TYPE_POST = 1;
+    public const REQUEST_TYPE_GET = 0;
 
     protected $_apiUrl = 'https://rest-api.pay.nl';
     protected $_version = 'v3';
