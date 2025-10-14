@@ -23,7 +23,7 @@ $_['error_no_serviceid'] = 'Vous avez un SL-code demandé et vous avez un ID de 
     <a href="https://my.pay.nl/company/tokens">https://my.pay.nl/company/tokens</a>. Un SL-code commence altijd avec SL-';
 
 $_['error_wrong_apitoken'] = 'Jeton API non valide, vous pouvez trouver votre jeton API sur: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
-$_['error_wrong_tokencode'] = 'Apitoken non valide, un Apitoken commence toujours par AT-, vous pouvez trouver votre Apitoken sur: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_tokencode'] = 'Apitoken non valide, un Apitoken commence toujours par AT-, vous pouvez trouver votre Apitoken sur: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>'; // phpcs:ignore
 $_['error_wrong_serviceid'] = 'Service invalide, un Service commence toujours par SL-';
 
 //texts

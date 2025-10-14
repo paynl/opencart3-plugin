@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
+ */
+
 require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Exception\PayException;
@@ -80,6 +86,9 @@ class Pay_Controller_Payment extends Controller
         die(json_encode($response));
     }
 
+    /**
+     * @return void
+     */
     public function finish()
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
@@ -129,8 +138,7 @@ class Pay_Controller_Payment extends Controller
                 $eResponse->set(true, 'Processed pending');
             } elseif (empty($transactionId)) {
                 $eResponse->set(true, 'ignoring, invalid arguments');
-            }
-            elseif (str_starts_with($action, 'refund')) {
+            } elseif (str_starts_with($action, 'refund')) {
                 $eResponse->set(true, 'ignoring REFUND');
 
                 if ($this->config->get('payment_paynl_general_refund_processing')) {
@@ -140,26 +148,20 @@ class Pay_Controller_Payment extends Controller
                         $eResponse = $this->$modelName->processTransaction($transactionId, $payOrder);
                     }
                 }
-
             } elseif ($action == 'cancel') {
                 $eResponse->set(true, 'ignoring CANCELED');
-
             } else {
                 try {
                     $this->$modelName->log('Exchange: ' . $action . ' transactionId: ' . $transactionId);
                     $eResponse = $this->$modelName->processTransaction($transactionId, $payOrder);
-
                 } catch (Pay_Api_Exception $e) {
                     $eResponse->set(false, 'API Error ' . $e->getMessage());
-
                 } catch (Pay_Exception $e) {
                     $eResponse->set(false, 'Plugin Error ' . $e->getMessage());
-
                 } catch (Exception $e) {
                     $eResponse->set(false, 'Error ' . $e->getMessage());
                 }
             }
-
         } catch (Throwable $exception) {
             $eResponse->set(false, 'Error ' . $exception->getMessage());
         }
@@ -168,7 +170,7 @@ class Pay_Controller_Payment extends Controller
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function isAjax()
     {
@@ -176,7 +178,7 @@ class Pay_Controller_Payment extends Controller
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @return string
      */
     public function getErrorMessage($message)
@@ -200,6 +202,10 @@ class Pay_Controller_Payment extends Controller
         return $errorMessage;
     }
 
+    /**
+     * @param string $defaultShippingMethodConfigKey
+     * @return array
+     */
     protected function createBlankFastCheckoutOrder($defaultShippingMethodConfigKey)
     {
         $this->load->model('setting/extension');
@@ -235,7 +241,7 @@ class Pay_Controller_Payment extends Controller
             'payment_zone_id'       => 0,
             'payment_method'        => '',
             'payment_code'          => '',
-            'payment_address_format'=> '',
+            'payment_address_format' => '',
             'shipping_firstname'    => '',
             'shipping_lastname'     => '',
             'shipping_company'      => '',
@@ -277,7 +283,7 @@ class Pay_Controller_Payment extends Controller
                 );
             }
         }
-        
+
         $totals = array();
         $total = 0;
         $taxes = $this->cart->getTaxes();
@@ -322,7 +328,7 @@ class Pay_Controller_Payment extends Controller
                 'code'  => $total_item['code'],
                 'title' => $total_item['title'],
                 'value' => $total_item['value'],
-                'sort_order'=> isset($total_item['sort_order']) ? $total_item['sort_order'] : 0
+                'sort_order' => isset($total_item['sort_order']) ? $total_item['sort_order'] : 0
             );
         }
 
@@ -352,6 +358,13 @@ class Pay_Controller_Payment extends Controller
         return $order_data;
     }
 
+    /**
+     * @param array $orderData
+     * @return array
+     * @throws Pay_Api_Exception
+     * @throws PayException
+     * @throws Exception
+     */
     protected function sendRequest($orderData)
     {
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
@@ -395,7 +408,7 @@ class Pay_Controller_Payment extends Controller
             $apiFastCheckout->setReference($orderData['order_id']);
             $apiFastCheckout->setOptimize();
 
-            $paymentMethod = $orderData['payment_method'] ?:$this->_paymentOptionId;
+            $paymentMethod = $orderData['payment_method'] ?: $this->_paymentOptionId;
             $apiFastCheckout->setPaymentMethod($paymentMethod);
 
             $returnUrl = $this->url->link('extension/payment/' . $this->_paymentMethodName . '/finishFastCheckout');

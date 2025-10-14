@@ -9,5 +9,4 @@ class ControllerExtensionPaymentPaynlSportsgiftcard extends Pay_Controller_Payme
 {
     protected $_paymentOptionId = 4422;
     protected $_paymentMethodName = 'paynl_sportsgiftcard';
-
 }

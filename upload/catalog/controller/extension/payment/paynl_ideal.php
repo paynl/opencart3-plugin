@@ -1,4 +1,5 @@
 <?php
+
 $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 $autoload = $dir . '/Pay/Autoload.php';
 
@@ -11,6 +12,10 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
     protected $_paymentOptionId = 10;
     protected $_paymentMethodName = 'paynl_ideal';
 
+    /**
+     * @return void
+     * @throws Pay_Api_Exception
+     */
     public function initFastCheckout()
     {
         if (empty($this->cart->getProducts())) {
@@ -63,7 +68,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
     }
 
     /**
-     * @param $orderId
+     * @param string $orderId
      * @return string
      */
     private function getCustomerGroupId($orderId)
@@ -110,7 +115,6 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
             $action = $exchange->getAction();
             $statusCode = $payOrder->getStatusCode();
             $status = Pay_Helper::getStatus($statusCode);
-
         } catch (\Exception $e) {
             die('FALSE| Error fetching transaction. ' . $e->getMessage());
         }
@@ -188,6 +192,5 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         } else {
             die("FALSE| Unexpected status: $status for action: $action");
         }
-
     }
 }

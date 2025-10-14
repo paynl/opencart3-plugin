@@ -1,4 +1,5 @@
 <?php
+
 $dir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 $autoload = $dir . '/Pay/Autoload.php';
 
@@ -11,6 +12,9 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
     protected $_paymentOptionId = 138;
     protected $_paymentMethodName = 'paynl_paypal';
 
+    /**
+     * @return void
+     */
     public function initFastCheckout()
     {
         $order_data = $this->createBlankFastCheckoutOrder('payment_paynl_paypal_default_shipping');
@@ -29,6 +33,11 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         ]));
     }
 
+    /**
+     * @return void
+     * @throws Pay_Api_Exception
+     * @throws Exception
+     */
     public function handleResult()
     {
         header('Access-Control-Allow-Origin: *');
@@ -106,6 +115,9 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         die();
     }
 
+    /**
+     * @return void
+     */
     public function cancelPayment()
     {
         $order = $this->session->data['fast_checkout_paypal_order'];
@@ -120,6 +132,9 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $this->response->redirect($this->url->link('checkout/cart', '', true));
     }
 
+    /**
+     * @return void
+     */
     public function getButtonConfig()
     {
         $client_id = $this->config->get('payment_paynl_paypal_client_id');
@@ -140,7 +155,11 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         $this->response->setOutput(json_encode($config));
     }
 
-    /** @throws Pay_Api_Exception */
+    /**
+     * @return void
+     * @throws Pay_Api_Exception
+     * @throws Exception
+     */
     public function exchangeFastCheckout()
     {
         $rawData = file_get_contents('php://input');
@@ -164,7 +183,6 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
             $action = $exchange->getAction();
             $statusCode = $payOrder->getStatusCode();
             $status = Pay_Helper::getStatus($statusCode);
-
         } catch (\Exception $e) {
             die('FALSE| Error fetching transaction. ' . $e->getMessage());
         }
@@ -280,6 +298,10 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         }
     }
 
+    /**
+     * @return string|false
+     * @throws Exception
+     */
     private function getAccessToken()
     {
         $clientId = $this->config->get('payment_' . $this->_paymentMethodName . '_client_id');
@@ -318,6 +340,12 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
         return $result['access_token'] ?? false;
     }
 
+    /**
+     * @param string $orderID
+     * @param string $accessToken
+     * @return string|null
+     * @throws Exception
+     */
     public function getOrderDetails($orderID, $accessToken)
     {
         if (empty($orderID) || empty($accessToken)) {

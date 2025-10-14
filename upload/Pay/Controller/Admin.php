@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
+ */
 
 require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
@@ -17,15 +22,15 @@ class Pay_Controller_Admin extends Controller
     protected $data = array();
     protected $error;
 
-    const BUTTON_PLACES = array(
+    public const BUTTON_PLACES = array(
         ['value' => 'Cart', 'key' => 'cart'],
         ['value' => 'Mini cart', 'key' => 'mini_cart'],
         ['value' => 'Product', 'key' => 'product']
     );
 
     /**
-     * @param $field
-     * @return null
+     * @param string $field
+     * @return string|null
      */
     private function configGet($field)
     {
@@ -101,7 +106,7 @@ class Pay_Controller_Admin extends Controller
 
             $defaultShipping = 'payment_' . $this->_paymentMethodName . '_default_shipping';
             $data['fast_checkout_default_shipping_name'] = $defaultShipping;
-            $data['fast_checkout_default_shipping'] = isset($settings[$defaultShipping]) ? $settings[$defaultShipping]: '';
+            $data['fast_checkout_default_shipping'] = isset($settings[$defaultShipping]) ? $settings[$defaultShipping] : '';
 
             $onlyGuest = 'payment_' . $this->_paymentMethodName . '_only_guest';
             $data['fast_checkout_only_guest_name'] = $onlyGuest;
@@ -134,7 +139,8 @@ class Pay_Controller_Admin extends Controller
 
                 $clientToken = 'payment_' . $this->_paymentMethodName . '_client_token';
                 $data['fast_checkout_client_token_name'] = $clientToken;
-                $data['fast_checkout_client_token'] = isset($settings[$clientToken]) ? $settings[$clientToken] : '';;
+                $data['fast_checkout_client_token'] = isset($settings[$clientToken]) ? $settings[$clientToken] : '';
+                ;
             }
         }
 
@@ -182,18 +188,18 @@ class Pay_Controller_Admin extends Controller
                 $data['success_message'] = $this->language->get('text_success');
             }
         } else {
-            if(!empty($this->request->get['action'])){
+            if (!empty($this->request->get['action'])) {
                 if ($this->request->get['action'] == 'refund') {
                     $returnarray = $this->refund();
                     die(json_encode($returnarray));
-                } elseif ($this->request->get['action'] == 'capture') {     
+                } elseif ($this->request->get['action'] == 'capture') {
                     $returnarray = $this->capture();
                     die(json_encode($returnarray));
-                }  elseif ($this->request->get['action'] == 'void') {     
+                } elseif ($this->request->get['action'] == 'void') {
                     $returnarray = $this->void();
                     die(json_encode($returnarray));
                 }
-            }            
+            }
         }
 
         if ($data['availability_fast_checkout'] == true) {
@@ -328,8 +334,8 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @param $field
-     * @return null
+     * @param string $field
+     * @return string|null
      */
     private function getPost($field)
     {
@@ -348,39 +354,39 @@ class Pay_Controller_Admin extends Controller
 
         if (!$this->user->hasPermission('modify', "extension/payment/$this->_paymentMethodName")) {
             $this->error['warning'] = $this->language->get('error_permission');
-        }       
- 
+        }
+
         if (empty($serviceId)) {
             $this->error['serviceid'] = $this->language->get('error_no_serviceid');
         } elseif (!preg_match('/SL-\d{4}-\d{4}/', $serviceId)) {
             $this->error['serviceid'] = $this->language->get('error_wrong_serviceid');
         }
-        
+
         if (empty($apiToken)) {
             $this->error['apitoken'] = $this->language->get('error_no_apitoken');
-        } elseif (strlen($apiToken) < 40){
+        } elseif (strlen($apiToken) < 40) {
             $this->error['apitoken'] = $this->language->get('error_wrong_apitoken');
         }
-        
+
         if (empty($tokencode)) {
             $this->error['tokencode'] = $this->language->get('text_tokencode');
         } elseif (!preg_match('/AT-\d{4}-\d{4}/', $tokencode)) {
-           $this->error['tokencode'] = $this->language->get('error_wrong_tokencode');
+            $this->error['tokencode'] = $this->language->get('error_wrong_tokencode');
         }
-        
+
         try {
             if (!empty($serviceId) && !empty($apiToken) && !empty($tokencode)) {
                 $this->load->model('extension/payment/paynl3');
                 $reqGateway = trim($this->getPost('payment_paynl_general_gateway'));
                 $gateway = (!empty($reqGateway) && substr($reqGateway, 0, 4) == 'http') ? $reqGateway : null;
                 $this->model_extension_payment_paynl3->refreshPaymentOptions($serviceId, $apiToken, $tokencode, $gateway);
-            } 
+            }
         } catch (PayException $e) {
-            $this->error['warning'] = $e->getFriendlyMessage();            
+            $this->error['warning'] = $e->getFriendlyMessage();
         } catch (Exception $e) {
             $this->error['warning'] = $e->getMessage();
         }
-        
+
 
         return empty($this->error);
     }
@@ -456,8 +462,8 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @param $suggestions_form_message
-     * @param $suggestions_form_email
+     * @param string $suggestions_form_message
+     * @param string $suggestions_form_email
      * @return void
      */
     public function sendSuggestionsForm($suggestions_form_message, $suggestions_form_email, $suggestions_form_plugin_version)
@@ -518,7 +524,7 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @param $version
+     * @param string $version
      * @return void
      */
     private function checkVersion($version)
@@ -599,10 +605,10 @@ class Pay_Controller_Admin extends Controller
         $amount = (float) $this->request->get['amount'] ?? null;
         $currency = $this->request->get['currency'] ?? null;
         try {
-            $payConfig = new Pay_Controller_Config($this);   
+            $payConfig = new Pay_Controller_Config($this);
             $transactionRefundRequest = new TransactionRefundRequest($transactionId, $amount, $currency);
             $transactionRefundRequest->setConfig($payConfig->getConfig());
-            $transactionRefundRequest->start();          
+            $transactionRefundRequest->start();
             $json['success'] = 'Pay. refunded ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
             $json['error'] = 'Pay. couldn\'t refund, please try again later.' . $e->getMessage();
@@ -611,7 +617,7 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @return void
+     * @return array
      */
     private function capture()
     {
@@ -620,11 +626,11 @@ class Pay_Controller_Admin extends Controller
         $amount = (float) $this->request->get['amount'] ?? null;
         $currency = $this->request->get['currency'] ?? null;
         try {
-            $payConfig = new Pay_Controller_Config($this);   
+            $payConfig = new Pay_Controller_Config($this);
             $orderCaptureRequest = new OrderCaptureRequest($transactionId);
             $orderCaptureRequest->setAmount($amount);
-            $orderCaptureRequest->setConfig($payConfig->getConfig());            
-            $orderCaptureRequest->start();          
+            $orderCaptureRequest->setConfig($payConfig->getConfig());
+            $orderCaptureRequest->start();
             $json['success'] = 'Pay. capture ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
             $json['error'] = 'Pay. couldn\'t capture, please try again later.' . $e->getMessage();
@@ -633,7 +639,7 @@ class Pay_Controller_Admin extends Controller
     }
 
     /**
-     * @return void
+     * @return array
      */
     public function void()
     {
@@ -642,10 +648,10 @@ class Pay_Controller_Admin extends Controller
         $amount = (float) $this->request->get['amount'] ?? null;
         $currency = $this->request->get['currency'] ?? null;
         try {
-            $payConfig = new Pay_Controller_Config($this);   
+            $payConfig = new Pay_Controller_Config($this);
             $orderVoidRequest = new OrderVoidRequest($transactionId);
-            $orderVoidRequest->setConfig($payConfig->getConfig());            
-            $orderVoidRequest->start();     
+            $orderVoidRequest->setConfig($payConfig->getConfig());
+            $orderVoidRequest->start();
             $json['success'] = 'Pay. voided ' . $currency . ' ' . $this->request->get['amount'] . ' successfully!';
         } catch (\Exception $e) {
             $json['error'] = 'Pay. couldn\'t void, please try again later.' . $e->getMessage();
