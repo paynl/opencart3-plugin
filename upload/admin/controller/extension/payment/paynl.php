@@ -5,10 +5,13 @@ $autoload = $dir . '/Pay/Autoload.php';
 
 require_once $autoload;
 
+use PayNL\Sdk\Model\Request\OrderStatusRequest;
+use PayNL\Sdk\Model\Request\TransactionStatusRequest;
+
 class ControllerExtensionPaymentPaynl extends Controller
 {
     /**
-     * @return void
+     * @return null|void
      * @throws Pay_Api_Exception
      */
     public function paynlOrderInfoBefore(&$route, &$data, &$template_code = null)
@@ -35,53 +38,80 @@ class ControllerExtensionPaymentPaynl extends Controller
             $transactionId = $transaction['id'];
 
             $this->load->model('setting/setting');
-            $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
-            $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
 
-            $apiInfo = new Pay_Api_Status();
-            $apiInfo->setApiToken($apiToken);
-            $apiInfo->setServiceId($serviceId);
-            $apiInfo->setTransactionId($transactionId);
-            $payTransaction = $apiInfo->doRequest();
+            $payConfig = new Pay_Controller_Config($this);
+
+            try {
+                $orderStatusRequest = new OrderStatusRequest($transactionId);
+                $orderStatusRequest->setConfig($payConfig->getConfig(true));
+                $payTransaction = $orderStatusRequest->start();
+            } catch (\Exception $e) {
+                $payTransaction = null;
+            }
+
+            if (empty($payTransaction) || ($payTransaction instanceof \PayNL\Sdk\Model\Pay\PayOrder && ($payTransaction->isPaid() || $payTransaction->isAuthorized()))) {
+                $transactionStatusRequest = new TransactionStatusRequest($transactionId);
+                $transactionStatusRequest->setConfig($payConfig->getConfig(true));
+                $payGmsOrder = $transactionStatusRequest->start();
+                if ($payGmsOrder->isRefunded() || empty($payTransaction)) {
+                    $payTransaction = $payGmsOrder;
+                }
+                $alreadyRefunded = $payGmsOrder->getAmountRefunded();
+            }
 
             $data['paynl_order_id'] = $this->request->get['order_id'];
             $data['paynl_transaction_id'] = $transactionId;
 
-            $data['paynl_status_code'] = $payTransaction['paymentDetails']['state'];
-            $data['paynl_status_name'] = $payTransaction['paymentDetails']['stateName'];
-            $data['paynl_currency'] = $payTransaction['paymentDetails']['currency'];
-            $data['paynl_amount'] = number_format((float) $payTransaction['paymentDetails']['amount'] / 100, 2, '.', '');
-            $data['paynl_amount_captured'] = number_format((float) $payTransaction['paymentDetails']['paidAmount'] / 100, 2, '.', '');
-            $data['paynl_amount_refunded'] = number_format((float) $payTransaction['paymentDetails']['refundAmount'] / 100, 2, '.', '');
+            $data['paynl_status_code'] = $payTransaction->getStatusCode();
+            $data['paynl_status_name'] = $payTransaction->getStatusName();
+            $data['paynl_currency'] = $payTransaction->getCurrency();
 
             $data['cart_amount'] = number_format((float) $order_info['total'], 2, '.', '');
+            $data['paynl_amount'] = number_format((float) $payTransaction->getAmount(), 2, '.', '');
             $data['cart_currency'] = $order_info['currency_code'];
 
-            $data['show_refund'] = ($payTransaction['paymentDetails']['state'] == 100 || $payTransaction['paymentDetails']['state'] == -82);
-            $data['show_capture'] = ($payTransaction['paymentDetails']['state'] == 97 || $payTransaction['paymentDetails']['state'] == 95);
+            $data['show_refund'] = ($payTransaction->isPaid() || $payTransaction->isRefundedPartial());
+            $data['show_capture'] = ($payTransaction->isAuthorized() || $payTransaction->getStatus()['code'] == 97);
 
             if ($data['show_refund']) {
-                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund');
-                $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount'] - $data['paynl_amount_refunded']), 2, '.', '');
+                $data['paynl_amount_value'] = number_format((float) ($payTransaction->getAmount()), 2, '.', '');
+                if ($payTransaction->getCurrency() == 'EUR') {
+                    $data['paynl_amount_refunded'] = $alreadyRefunded;
+                    $data['paynl_amount'] = number_format((float) $payTransaction->getAmount() - $alreadyRefunded, 2, '.', '');
+                    $data['paynl_amount_value'] = number_format((float) ($payTransaction->getAmount() - $alreadyRefunded), 2, '.', '');
+                }
+                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=refund'); // phpcs:ignore
                 $data['text_button'] = 'Refund';
                 $data['text_description'] = 'Amount to refund';
                 $data['text_confirm'] = 'Are you sure want to refund this amount: %amount% ?';
-                $data['paynl_amount_field'] = $data['paynl_amount_refunded'];
+                $data['paynl_amount_field'] = $data['paynl_amount_refunded'] ?? 0;
                 $data['amount_field_text'] = 'Refunded';
-                $data['show_refunded_field'] = true;
+                $data['show_refunded_field'] = false;
+                if ($data['paynl_amount_field'] > 0) {
+                    $data['show_refunded_field'] = true;
+                }
             } elseif ($data['show_capture']) {
-                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=capture');
-                $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount']), 2, '.', '');
+                $data['paynl_amount_captured'] = number_format((float) ($payTransaction->getCapturedAmount()->getValue() / 100), 2, '.', '');
+                $data['paynl_amount_value'] = number_format((float) ($data['paynl_amount'] - $data['paynl_amount_captured']), 2, '.', '');
+                $data['ajax_url'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=capture'); // phpcs:ignore
+                $data['ajax_url_void'] = $this->url->link('extension/payment/' . $order_info['payment_code'], 'user_token=' . $this->session->data['user_token'] . '&transaction_id=' . $transactionId . '&action=void'); // phpcs:ignore
                 $data['text_button'] = 'Capture';
                 $data['text_description'] = 'Amount to capture';
                 $data['text_confirm'] = 'Are you sure want to capture this amount: %amount% ?';
                 $data['show_refunded_field'] = false;
+                $data['show_void'] = (($payTransaction->isAuthorized() || $payTransaction->getStatus()['code'] == 97) && $data['paynl_amount_captured'] == 0);
+                $data['text_confirm_void'] = 'Are you sure want to void this amount: %amount% ?';
             }
 
             return null;
         }
     }
 
+    /**
+     * @param string $route
+     * @param string $event_template_buffer
+     * @return string|boolean
+     */
     protected function getTemplateBuffer($route, $event_template_buffer)
     {
         if ($event_template_buffer) {
@@ -100,6 +130,10 @@ class ControllerExtensionPaymentPaynl extends Controller
         exit;
     }
 
+    /**
+     * @param string $file
+     * @return string
+     */
     protected function modCheck($file)
     {
 
@@ -109,7 +143,7 @@ class ControllerExtensionPaymentPaynl extends Controller
                 if (file_exists(DIR_MODIFICATION . 'admin/' . substr($file, strlen(DIR_APPLICATION)))) {
                     $file = DIR_MODIFICATION . 'admin/' . substr($file, strlen(DIR_APPLICATION));
                 }
-            } else if ($this->startsWith($file, DIR_SYSTEM)) {
+            } elseif ($this->startsWith($file, DIR_SYSTEM)) {
                 if (file_exists(DIR_MODIFICATION . 'system/' . substr($file, strlen(DIR_SYSTEM)))) {
                     $file = DIR_MODIFICATION . 'system/' . substr($file, strlen(DIR_SYSTEM));
                 }
@@ -118,7 +152,7 @@ class ControllerExtensionPaymentPaynl extends Controller
 
         if (class_exists('VQMod', false)) {
             if (VQMod::$directorySeparator) {
-                if (strpos($file, 'vq2-') !== FALSE) {
+                if (strpos($file, 'vq2-') !== false) {
                     return $file;
                 }
                 if ($original_file != $file) {
@@ -130,6 +164,11 @@ class ControllerExtensionPaymentPaynl extends Controller
         return $file;
     }
 
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @return boolean
+     */
     protected function startsWith($haystack, $needle)
     {
         if (strlen($haystack) < strlen($needle)) {
@@ -137,5 +176,4 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
         return (substr($haystack, 0, strlen($needle)) == $needle);
     }
-
 }

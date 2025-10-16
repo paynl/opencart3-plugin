@@ -9,5 +9,4 @@ class ModelExtensionPaymentPaynlSofort extends Pay_Model
 {
     protected $_paymentOptionId = 4761;
     protected $_paymentMethodName = 'paynl_sofort';
-
 }

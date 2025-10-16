@@ -8,6 +8,16 @@
     padding: 0 10px;
 }
 
-.modal-backdrop {
+.modal-backdrop{
     background-color: #00000080;
+}
+
+#payOrderButtonVoid {
+    background-color: #cf1e1e;
+    border-color: #a21818;
+}
+
+#payOrderButtonVoid:hover {
+    background-color: #a21818;
+    border-color: #490b0b;
 }

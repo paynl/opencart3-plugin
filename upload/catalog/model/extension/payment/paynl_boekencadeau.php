@@ -9,5 +9,4 @@ class ModelExtensionPaymentPaynlBoekencadeau extends Pay_Model
 {
     protected $_paymentOptionId = 4749;
     protected $_paymentMethodName = 'paynl_boekencadeau';
-
 }

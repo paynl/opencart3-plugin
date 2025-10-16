@@ -9,5 +9,4 @@ class ControllerExtensionPaymentPaynlSofort extends Pay_Controller_Payment
 {
     protected $_paymentOptionId = 4761;
     protected $_paymentMethodName = 'paynl_sofort';
-
 }

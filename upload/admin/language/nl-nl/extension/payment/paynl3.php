@@ -2,6 +2,7 @@
 
 $_['text_apitoken'] = 'API token';
 $_['text_serviceid'] = 'Verkooplocatie';
+$_['text_tokencode'] = 'Token Code';
 
 // Text
 $_['text_payment'] = 'Betaling';
@@ -20,6 +21,10 @@ $_['error_no_apitoken'] = 'U moet een apitokeninvoeren, u vind uw apitokens op:
     <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
 $_['error_no_serviceid'] = 'U moet een serviceId invoeren, u vind uw serviceId op: 
     <a href="https://admin.pay.nl/programs/programs">https://admin.pay.nl/programs/programs</a>. Een serviceId begint altijd met SL-';
+
+$_['error_wrong_apitoken'] = 'Ongeldige API-token, u kunt uw API-token vinden op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>';
+$_['error_wrong_tokencode'] = 'Ongeldige tokencode, een tokencode begint altijd met AT-, u kunt uw tokencode vinden op: <a href="https://admin.pay.nl/company/tokens">https://admin.pay.nl/company/tokens</a>'; // phpcs:ignore
+$_['error_wrong_serviceid'] = 'Ongeldige verkooplocatie, een verkooplocatie begint altijd met SL-';
 
 //texts
 $_['text_register'] = 'Nog geen account bij Pay.? Klik ';
@@ -139,7 +144,7 @@ $_['text_suggestions_submit'] = 'Verstuur';
 $_['text_suggestions_success_modal'] = 'Verstuurd! Bedankt voor het delen van jouw input.';
 $_['text_suggestions_fail_modal'] = 'E-mail kon niet worden verzonden. Probeer het later opnieuw.';
 
-$version = '1.13.0';
+$version = '2.0.0';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 

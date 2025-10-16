@@ -11,7 +11,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       # https://github.com/github/super-linter
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
@@ -22,3 +21,4 @@ jobs:
           VALIDATE_PHP: true
           VALIDATE_PHP_PHPCS: true
           VALIDATE_ALL_CODEBASE: false
+          FILTER_REGEX_EXCLUDE: .*vendor/.*

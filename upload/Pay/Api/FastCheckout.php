@@ -31,7 +31,7 @@ class Pay_Api_FastCheckout extends Pay_Api
     }
 
     /**
-     * @param $orderNumber
+     * @param string $orderNumber
      * @return void
      */
     public function setOrderNumber($orderNumber)
@@ -85,9 +85,9 @@ class Pay_Api_FastCheckout extends Pay_Api
     }
 
     /**
-     * @param $contactDetails
-     * @param $shippingAddress
-     * @param $billingAddress
+     * @param array $contactDetails
+     * @param array $shippingAddress
+     * @param array $billingAddress
      * @return void
      */
     public function setOptimize($contactDetails = true, $shippingAddress = true, $billingAddress = true)
@@ -101,7 +101,7 @@ class Pay_Api_FastCheckout extends Pay_Api
     }
 
     /**
-     * @param int $paymentMethod
+     * @param integer $paymentMethod
      * @return void
      */
     public function setPaymentMethod($paymentMethod = 10)
@@ -163,7 +163,10 @@ class Pay_Api_FastCheckout extends Pay_Api
         $this->_products[] = $arrProduct;
     }
 
-    protected function _getPostData()
+    /**
+     * @return array
+     */
+    protected function _getPostData() // phpcs:ignore
     {
         if (is_int($this->_paymentMethod)) {
             $paymentMethod = [
@@ -199,7 +202,7 @@ class Pay_Api_FastCheckout extends Pay_Api
      * @return string
      * @throws Pay_Exception
      */
-    protected function _getApiUrl()
+    protected function _getApiUrl() // phpcs:ignore
     {
         if ($this->_version == '') {
             throw new Pay_Exception('version not set', 1);
@@ -221,7 +224,6 @@ class Pay_Api_FastCheckout extends Pay_Api
     public function doRequest()
     {
         if ($this->_getPostData()) {
-
             $url = $this->_getApiUrl();
             $data = $this->_getPostData();
 
@@ -266,8 +268,8 @@ class Pay_Api_FastCheckout extends Pay_Api
     }
 
     /**
-     * @param $arrResult
-     * @return true
+     * @param array $arrResult
+     * @return boolean|void
      * @throws Pay_Api_Exception
      */
     protected function validateResult($arrResult)

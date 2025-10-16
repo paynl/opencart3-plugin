@@ -9,5 +9,4 @@ class ModelExtensionPaymentPaynlSportsgiftcard extends Pay_Model
 {
     protected $_paymentOptionId = 4422;
     protected $_paymentMethodName = 'paynl_sportsgiftcard';
-
 }
