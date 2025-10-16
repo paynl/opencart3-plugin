@@ -277,6 +277,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
             }
 
             if ($status === Pay_Model::STATUS_CANCELED) {
+                $this->load->model('checkout/order');
                 $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
 
                 $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
