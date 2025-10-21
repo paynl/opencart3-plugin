@@ -98,25 +98,23 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
         }
 
         if (!isset($webhookData['object']['reference']) || !isset($webhookData['object']['status']['code'])) {
-            die("FALSE| Invalid webhook data");
+            die("TRUE| Ignoring invalid webhook data");
         }
 
         $order_id = $webhookData['object']['reference'];
 
         $this->load->model('setting/setting');
-        $transactionId = $webhookData['object']['orderId'];
 
         try {
             $payConfig = new Pay_Controller_Config($this);
             $config = $payConfig->getConfig();
             $exchange = new Exchange();
             $payOrder = $exchange->process($config);
-            $transactionId = $payOrder->getOrderId();
             $action = $exchange->getAction();
             $statusCode = $payOrder->getStatusCode();
             $status = Pay_Helper::getStatus($statusCode);
         } catch (\Exception $e) {
-            die('FALSE| Error fetching transaction. ' . $e->getMessage());
+            die('TRUE| Error fetching transaction. ' . $e->getMessage());
         }
 
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
