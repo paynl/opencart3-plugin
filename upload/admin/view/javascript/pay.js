@@ -116,4 +116,14 @@ jQuery(document).ready(function () {
             dependentFields.hide();
         }
     }
+    jQuery('.obscuredInput').each(function () {
+        var input = this;
+        jQuery('<a class="obscuredDisplayShow"></a>').click(function () {
+            toggleObscured(input)
+        }).insertAfter(input);
+    })
 });
+
+function toggleObscured(element) {
+    jQuery(element).parent().find('.obscuredInput').toggleClass('display');
+}
