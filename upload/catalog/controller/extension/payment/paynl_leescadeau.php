@@ -9,5 +9,4 @@ class ControllerExtensionPaymentPaynlLeescadeau extends Pay_Controller_Payment
 {
     protected $_paymentOptionId = 4758;
     protected $_paymentMethodName = 'paynl_leescadeau';
-
 }

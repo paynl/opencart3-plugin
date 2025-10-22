@@ -1,9 +1,15 @@
 <?php
 
-class Pay_Api {
+/**
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName
+ */
 
-    const REQUEST_TYPE_POST = 1;
-    const REQUEST_TYPE_GET = 0;
+class Pay_Api
+{
+    public const REQUEST_TYPE_POST = 1;
+    public const REQUEST_TYPE_GET = 0;
 
     protected $_apiUrl = 'https://rest-api.pay.nl';
     protected $_version = 'v3';
@@ -21,8 +27,10 @@ class Pay_Api {
      * The serviceid always starts with SL- and can be found on: https://admin.pay.nl/programs/programs
      *
      * @param string $serviceId
+     * @return void
      */
-    public function setServiceId($serviceId) {
+    public function setServiceId($serviceId)
+    {
         $this->_serviceId = $serviceId;
     }
 
@@ -32,24 +40,35 @@ class Pay_Api {
      * The API token can be found on: https://admin.pay.nl/my_merchant on the bottom
      *
      * @param string $apiToken
+     * @return void
      */
     public function setApiToken($apiToken)
     {
         $this->_apiToken = $apiToken;
     }
 
+    /**
+     * @param string $gateway
+     * @return void
+     */
     public function setApiBase($gateway)
     {
         $this->_gateway = trim($gateway);
     }
 
-    protected function _getPostData()
+    /**
+     * @return object
+     */
+    protected function _getPostData() // phpcs:ignore
     {
-
         return $this->_postData;
     }
 
-    protected function _processResult($data)
+    /**
+     * @param object $data
+     * @return object
+     */
+    protected function _processResult($data) // phpcs:ignore
     {
         return $data;
     }
@@ -58,7 +77,7 @@ class Pay_Api {
      * @return string
      * @throws Pay_Exception
      */
-    protected function _getApiUrl()
+    protected function _getApiUrl() // phpcs:ignore
     {
         if ($this->_version == '') {
             throw new Pay_Exception('version not set', 1);
@@ -75,12 +94,21 @@ class Pay_Api {
         return $host . '/' . $this->_version . '/' . $this->_controller . '/' . $this->_action . '/json/';
     }
 
-    public function getPostData(){
+    /**
+     * @return object
+     */
+    public function getPostData()
+    {
         return $this->_getPostData();
     }
-    public function doRequest() {
-        if ($this->_getPostData()) {
 
+    /**
+     * @return object|void
+     * @throws Pay_Api_Exception
+     */
+    public function doRequest()
+    {
+        if ($this->_getPostData()) {
             $url = $this->_getApiUrl();
             $data = $this->_getPostData();
 
@@ -104,7 +132,7 @@ class Pay_Api {
 
             if ($result == false) {
                 $error = curl_error($ch);
-                throw new Pay_Api_Exception("Curl error: ".$error);
+                throw new Pay_Api_Exception("Curl error: " . $error);
             }
             curl_close($ch);
 
@@ -116,13 +144,18 @@ class Pay_Api {
         }
     }
 
-    protected function validateResult($arrResult) {
+    /**
+     * @return boolean|void
+     * @throws Pay_Api_Exception
+     */
+    protected function validateResult($arrResult)
+    {
         if ($arrResult['request']['result'] == 1) {
             return true;
         } else {
-            if(isset($arrResult['request']['errorId']) && isset($arrResult['request']['errorMessage']) ){
+            if (isset($arrResult['request']['errorId']) && isset($arrResult['request']['errorMessage'])) {
                 throw new Pay_Api_Exception($arrResult['request']['errorId'] . ' - ' . $arrResult['request']['errorMessage']);
-            } elseif(isset($arrResult['error'])){
+            } elseif (isset($arrResult['error'])) {
                 throw new Pay_Api_Exception($arrResult['error']);
             } else {
                 throw new Pay_Api_Exception('Unexpected api result');
