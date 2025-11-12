@@ -470,7 +470,7 @@ class Pay_Model extends Model
                 $order_info['products'] = $this->model_checkout_order->getOrderProducts($orderId);
                 foreach ($order_info['products'] as &$product) {
                     $product['order_option'] = $this->model_checkout_order->getOrderOptions($orderId, $product['order_product_id']);
-                }        
+                }
                 $order_info['totals'] = $this->model_checkout_order->getOrderTotals($orderId);
                 $order_info['vouchers'] = $this->model_checkout_order->getOrderVouchers($orderId);
 
