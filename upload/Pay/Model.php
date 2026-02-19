@@ -451,7 +451,9 @@ class Pay_Model extends Model
 
         # Order update
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
-        if ($order_info['order_status_id'] != 0 && $status == self::STATUS_PENDING) {
+
+        if ($order_info['order_status_id'] != 0 && $status == self::STATUS_PENDING)
+        {
             throw new \Exception("unexpected status " . $status);
         }
 
