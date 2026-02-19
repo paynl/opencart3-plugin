@@ -435,25 +435,27 @@ class Pay_Model extends Model
     {
         $this->load->model('setting/setting');
         $this->load->model('checkout/order');
+
         $settings = $this->model_setting_setting->getSetting('payment_' . $this->_paymentMethodName);
         $this->log('processTransaction ' . $transactionId . ' name: ' . $this->_paymentMethodName . print_r($settings, true));
 
         $transaction = $this->getTransaction($transactionId);
-
         $status = Pay_Helper::getStatus($payOrder->getStatusCode());
+
+        # Get the order status id from the users settings.
         $orderStatusId = Pay_Helper::getOrderStatusId($payOrder->getStatusCode(), $settings, $this->_paymentMethodName);
 
         $this->log('pre ' . print_r(array($payOrder->getStatusCode(), $this->_paymentMethodName, $status, $orderStatusId), true));
 
-        # Status update
+        # Updates the status in the database.
         $this->updateTransactionStatus($transactionId, $status);
         $message = "Pay. Updated order to $status.";
 
-        # Order update
+        # Get the order info.
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
 
-        if ($order_info['order_status_id'] != 0 && $status == self::STATUS_PENDING)
-        {
+        # Make sure Pay. status is not pending when order itself has a status already. Pay. will retry call in case this happens.
+        if ($order_info['order_status_id'] != 0 && $status == self::STATUS_PENDING) {
             throw new \Exception("unexpected status " . $status);
         }
 
