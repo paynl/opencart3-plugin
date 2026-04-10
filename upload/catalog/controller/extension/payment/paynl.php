@@ -57,13 +57,13 @@ class ControllerExtensionPaymentPaynl extends Controller
             $transactionState == 'AUTHORIZE' &&
             $autoVoid
         ) {
-            $this->paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
+            $this->paynlDoAutoVoid($transactionId, $orderId, $orderStatusId);
         } elseif (
             $orderStatusId == 5 &&
             $transactionState == 'AUTHORIZE' &&
             $autoCapture
         ) {
-            $this->paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
+            $this->paynlDoAutoCapture($transactionId, $orderId, $orderStatusId);
         }
     }
 
