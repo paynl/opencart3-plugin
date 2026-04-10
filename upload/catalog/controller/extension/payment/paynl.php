@@ -29,10 +29,6 @@ class ControllerExtensionPaymentPaynl extends Controller
             exit();
         }
 
-        $this->load->model('setting/setting');
-        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
-        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
-
         $autoVoid = $this->config->get('payment_paynl_general_auto_void');
         $autoCapture = $this->config->get('payment_paynl_general_auto_capture');
 
