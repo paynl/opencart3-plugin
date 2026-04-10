@@ -13,20 +13,32 @@ use PayNL\Sdk\Model\Request\OrderStatusRequest;
 class ControllerExtensionPaymentPaynl extends Controller
 {
     /**
+     * @param string $route
+     * @param array $data
+     * @param string|null $template_code
      * @return void
      * @throws Pay_Api_Exception
      */
-    public function paynlOnOrderStatusChange()
+    public function paynlOnOrderStatusChange(&$route, &$data, &$output)
     {
-        $orderId = $_REQUEST['order_id'];
-        $orderStatusId = $_REQUEST['order_status_id'];
+
+        $orderId = $this->request->get['order_id'] ?? null;
+        $orderStatusId = $this->request->post['order_status_id'] ?? null;
+
+        if (!in_array($orderStatusId, [5, 7, 16])) {
+            exit();
+        }
+
+        $this->load->model('setting/setting');
+        $apiToken = $this->model_setting_setting->getSettingValue('payment_paynl_general_apitoken');
+        $serviceId = $this->model_setting_setting->getSettingValue('payment_paynl_general_serviceid');
 
         $autoVoid = $this->config->get('payment_paynl_general_auto_void');
         $autoCapture = $this->config->get('payment_paynl_general_auto_capture');
 
         $this->load->model('extension/payment/paynl3');
         $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($orderId);
-        $transactionId = $transaction['id'];
+        $transactionId = $transaction['id'] ?? null;
 
         $payConfig = new Pay_Controller_Config($this);
         $request = new OrderStatusRequest($transactionId ?? '');
@@ -41,17 +53,17 @@ class ControllerExtensionPaymentPaynl extends Controller
         $transactionState = $transaction->getStatusName();
 
         if (
-            $orderStatusId == 7 &&
+            ($orderStatusId == 7 || $orderStatusId == 16) &&
             $transactionState == 'AUTHORIZE' &&
             $autoVoid
         ) {
-            $this->paynlDoAutoVoid($transactionId, $orderId, $orderStatusId);
+            $this->paynlDoAutoVoid($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
         } elseif (
             $orderStatusId == 5 &&
             $transactionState == 'AUTHORIZE' &&
             $autoCapture
         ) {
-            $this->paynlDoAutoCapture($transactionId, $orderId, $orderStatusId);
+            $this->paynlDoAutoCapture($apiToken, $serviceId, $transactionId, $orderId, $orderStatusId);
         }
     }
 
