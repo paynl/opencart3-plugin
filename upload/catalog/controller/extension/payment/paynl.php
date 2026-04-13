@@ -12,12 +12,13 @@ use PayNL\Sdk\Model\Request\OrderStatusRequest;
 
 class ControllerExtensionPaymentPaynl extends Controller
 {
+
     /**
      * @param string $route
      * @param array $data
-     * @param string|null $template_code
+     * @param $output
      * @return void
-     * @throws Pay_Api_Exception
+     * @throws Exception
      */
     public function paynlOnOrderStatusChange(&$route, &$data, &$output)
     {
@@ -41,7 +42,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         }
 
         $payConfig = new Pay_Controller_Config($this);
-        $request = new OrderStatusRequest($transactionId ?? '');
+        $request = new OrderStatusRequest($transactionId);
         $request->setConfig($payConfig->getConfig());
 
         try {
@@ -52,19 +53,15 @@ class ControllerExtensionPaymentPaynl extends Controller
 
         $transactionState = $transaction->getStatusName();
 
-        if (
-            ($orderStatusId == 7 || $orderStatusId == 16) &&
-            $transactionState == 'AUTHORIZE' &&
-            $autoVoid
-        ) {
-            $this->paynlDoAutoVoid($transactionId, $orderId, $orderStatusId);
-        } elseif (
-            $orderStatusId == 5 &&
-            $transactionState == 'AUTHORIZE' &&
-            $autoCapture
-        ) {
-            $this->paynlDoAutoCapture($transactionId, $orderId, $orderStatusId);
+        if ($transactionState == 'AUTHORIZE') {
+            if (($orderStatusId == 7 || $orderStatusId == 16) && $autoVoid) //7=cancel, 16=voided
+            {
+                $this->paynlDoAutoVoid($transactionId, $orderId, $orderStatusId);
+            } elseif ($orderStatusId == 5 && $autoCapture) {
+                $this->paynlDoAutoCapture($transactionId, $orderId, $orderStatusId);
+            }
         }
+
     }
 
     /**
