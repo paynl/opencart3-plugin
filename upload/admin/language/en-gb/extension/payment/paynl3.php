@@ -145,7 +145,7 @@ $_['text_suggestions_submit'] = 'Submit';
 $_['text_suggestions_success_modal'] = 'Sent! Thank you for your contribution.';
 $_['text_suggestions_fail_modal'] = 'E-mail could not be sent, please try again later.';
 
-$version = '2.0.3';
+$version = '2.0.4';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
