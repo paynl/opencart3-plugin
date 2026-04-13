@@ -36,7 +36,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($orderId);
         $transactionId = $transaction['id'] ?? null;
 
-        if(empty($transactionId)) {
+        if (empty($transactionId)) {
             exit();
         }
 
