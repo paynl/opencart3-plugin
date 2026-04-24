@@ -6,6 +6,14 @@
  * @phpcs:disable PSR1.Methods.CamelCapsMethodName
  */
 
+if (!defined('DIR_SYSTEM')) {
+    define('DIR_SYSTEM', __DIR__ . '/..');
+}
+
+if (!class_exists('Controller')) {
+    exit;
+}
+
 require_once DIR_SYSTEM . '/../Pay/vendor/autoload.php';
 
 use PayNL\Sdk\Exception\PayException;
