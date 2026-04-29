@@ -70,7 +70,8 @@ class Pay_Controller_Payment extends Controller
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $this->load->model('checkout/order');
 
-        $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+        $order_id = !empty($this->session->data['order_id']) ? $this->session->data['order_id'] : null;
+        $order_info = $this->model_checkout_order->getOrder($order_id);
         $response = array();
         try {
             $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
