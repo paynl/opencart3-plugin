@@ -17,6 +17,11 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
      */
     public function initFastCheckout()
     {
+        if (empty($this->cart->getProducts()) && $this->cart->getTotal() == 0) {
+            header("Location: " . $this->url->link('checkout/cart'));
+            exit;
+        }
+
         $order_data = $this->createBlankFastCheckoutOrder('payment_paynl_paypal_default_shipping');
 
         $this->session->data['fast_checkout_paypal_order'] = $order_data;
