@@ -190,6 +190,7 @@ $arrPaymentMethods = array(
     'gezondheidsbon',
     'giropay',
     'givacard',
+    'groupedcreditcards',
     'good4fun',
     'googlepay',
     'horsesandgifts',
