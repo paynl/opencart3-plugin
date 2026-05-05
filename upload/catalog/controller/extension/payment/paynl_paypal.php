@@ -17,7 +17,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
      */
     public function initFastCheckout()
     {
-        if (empty($this->cart->getProducts()) || $this->cart->getTotal() == 0) {
+        if (empty($this->cart->getProducts()) && $this->cart->getTotal() == 0) {
             header("Location: " . $this->url->link('checkout/cart'));
             exit;
         }
