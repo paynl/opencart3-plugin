@@ -21,6 +21,10 @@ class Pay_Controller_Transaction extends Controller
      */
     public function startTransaction($order_info, $paymentOption, $paymentMethodName)
     {
+        if (empty($order_info)) {
+            throw new PayException('Order information is missing', 0, 500);
+        }
+
         $request = new OrderCreateRequest();
         $request->setConfig($this->payConfig->getConfig(true));
         $request->setServiceId($this->payConfig->getServiceId());
