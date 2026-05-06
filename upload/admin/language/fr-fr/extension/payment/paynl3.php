@@ -153,6 +153,7 @@ $arrPaymentMethods = array(
     'floa',
     'flyingblueplus',
     'gezondheidsbon',
+    'groupedcreditcards',
     'giropay',
     'givacard',
     'good4fun',
