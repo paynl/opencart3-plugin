@@ -60,6 +60,13 @@ class Pay_Controller_Transaction extends Controller
         $customer->setEmail($order_info['email'] ?? '');
         $customer->setLanguage(substr($order_info['language_code'], 0, 2));
 
+        $language = strtolower(substr($order_info['language_code'] ?? 'nl', 0, 2));
+        $country  = strtoupper($order_info['payment_iso_code_2'] ?? 'NL');
+
+        $customer->setLanguage($language);
+        $customer->setLocale($language . '_' . $country);
+
+
         $company = new \PayNL\Sdk\Model\Company();
         $company->setName($order_info['payment_company'] ?? '');
         $company->setCoc($this->openCart->request->post['coc'] ?? null);
