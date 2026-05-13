@@ -167,33 +167,26 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
      */
     public function exchangeFastCheckout()
     {
-        $rawData = file_get_contents('php://input');
-        $webhookData = json_decode($rawData, true);
-
-        if (empty($webhookData)) {
-            $webhookData = $this->request->post;
-        }
-
-        $orderId = isset($webhookData['object']['payments'][0]['paymentMethod']['input']['orderId'])
-            ? $webhookData['object']['payments'][0]['paymentMethod']['input']['orderId']
-            : null;
-
         $this->load->model('setting/setting');
 
+        $payConfig = new Pay_Controller_Config($this);
+        $config = $payConfig->getConfig();
+        $exchange = new Exchange();
+
         try {
-            $payConfig = new Pay_Controller_Config($this);
-            $config = $payConfig->getConfig();
-            $exchange = new Exchange();
             $payOrder = $exchange->process($config);
             $action = $exchange->getAction();
             $statusCode = $payOrder->getStatusCode();
             $status = Pay_Helper::getStatus($statusCode);
+            $paypal_order_id = $payOrder->getPayments()[0]['paymentMethod']['input']['orderId'] ?? null;
+            $pay_order_id = $payOrder->getOrderId();
+            $order_id = $payOrder->getReference();
         } catch (\Exception $e) {
             die('FALSE| Error fetching transaction. ' . $e->getMessage());
         }
 
         $accessToken = $this->getAccessToken();
-        $paypalOrderDetails = $this->getOrderDetails($orderId, $accessToken);
+        $paypalOrderDetails = $this->getOrderDetails($paypal_order_id, $accessToken);
 
         if (!$paypalOrderDetails) {
             die("FALSE| Paypal order details not received");
@@ -214,8 +207,6 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
             'post_code' => $shipping['address']['country_code'],
         ];
 
-        $order_id = $webhookData['object']['reference'];
-
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
 
@@ -230,7 +221,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
                     'city' => $paypalShipping['city'],
                     'postcode' => $paypalShipping['post_code'],
                     'country' => $paypalPayer['countryCode'],
-                    'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
+                    'method' => $this->_paymentOptionId
                 ];
 
                 $shippingData = [
@@ -249,7 +240,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
                     'firstname' => $paypalPayer['firstname'],
                 ];
 
-                $transactionId = $webhookData['object']['id'];
+                $transactionId = $pay_order_id;
 
                 $transaction = $this->$modelName->getTransaction($transactionId);
 
@@ -258,7 +249,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
                         $transactionId,
                         $order_id,
                         $this->_paymentOptionId,
-                        $webhookData['object']['amount']['value'],
+                        $payOrder->getAmount(),
                         ['type' => 'paypal fast checkout'],
                     );
                 }
@@ -285,7 +276,7 @@ class ControllerExtensionPaymentPaynlpaypal extends Pay_Controller_Payment
                 $this->load->model('checkout/order');
                 $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
+                $this->$modelName->updateTransactionStatus($pay_order_id, $status);
 
                 die("TRUE|Order cancelled");
             }

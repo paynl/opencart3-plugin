@@ -90,41 +90,33 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
      */
     public function exchangeFastCheckout()
     {
-        $rawData = file_get_contents('php://input');
-        $webhookData = json_decode($rawData, true);
-
-        if (empty($webhookData)) {
-            $webhookData = $this->request->post;
-        }
-
-        if (!isset($webhookData['object']['reference']) || !isset($webhookData['object']['status']['code'])) {
-            die("TRUE| Ignoring invalid webhook data");
-        }
-
-        $order_id = $webhookData['object']['reference'];
-
         $this->load->model('setting/setting');
 
+        $payConfig = new Pay_Controller_Config($this);
+        $config = $payConfig->getConfig();
+        $exchange = new Exchange();
+
         try {
-            $payConfig = new Pay_Controller_Config($this);
-            $config = $payConfig->getConfig();
-            $exchange = new Exchange();
             $payOrder = $exchange->process($config);
             $action = $exchange->getAction();
             $statusCode = $payOrder->getStatusCode();
+            $order_id = $payOrder->getReference();
+            $pay_order_id = $payOrder->getOrderId();
             $status = Pay_Helper::getStatus($statusCode);
+            $payload = $exchange->getPayload();
+            $checkoutData = $payload->getCheckoutData();
         } catch (\Exception $e) {
-            die('TRUE| Error fetching transaction. ' . $e->getMessage());
+            die('FALSE| Error fetching transaction. ' . $e->getMessage());
         }
 
         $this->load->model('extension/payment/' . $this->_paymentMethodName);
         $modelName = 'model_extension_payment_' . $this->_paymentMethodName;
 
         try {
-            if ($status === Pay_Model::STATUS_COMPLETE && !empty($webhookData['object']['checkoutData'])) {
-                $billingAddress = $webhookData['object']['checkoutData']['billingAddress'];
-                $shippingAddress = $webhookData['object']['checkoutData']['shippingAddress'];
-                $customer = $webhookData['object']['checkoutData']['customer'];
+            if ($status === Pay_Model::STATUS_COMPLETE) {
+                $billingAddress = $checkoutData['billingAddress'] ?? null;
+                $shippingAddress = $checkoutData['shippingAddress'] ?? null;
+                $customer = $checkoutData['customer'] ?? null;
 
                 $paymentData = [
                     'firstname' => $customer['firstName'],
@@ -133,7 +125,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                     'city' => $billingAddress['city'],
                     'postcode' => $billingAddress['zipCode'],
                     'country' => $billingAddress['countryCode'],
-                    'method' => $webhookData['object']['payments'][0]['paymentMethod']['id']
+                    'method' => $this->_paymentOptionId
                 ];
 
                 $shippingData = [
@@ -152,7 +144,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                     'firstname' => $customer['firstName'],
                 ];
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
+                $this->$modelName->updateTransactionStatus($pay_order_id, $status);
                 $result = $this->$modelName->updateOrderAfterWebhook($order_id, $paymentData, $shippingData, $customerData, 'paynl_ideal');
                 if ($result === false) {
                     die("FALSE| Order not found");
@@ -174,7 +166,7 @@ class ControllerExtensionPaymentPaynlideal extends Pay_Controller_Payment
                 $this->load->model('checkout/order');
                 $this->model_checkout_order->addOrderHistory($order_id, 7, 'Order cancelled');
 
-                $this->$modelName->updateTransactionStatus($webhookData['object']['orderId'], $status);
+                $this->$modelName->updateTransactionStatus($pay_order_id, $status);
 
                 die("TRUE| Order cancelled");
             }
