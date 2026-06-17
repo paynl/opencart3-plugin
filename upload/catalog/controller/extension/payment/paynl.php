@@ -26,8 +26,8 @@ class ControllerExtensionPaymentPaynl extends Controller
         $orderId = $this->request->get['order_id'] ?? null;
         $orderStatusId = $this->request->post['order_status_id'] ?? null;
 
-        if (!in_array($orderStatusId, [5, 7, 16])) {
-            exit();
+        if (!in_array($orderStatusId, [3, 5, 7, 16])) {
+            return;
         }
 
         $autoVoid = $this->config->get('payment_paynl_general_auto_void');
@@ -38,7 +38,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         $transactionId = $transaction['id'] ?? null;
 
         if (empty($transactionId)) {
-            exit();
+            return;
         }
 
         $payConfig = new Pay_Controller_Config($this);
@@ -48,7 +48,7 @@ class ControllerExtensionPaymentPaynl extends Controller
         try {
             $transaction = $request->start();
         } catch (PayException $e) {
-            exit();
+            return;
         }
 
         $transactionState = $transaction->getStatusName();
@@ -57,7 +57,8 @@ class ControllerExtensionPaymentPaynl extends Controller
             if (($orderStatusId == 7 || $orderStatusId == 16) && $autoVoid) //7=cancel, 16=voided
             {
                 $this->paynlDoAutoVoid($transactionId, $orderId, $orderStatusId);
-            } elseif ($orderStatusId == 5 && $autoCapture) {
+            } elseif (($orderStatusId == 3 && $autoCapture) || ($orderStatusId == 5 && $autoCapture)) //3=Shipped, 5=completed
+            {
                 $this->paynlDoAutoCapture($transactionId, $orderId, $orderStatusId);
             }
         }
@@ -224,7 +225,7 @@ class ControllerExtensionPaymentPaynl extends Controller
                 $allowedToProceed = !($onlyGuests && $customerIsLogged);
 
                 if ($fastCheckout === true && $allowedToProceed === true) {
-                    $paypalContainerId = isset($options['paypal_container_id']) ?  $options['paypal_container_id'] : null;
+                    $paypalContainerId = isset($options['paypal_container_id']) ? $options['paypal_container_id'] : null;
 
                     $payMethodsWithFastCheckout[] = $this->getFastCheckoutButtonLayout($result['code'], $paypalContainerId);
                 }
