@@ -20,6 +20,13 @@ class ControllerExtensionPaymentPaynl extends Controller
         $order_info = $this->model_sale_order->getOrder($data['order_id']);
 
         if ((strpos($order_info['payment_code'], 'paynl') !== false)) {
+            $this->load->model('extension/payment/paynl3');
+            $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($data['order_id']);
+            if(empty($transaction) || empty($transaction['id'])){
+                return null;
+            }
+            $transactionId = $transaction['id'];
+            
             $template_buffer = $this->getTemplateBuffer($route, $template_code);
 
             $admin_dir = dirname(dirname(dirname(dirname(__FILE__))));
@@ -31,11 +38,7 @@ class ControllerExtensionPaymentPaynl extends Controller
 
             $template_buffer = str_replace('{{ footer }}', $payContent, $template_buffer);
 
-            $template_code = $template_buffer;
-
-            $this->load->model('extension/payment/paynl3');
-            $transaction = $this->model_extension_payment_paynl3->getTransactionFromOrderId($data['order_id']);
-            $transactionId = $transaction['id'];
+            $template_code = $template_buffer;            
 
             $this->load->model('setting/setting');
 
