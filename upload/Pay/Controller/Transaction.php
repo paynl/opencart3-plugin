@@ -28,7 +28,14 @@ class Pay_Controller_Transaction extends Controller
         $request = new OrderCreateRequest();
         $request->setConfig($this->payConfig->getConfig(true));
         $request->setServiceId($this->payConfig->getServiceId());
-        $request->setDescription($order_info['order_id']);
+
+        if (!empty($this->payConfig->getDescriptionPrefix())) {
+            $description = $this->payConfig->getDescriptionPrefix() . $order_info['order_id'];
+        } else {
+            $description = $order_info['order_id'];
+        }
+        $request->setDescription($description);
+
         $request->setReference($order_info['order_id']);
         $request->setCurrency($order_info['currency_code']);
         $request->setPaymentMethodId((int) $paymentOption);
