@@ -88,6 +88,14 @@ class Pay_Controller_Config extends Controller
     /**
      * @return string
      */
+    public function getDescriptionPrefix()
+    {
+        return trim($this->openCart->config->get('payment_paynl_general_prefix'));
+    }
+
+    /**
+     * @return string
+     */
     public function getObject()
     {
         $object_string = 'opencart 3 ';
