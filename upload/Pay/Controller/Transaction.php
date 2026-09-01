@@ -132,6 +132,10 @@ class Pay_Controller_Transaction extends Controller
                 $taxPercentage = ($tax / $priceWithoutTax * 100);
             }
 
+            if ($taxPercentage > 100) {
+                $taxPercentage = 100;
+            }
+
             $price = round($priceWithTax, 2);
 
             $product = new Product();
