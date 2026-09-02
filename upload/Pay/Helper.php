@@ -132,10 +132,13 @@ class Pay_Helper
         $statusComplete = $settings['payment_' . $name . '_completed_status'];
         $statusCanceled = $settings['payment_' . $name . '_canceled_status'];
         $statusRefunded = $settings['payment_' . $name . '_refunded_status'];
+        $statusAuthorized = $settings['payment_' . $name . '_authorized_status'];
 
         $orderStatusId = $statusPending;
         if ($payState == 100) {
             $orderStatusId = $statusComplete;
+        } if ($payState == 95 && !empty($statusAuthorized)) {
+            $orderStatusId = $statusAuthorized;
         } elseif ($payState == -81) {
             $orderStatusId = empty($statusRefunded) ? 11 : $statusRefunded;
         } elseif ($payState < 0) {

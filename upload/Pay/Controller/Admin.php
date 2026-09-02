@@ -296,6 +296,7 @@ class Pay_Controller_Admin extends Controller
         $data['completed_status'] = empty($data['completed_status']) ? 2 : $data['completed_status'];
         $data['canceled_status'] = empty($data['canceled_status']) ? 7 : $data['canceled_status'];
         $data['refunded_status'] = empty($data['refunded_status']) ? 11 : $data['refunded_status'];
+        $data['authorized_status'] = empty($data['authorized_status']) ? 1 : $data['authorized_status'];
         $data['pending_status'] = empty($data['pending_status']) ? 1 : $data['pending_status'];
         $data['heading_title'] = $this->document->getTitle();
 
