@@ -99,7 +99,7 @@ class Pay_Controller_Config extends Controller
     public function getObject()
     {
         $object_string = 'opencart 3 ';
-        $object_string .= '2.0.10';
+        $object_string .= '2.0.11';
         $object_string .= ' | ';
         $object_string .= VERSION ?? '-';
         $object_string .= ' | ';
