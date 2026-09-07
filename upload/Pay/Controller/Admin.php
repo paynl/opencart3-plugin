@@ -189,6 +189,12 @@ class Pay_Controller_Admin extends Controller
             }
         } else {
             if (!empty($this->request->get['action'])) {
+
+                if (!$this->user->hasPermission('modify', 'setting/setting')) {
+                    $json['error'] = 'user doesn\'t have permissions to perform this action';
+                    die(json_encode($json));
+                }
+
                 if ($this->request->get['action'] == 'refund') {
                     $returnarray = $this->refund();
                     die(json_encode($returnarray));
