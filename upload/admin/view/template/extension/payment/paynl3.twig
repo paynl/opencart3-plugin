@@ -532,6 +532,21 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="{{ payment_method_name }}_authorized_status"><span
+                                    data-toggle="tooltip"
+                                    title="{{ text_status_authorized_tooltip }}">{{ text_status_authorized }}</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="{{ payment_method_name }}_authorized_status">
+                                {% for order_status in order_statuses %}
+                                    <option value="{{ order_status.order_status_id }}"
+                                            {{ order_status.order_status_id == authorized_status?'selected="selected"':'' }}>
+                                        {{ order_status.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="{{ payment_method_name }}_total">{{ text_minimum_amount }}</label>
