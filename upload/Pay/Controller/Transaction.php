@@ -126,6 +126,15 @@ class Pay_Controller_Transaction extends Controller
 
             $priceWithoutTax = $this->openCart->currency->convert($productItem['price'], $this->openCart->config->get('config_currency'), $this->openCart->session->data['currency']);
             $tax = $priceWithTax - $this->openCart->currency->convert($productItem['price'], $this->openCart->config->get('config_currency'), $this->openCart->session->data['currency']);
+            if ($priceWithoutTax == 0) {
+                $taxPercentage = 0;
+            } else {
+                $taxPercentage = ($tax / $priceWithoutTax * 100);
+            }
+
+            if ($taxPercentage > 100) {
+                $taxPercentage = 100;
+            }
 
             $price = round($priceWithTax, 2);
 
@@ -136,7 +145,7 @@ class Pay_Controller_Transaction extends Controller
             $product->setAmount($price);
             $product->setCurrency($order_info['currency_code']);
             $product->setQuantity($productItem['quantity']);
-            $product->setVatPercentage(($tax / $priceWithoutTax * 100));
+            $product->setVatPercentage($taxPercentage);
             $products->addProduct($product);
         }
 
