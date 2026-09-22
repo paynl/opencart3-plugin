@@ -13,6 +13,8 @@ use PayNL\Sdk\Util\ExchangeResponse;
 
 class Pay_Model extends Model
 {
+    public const PAYMENT_METHOD_METJEBANK = 5358;
+
     const STATUS_PENDING = 'PENDING'; // phpcs:ignore
     const STATUS_CANCELED = 'CANCELED'; // phpcs:ignore
     const STATUS_COMPLETE = 'COMPLETE'; // phpcs:ignore
@@ -30,7 +32,7 @@ class Pay_Model extends Model
                             `id` varchar(255) NOT NULL,
                             `orderId` int(11) NOT NULL,
                             `optionId` int(11) NOT NULL,
-                            `optionSubId` int(11) DEFAULT NULL,
+                            `optionSubId` varchar(64) DEFAULT NULL,
                             `amount` int(11) NOT NULL,
                             `status` varchar(255) NOT NULL,
                             `created` int(11) NOT NULL,
@@ -53,7 +55,7 @@ class Pay_Model extends Model
         $this->db->query("                
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "paynl_paymentoption_subs` (
                             `id` int(11) NOT NULL AUTO_INCREMENT,
-                            `optionSubId` int(11) NOT NULL,   
+                            `optionSubId` varchar(64) NOT NULL,
                             `paymentOptionId` int(11) NOT NULL,                                                  
                             `name` varchar(255) NOT NULL,
                             `img` varchar(255) NOT NULL,
@@ -97,6 +99,16 @@ class Pay_Model extends Model
         $payConfig = new Pay_Controller_Config($this);
         $config = (new ServiceGetConfigRequest($serviceId))->setConfig($payConfig->getConfig(false, $tokencode, $apiToken))->start();
 
+        foreach (['paynl_paymentoption_subs', 'paynl_transactions'] as $table) {
+            $column = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . $table . "` LIKE 'optionSubId'");
+            if (str_starts_with(strtolower($column->row['Type']), 'int')) {
+                $nullable = $column->row['Null'] === 'YES' ? 'DEFAULT NULL' : 'NOT NULL';
+                $this->db->query(
+                    "ALTER TABLE `" . DB_PREFIX . $table . "` MODIFY `optionSubId` varchar(64) " . $nullable
+                );
+            }
+        }
+
         $serviceId = $this->db->escape($serviceId);
         //eerst de oude verwijderen
         $sql = "DELETE options,optionsubs  FROM `" . DB_PREFIX . "paynl_paymentoptions` as options "
@@ -128,17 +140,24 @@ class Pay_Model extends Model
                 $internalOptionId = $this->db->getLastId();
                 if ($method->hasOptions()) {
                     foreach ($method->getOptions() as $optionSub) {
-                        $optionSubId = $optionSub['id'] ?? null;
-                        $name = $optionSub['name'] ?? null;
+                        $optionSubId = $optionSub['id'] ?? $optionSub['issuerId'] ?? '';
+                        $name = $optionSub['name'] ?? '';
+                        $optionSubImage = $optionSub['image'] ?? '';
+                        if ($optionSubId === '' || $name === '') {
+                            continue;
+                        }
+                        if ($optionSubImage !== '' && !preg_match('#^https?://#i', $optionSubImage)) {
+                            $optionSubImage = 'https://static.pay.nl/' . ltrim($optionSubImage, '/');
+                        }
 
                         //variabelen filteren
                         $optionSubId = $this->db->escape($optionSubId);
                         $name = $this->db->escape($name);
-                        $img = $this->db->escape($img);
+                        $optionSubImage = $this->db->escape($optionSubImage);
 
                         $sql = "INSERT INTO `" . DB_PREFIX . "paynl_paymentoption_subs` "
-                            . "(optionSubId, paymentOptionId, name, update_date) VALUES "
-                            . "('$optionSubId', $internalOptionId, '$name', NOW() )";
+                            . "(optionSubId, paymentOptionId, name, img, update_date) VALUES "
+                            . "('$optionSubId', $internalOptionId, '$name', '$optionSubImage', NOW() )";
                         $this->db->query($sql);
                     }
                 }

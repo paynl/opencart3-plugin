@@ -5,6 +5,11 @@ $_['text_serviceid'] = 'Service';
 $_['text_tokencode'] = 'Token Code';
 
 // Text
+
+$_['text_banklist'] = 'Show bank list';
+$_['text_bank_selection'] = 'Bank selection';
+$_['text_bank_selection_radio'] = 'Radio buttons with logos';
+$_['text_bank_selection_dropdown'] = 'Dropdown';
 $_['text_payment'] = 'Paiement';
 
 $_['button_save'] = 'Sauvegarder';
@@ -169,6 +174,7 @@ $arrPaymentMethods = array(
     'kunstencultuurkaart',
     'maestro',
     'mbway',
+    'metjebank',
     'monizze',
     'mooigiftcard',
     'mistercash',
@@ -198,7 +204,7 @@ $arrPaymentMethods = array(
     'sofortbankingds',
     'sofortbankinghr',
     'spraypay',
-    'stadspasamsterdam',    
+    'stadspasamsterdam',
     'stadspaspurmerend',
     'swish',
     'trustly',

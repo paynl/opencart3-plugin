@@ -81,7 +81,11 @@ class Pay_Controller_Admin extends Controller
             'text_payment_instructions',
             'text_payment_instructions_tooltip',
             'text_display_icon',
-            'text_display_icon_tooltip'
+            'text_display_icon_tooltip',
+            'text_banklist',
+            'text_bank_selection',
+            'text_bank_selection_radio',
+            'text_bank_selection_dropdown'
         );
 
         foreach ($stringsToTranslate as $string) {
@@ -283,6 +287,9 @@ class Pay_Controller_Admin extends Controller
 
         $data['payment_method_name'] = 'payment_' . $this->_paymentMethodName;
         $data['post_payment'] = isset($this->_postPayment);
+        $data['supports_bank_selection'] = $this->_paymentOptionId === Pay_Model::PAYMENT_METHOD_METJEBANK;
+        $data['banklist'] = $data['banklist'] ?? '1';
+        $data['bank_selection'] = $data['bank_selection'] ?? 'dropdown';
 
         $this->load->model('localisation/geo_zone');
         $data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();

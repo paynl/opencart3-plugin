@@ -5,14 +5,30 @@
     </div>
 {% endif %}
 {% if optionSubList %}
-    <div>
-        <select class="form-control" id="optionsub">
-            <option value=''>{{ text_choose_bank }}</option>
-            {% for optionSub in optionSubList %}
-                <option value='{{ optionSub.id }}'>{{ optionSub.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
+    <link href="catalog/view/theme/default/stylesheet/paynl.css" rel="stylesheet" type="text/css"/>
+    <fieldset id="paynl-bank-selection" class="paynl-bank-selection">
+        <legend>{{ text_choose_bank }}</legend>
+        {% if bankSelection == 'radio' %}
+            <div class="paynl-bank-options">
+                {% for optionSub in optionSubList %}
+                    <label class="paynl-bank-option">
+                        <input type="radio" name="optionSubId" value="{{ optionSub.id|escape }}"/>
+                        {% if optionSub.img %}
+                            <img src="{{ optionSub.img|escape }}" alt="" width="40" height="40"/>
+                        {% endif %}
+                        <span>{{ optionSub.name|escape }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+        {% else %}
+            <select class="form-control" id="optionsub" name="optionSubId" aria-label="{{ text_choose_bank|escape }}">
+                <option value="">{{ text_choose_bank }}</option>
+                {% for optionSub in optionSubList %}
+                    <option value="{{ optionSub.id|escape }}">{{ optionSub.name|escape }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+    </fieldset>
 {% endif %}
 
 <div class="alert alert-danger hidden" id="pay_error"></div>
@@ -76,8 +92,9 @@
 <script type="text/javascript">
     function startTransaction() {
         var data = {};
-        if (jQuery('#optionsub') != undefined) {
-            data.optionSubId = jQuery('#optionsub').val();
+        var selectedBank = jQuery('#paynl-bank-selection select, #paynl-bank-selection input:checked').val();
+        if (selectedBank) {
+            data.optionSubId = selectedBank;
         }
         switch (dob) {
             case 1:
