@@ -17,6 +17,7 @@ use PayNL\Sdk\Model\CheckoutOption;
 use PayNL\Sdk\Model\CheckoutOptions;
 use PayNL\Sdk\Model\Method;
 use PayNL\Sdk\Model\Methods;
+use PayNL\Sdk\Model\Request\OrderCreateRequest;
 use PayNL\Sdk\Model\Request\ServiceGetConfigRequest;
 use PayNL\Sdk\Model\Response\ServiceGetConfigResponse;
 
@@ -50,6 +51,20 @@ function check(bool $condition, string $message): void
     if (!$condition) {
         throw new RuntimeException($message);
     }
+}
+
+foreach (['RABONL2U', 27153, '27153'] as $issuerId) {
+    $request = (new OrderCreateRequest())
+        ->setServiceId('SL-0000-0000')
+        ->setAmount(10.0)
+        ->setReturnurl('https://shop.example/finish')
+        ->setPaymentMethodId(5358)
+        ->setIssuerId($issuerId);
+    $body = json_decode(json_encode($request->getBodyParameters()), true);
+    check(
+        $body['paymentMethod']['input']['issuerId'] === $issuerId,
+        'The SDK issuer setter must preserve bank codes and numeric identifiers in the request.'
+    );
 }
 
 $config = new class {
