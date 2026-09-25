@@ -127,7 +127,10 @@ $method = (new Method())->setId(5358)->setName('Metjebank.nl')->setImage('/payme
 $method->setOptions([
     ['id' => '27171', 'issuerId' => 'TRIONL2U', 'name' => 'Triodos', 'image' => '/issuers/27171.svg'],
     ['issuerId' => 'ASNBNL21', 'name' => 'ASN Bank', 'image' => 'https://static.pay.nl/issuers/27174.svg'],
-    ['id' => '123', 'name' => "Bank O'Example", 'image' => ''],
+    ['id' => '123', 'issuerId' => 'TESTNL2A', 'name' => "Bank O'Example", 'image' => ''],
+    ['id' => '27153', 'issuerId' => 'RABONL2U', 'name' => 'Rabobank', 'image' => '/issuers/27153.svg'],
+    ['id' => '456', 'name' => 'Missing issuer', 'image' => ''],
+    ['id' => '789', 'issuerId' => '', 'name' => 'Empty issuer', 'image' => ''],
 ]);
 $checkout = (new CheckoutOption())->setTag('PM_5358')->setPaymentMethods((new Methods())->addMethod($method));
 $serviceConfig = new ServiceGetConfigResponse();
@@ -138,14 +141,17 @@ $cacheKey = 'service_getconfig_' . md5(json_encode(['AT-0000-0000', 'test-token'
 $model = new ModelExtensionPaymentPaynlMetjebank(['db' => $db, 'config' => $config]);
 $model->refreshPaymentOptions('SL-0000-0000', 'test-token', 'AT-0000-0000');
 $banks = $model->getPaymentOption(5358)['optionSubs'];
-check(array_column($banks, 'id') === ['ASNBNL21', '123', '27171'], 'Bank identifiers must survive storage.');
-check($banks[2]['img'] === 'https://static.pay.nl/issuers/27171.svg', 'Relative logos need the Pay host.');
+check(
+    array_column($banks, 'id') === ['ASNBNL21', 'TESTNL2A', 'RABONL2U', 'TRIONL2U'],
+    'Metjebank must store issuerId; options without an issuerId must be skipped.'
+);
+check($banks[3]['img'] === 'https://static.pay.nl/issuers/27171.svg', 'Relative logos need the Pay host.');
 check($banks[0]['img'] === 'https://static.pay.nl/issuers/27174.svg', 'Absolute logos must remain unchanged.');
 check($banks[1]['img'] === '', 'Missing logos must remain empty.');
 check($db->migrations === 2, 'Existing numeric bank columns must be upgraded.');
 $model->refreshPaymentOptions('SL-0000-0000', 'test-token', 'AT-0000-0000');
 check($db->migrations === 2, 'The schema upgrade must be idempotent.');
-check(count($model->getPaymentOption(5358)['optionSubs']) === 3, 'Refreshing must replace cached banks.');
+check(count($model->getPaymentOption(5358)['optionSubs']) === 4, 'Refreshing must replace cached banks.');
 
 $loader = new class {
     public function language(string $path): void
@@ -210,7 +216,7 @@ $registry = [
     },
 ];
 $controller = new ControllerExtensionPaymentPaynlMetjebank($registry);
-check(count($controller->index()['optionSubList']) === 3, 'Metjebank must display the cached banks by default.');
+check(count($controller->index()['optionSubList']) === 4, 'Metjebank must display the cached banks by default.');
 check($controller->index()['bankSelection'] === 'dropdown', 'The default bank selector must be a dropdown.');
 $config->values['payment_paynl_metjebank_bank_selection'] = 'radio';
 check($controller->index()['bankSelection'] === 'radio', 'The radio setting must reach the template.');
@@ -245,7 +251,7 @@ $order = [
     'shipping_iso_code_2' => 'NL', 'shipping_address_1' => 'Test street 1', 'shipping_address_2' => '',
     'shipping_postcode' => '1234AB', 'shipping_city' => 'Test', 'shipping_zone_code' => '',
 ];
-foreach ([['1', 'ASNBNL21'], ['1', '27171'], ['1', ''], ['0', '27171']] as [$enabled, $selected]) {
+foreach ([['1', 'ASNBNL21'], ['1', 'RABONL2U'], ['1', ''], ['0', 'RABONL2U']] as [$enabled, $selected]) {
     $config->values['payment_paynl_metjebank_banklist'] = $enabled;
     $registry['request']->post = ['optionSubId' => $selected, 'coc' => '', 'vat' => '', 'dob' => ''];
     $mock->append(new Response(200, [], json_encode([
@@ -256,16 +262,15 @@ foreach ([['1', 'ASNBNL21'], ['1', '27171'], ['1', ''], ['0', '27171']] as [$ena
     $body = json_decode((string) end($history)['request']->getBody(), true);
     $expected = $enabled === '1' && $selected !== '' ? $selected : null;
     check($body['paymentMethod']['id'] === 5358, 'The request must use Metjebank.');
-    $expectedIssuer = $expected !== null && ctype_digit($expected) ? (int) $expected : $expected;
     check(
-        ($body['paymentMethod']['input']['issuerId'] ?? null) === $expectedIssuer,
-        'The request must respect bank selection.'
+        ($body['paymentMethod']['input']['issuerId'] ?? null) === $expected,
+        'The request must send the selected issuerId from getConfig unchanged.'
     );
     $stored = $db->connection->query('SELECT optionSubId FROM oc_paynl_transactions ORDER BY rowid DESC')->fetchColumn();
     check($stored === ($expected ?? '0'), 'Transaction storage must match the bank sent to Pay.');
 }
 $config->values['payment_paynl_metjebank_banklist'] = '1';
-foreach (['unknown-bank', ['TRIONL2U']] as $invalid) {
+foreach (['unknown-bank', '27153', ['TRIONL2U']] as $invalid) {
     $registry['request']->post = ['optionSubId' => $invalid];
     $rejected = false;
     try {

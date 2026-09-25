@@ -51,11 +51,7 @@ class Pay_Controller_Transaction extends Controller
                 if (!is_string($optionSubId) || !in_array($optionSubId, $bankIds, true)) {
                     throw new InvalidArgumentException('Please select a valid bank.');
                 }
-                if (ctype_digit($optionSubId)) {
-                    $request->setIssuerId((int) $optionSubId);
-                } else {
-                    $request->setPaymentInputData(['issuerId' => $optionSubId]);
-                }
+                $request->setPaymentInputData(['issuerId' => $optionSubId]);
             }
         } elseif (!empty($optionSubId)) {
             $request->setIssuerId($optionSubId);

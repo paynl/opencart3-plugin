@@ -138,9 +138,15 @@ class Pay_Model extends Model
                 $this->db->query($sql);
 
                 $internalOptionId = $this->db->getLastId();
-                if ($method->hasOptions()) {
-                    foreach ($method->getOptions() as $optionSub) {
-                        $optionSubId = $optionSub['id'] ?? $optionSub['issuerId'] ?? '';
+                if ($method->hasOptions())
+                {
+                    foreach ($method->getOptions() as $optionSub)
+                    {
+                        if ($method->getId() === self::PAYMENT_METHOD_METJEBANK) {
+                            $optionSubId = $optionSub['issuerId'] ?? '';
+                        } else {
+                            $optionSubId = $optionSub['id'] ?? $optionSub['issuerId'] ?? '';
+                        }
                         $name = $optionSub['name'] ?? '';
                         $optionSubImage = $optionSub['image'] ?? '';
                         if ($optionSubId === '' || $name === '') {
