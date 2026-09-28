@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayNL\Sdk\Model;
 
 use JsonSerializable;
-use PayNL\Sdk\Packages\Doctrine\Common\Collections\ArrayCollection;
 use PayNL\Sdk\Common\{
+    ArrayCollection,
     JsonSerializeTrait,
     CollectionInterface
 };
@@ -55,7 +55,7 @@ class Products extends ArrayCollection implements ModelInterface, CollectionInte
      */
     public function addProduct(Product $product): self
     {
-        $this->set($product->getId(), $product);
+        $this->add($product);
         return $this;
     }
 
