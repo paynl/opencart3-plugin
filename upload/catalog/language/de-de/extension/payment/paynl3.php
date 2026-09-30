@@ -1,6 +1,7 @@
 <?php
 
 $_['text_choose_bank'] = 'Wählen Sie Ihre Bank';
+$_['error_bank'] = 'Bitte wählen Sie eine gültige Bank aus.';
 $_['text_dob'] = 'Geburtsdatum';
 $_['error_dob'] = 'Um diese Transaktion abzuschließen, ist ein Geburtsdatum erforderlich, bitte füllen Sie es aus.';
 $_['text_coc'] = 'Handelskammernummer';

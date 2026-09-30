@@ -49,7 +49,7 @@ class Pay_Controller_Transaction extends Controller
                 $method = $this->openCart->$modelName->getPaymentOption($paymentOption);
                 $bankIds = array_map('strval', array_column($method['optionSubs'] ?? [], 'id'));
                 if (!is_string($optionSubId) || !in_array($optionSubId, $bankIds, true)) {
-                    throw new InvalidArgumentException('Please select a valid bank.');
+                    throw new InvalidArgumentException($this->openCart->language->get('error_bank'));
                 }
                 $request->setIssuerId($optionSubId);
             }
