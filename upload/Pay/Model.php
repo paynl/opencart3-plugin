@@ -480,7 +480,7 @@ class Pay_Model extends Model
         $order_info = $this->model_checkout_order->getOrder($transaction['orderId']);
 
         # Make sure Pay. status is not pending when order itself has a status already. Pay. will retry call in case this happens.
-        if ($order_info['order_status_id'] != 0 && $status == self::STATUS_PENDING) {
+        if ($order_info['order_status_id'] != 0 && $status == self::STATUS_PENDING && !$payOrder->isAuthorized()) {
             throw new \Exception("unexpected status " . $status);
         }
 
