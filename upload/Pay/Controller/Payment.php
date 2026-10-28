@@ -51,6 +51,16 @@ class Pay_Controller_Payment extends Controller
 
         $this->data['optionSubList'] = array();
 
+        if (
+            $this->_paymentOptionId === Pay_Model::PAYMENT_METHOD_METJEBANK
+            && (string) $this->config->get('payment_' . $this->_paymentMethodName . '_banklist') !== '0'
+        ) {
+            $this->data['optionSubList'] = $paymentOption['optionSubs'];
+            $this->data['bankSelection'] = $this->config->get(
+                'payment_' . $this->_paymentMethodName . '_bank_selection'
+            ) ?? 'dropdown';
+        }
+
         if (!empty($this->config->get('payment_' . $this->_paymentMethodName . '_coc'))) {
             $this->data['coc'] = $this->config->get('payment_' . $this->_paymentMethodName . '_coc');
         }

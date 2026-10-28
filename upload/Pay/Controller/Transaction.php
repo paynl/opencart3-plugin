@@ -39,8 +39,22 @@ class Pay_Controller_Transaction extends Controller
         $request->setReference($order_info['order_id']);
         $request->setCurrency($order_info['currency_code']);
         $request->setPaymentMethodId((int) $paymentOption);
-        if (!empty($this->openCart->request->post['optionSubId'])) {
-            $request->setIssuerId($this->openCart->request->post['optionSubId']);
+        $optionSubId = $this->openCart->request->post['optionSubId'] ?? '';
+        if ((int) $paymentOption === Pay_Model::PAYMENT_METHOD_METJEBANK) {
+            if ((string) $this->openCart->config->get('payment_' . $paymentMethodName . '_banklist') === '0') {
+                $optionSubId = '';
+            }
+            if ($optionSubId !== '') {
+                $modelName = 'model_extension_payment_' . $paymentMethodName;
+                $method = $this->openCart->$modelName->getPaymentOption($paymentOption);
+                $bankIds = array_map('strval', array_column($method['optionSubs'] ?? [], 'id'));
+                if (!is_string($optionSubId) || !in_array($optionSubId, $bankIds, true)) {
+                    throw new InvalidArgumentException($this->openCart->language->get('error_bank'));
+                }
+                $request->setIssuerId($optionSubId);
+            }
+        } elseif (!empty($optionSubId)) {
+            $request->setIssuerId($optionSubId);
         }
 
         $returnUrl = $this->openCart->url->link('extension/payment/' . $paymentMethodName . '/finish');
@@ -221,7 +235,7 @@ class Pay_Controller_Transaction extends Controller
             $paymentOption,
             $amount,
             '',
-            $this->openCart->request->post['optionSubId'] ?? 0
+            $optionSubId !== '' ? $optionSubId : 0
         );
 
         return $transaction->getPaymentUrl();

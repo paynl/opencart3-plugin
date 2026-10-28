@@ -1,6 +1,7 @@
 <?php
 
 $_['text_choose_bank'] = 'Kies uw bank';
+$_['error_bank'] = 'Kies een geldige bank.';
 $_['text_coc'] = 'KVK nummer';
 $_['error_coc'] = 'Een KVK nummer is nodig om deze transactie af te ronden, vul deze aub hier in.';
 $_['text_vat'] = 'BTW nummer';

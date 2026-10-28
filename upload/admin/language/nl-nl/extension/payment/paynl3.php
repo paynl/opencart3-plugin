@@ -5,6 +5,11 @@ $_['text_serviceid'] = 'Verkooplocatie';
 $_['text_tokencode'] = 'Token Code';
 
 // Text
+
+$_['text_banklist'] = 'Show bank list';
+$_['text_bank_selection'] = 'Bank selection';
+$_['text_bank_selection_radio'] = 'Radio buttons with logos';
+$_['text_bank_selection_dropdown'] = 'Dropdown';
 $_['text_payment'] = 'Betaling';
 
 $_['button_save'] = 'Opslaan';
@@ -146,7 +151,7 @@ $_['text_suggestions_submit'] = 'Verstuur';
 $_['text_suggestions_success_modal'] = 'Verstuurd! Bedankt voor het delen van jouw input.';
 $_['text_suggestions_fail_modal'] = 'E-mail kon niet worden verzonden. Probeer het later opnieuw.';
 
-$version = '2.0.11';
+$version = '2.1.0';
 $_['version'] = $version;
 $css = 'position: relative;top:0px;display: inline;left: 10px;';
 $paynl_logo = '<a href="https://www.pay.nl" target="paynl"><img style="width: 30px;" 
@@ -205,6 +210,7 @@ $arrPaymentMethods = array(
     'kunstencultuurkaart',
     'maestro',
     'mbway',
+    'metjebank',
     'monizze',
     'mooigiftcard',
     'mistercash',
@@ -234,7 +240,7 @@ $arrPaymentMethods = array(
     'sofortbankingds',
     'sofortbankinghr',
     'spraypay',
-    'stadspasamsterdam',    
+    'stadspasamsterdam',
     'stadspaspurmerend',
     'swish',
     'trustly',

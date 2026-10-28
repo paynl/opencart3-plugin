@@ -25,3 +25,43 @@
 .fast-checkout-btn-margin {
     margin-bottom: 4px;
 }
+
+.paynl-bank-selection {
+    margin-bottom: 15px;
+}
+
+.paynl-bank-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.paynl-bank-options .paynl-bank-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 56px;
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.paynl-bank-option:focus-within {
+    outline: 2px solid #337ab7;
+    outline-offset: 2px;
+}
+
+.paynl-bank-option input[type="radio"] {
+    position: static;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.paynl-bank-option img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
